@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        app:title="Notifications &amp; Updates">
+        <SwitchPreference
+            app:key="CURRENT_USER_LOCATION_UPDATES"
+            app:title="Location Updates"
+            app:defaultValue="true"/>
+
+        <Preference
+            app:key="CURRENT_USER_MANUAL_LOCATION"
+            app:title="Enter Current Location"
+            android:fragment="com.mortonsworld.suggest.ui.settings.ManualLocationFragment"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:title="About Us">
+        <Preference
+            app:key="CURRENT_USER_PRIVACY_POLICY"
+            app:title="Private Policy" />
+        <Preference
+            app:key="CURRENT_USER_TERMS_OF_SERVICE"
+            app:title="Terms Of Service" />
+        <Preference
+            app:key="CURRENT_USER_FEEDBACK"
+            app:title="Feedback" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:title="See Ya Later!">
+
+        <Preference
+            app:key="CURRENT_USER_LOGOUT"
+            app:title="Sign Out" />
+
+        <Preference
+            app:key="CURRENT_USER_DELETE"
+            app:title="Delete"/>
+    </PreferenceCategory>
+
+</PreferenceScreen>

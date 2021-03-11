@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/navy_blue"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/search_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="15dp"
+                android:background="@color/white"/>
+
+        </com.google.android.material.appbar.MaterialToolbar>
+
+        <ImageView
+            android:id="@+id/manual_location_vector"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:contentDescription="@string/close"
+            android:src="@drawable/ic_location_manual"
+            app:layout_constraintBottom_toTopOf="@+id/imageGuidelineTop"
+            app:layout_constraintEnd_toStartOf="@+id/imageGuidelineRight"
+            app:layout_constraintStart_toStartOf="@+id/imageGuidelineLeft"
+            app:layout_constraintTop_toTopOf="@+id/bottomSkipGuideline" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/locationTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/search_for_your_location"
+            app:layout_constraintEnd_toEndOf="@id/rightGuideline"
+            app:layout_constraintStart_toStartOf="@id/leftGuideline"
+            app:layout_constraintTop_toBottomOf="@id/manual_location_vector" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/locationMessage"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/enable_location_services_message"
+            app:layout_constraintEnd_toEndOf="@id/rightGuideline"
+            app:layout_constraintStart_toStartOf="@id/leftGuideline"
+            app:layout_constraintTop_toBottomOf="@id/locationTitle" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/toolbar"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/powered_by_google"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/title_powered_by_google"
+            android:visibility="gone"
+            android:textAlignment="textEnd"
+            android:textSize="16dp"
+            android:paddingEnd="10dp"
+            android:paddingStart="0dp"
+            android:background="@color/white"
+            app:layout_constraintTop_toBottomOf="@id/recycler_view"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/leftGuideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent=".1"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/rightGuideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent=".9"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/bottomSkipGuideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.3"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/imageGuidelineTop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent=".4"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/imageGuidelineLeft"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.4" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/imageGuidelineRight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.6" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/closeGuidelineStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.85" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/recycler_view_guideline_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.15" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

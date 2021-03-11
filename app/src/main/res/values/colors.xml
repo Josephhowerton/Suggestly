@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="navy_blue_lighter">#1E304E</color>
+    <color name="navy_blue">#192841</color>
+    <color name="vibrant_pink_transparent">#BFA60B3F</color>
+    <color name="vibrant_pink_light">#BC2256</color>
+    <color name="vibrant_pink">#A60B3F</color>
+    <color name="wolf_grey">#808080</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+</resources>

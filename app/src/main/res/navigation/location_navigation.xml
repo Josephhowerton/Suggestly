@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_explanation">
+
+    <fragment
+        android:id="@+id/navigation_explanation"
+        android:name="com.mortonsworld.suggest.ui.explanation.ExplanationFragment"
+        android:label="Welcome"
+        tools:layout="@layout/fragment_welcome" >
+        <action
+            android:id="@+id/action_navigation_explanation_to_navigation_location_services"
+            app:destination="@id/navigation_location_services" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_location_services"
+        android:name="com.mortonsworld.suggest.ui.location.LocationServicesFragment"
+        android:label="Location Services"
+        tools:layout="@layout/fragment_location_services" >
+        <action
+            android:id="@+id/action_navigation_location_services_to_navigation_manual_location"
+            app:destination="@id/navigation_manual_location" />
+        <action
+            android:id="@+id/action_navigation_location_services_to_navigation_finalize"
+            app:destination="@id/navigation_finalize" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_manual_location"
+        android:name="com.mortonsworld.suggest.ui.location.ManualLocationFragment"
+        android:label="Manual Location"
+        tools:layout="@layout/fragment_manual_location" >
+        <action
+            android:id="@+id/action_navigation_manual_location_to_navigation_finalize"
+            app:destination="@id/navigation_finalize" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_finalize"
+        android:name="com.mortonsworld.suggest.ui.finalize.FinalizeFragment"
+        android:label="Finalize"
+        tools:layout="@layout/fragment_finalize" />
+
+</navigation>

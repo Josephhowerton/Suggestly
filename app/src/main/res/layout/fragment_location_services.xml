@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/parentLayout"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/locationServicesImage"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:src="@drawable/ic_location"
+            app:layout_constraintBottom_toTopOf="@id/imageGuidelineBottom"
+            app:layout_constraintEnd_toEndOf="@id/imageGuidelineRight"
+            app:layout_constraintStart_toStartOf="@id/imageGuidelineLeft"
+            app:layout_constraintTop_toBottomOf="@id/imageGuidelineTop"
+            android:contentDescription="@string/enable_location_services_title" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/locationTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/locationServicesImage"
+            app:layout_constraintStart_toStartOf="@id/leftGuideline"
+            app:layout_constraintEnd_toEndOf="@id/rightGuideline"
+            android:text="@string/enable_location_services_title"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/locationMessage"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/locationTitle"
+            app:layout_constraintStart_toStartOf="@id/leftGuideline"
+            app:layout_constraintEnd_toEndOf="@id/rightGuideline"
+            android:text="@string/enable_location_services_message"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/enableButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/enable_button"
+            app:layout_constraintBottom_toTopOf="@id/bottomGuideline"
+            app:layout_constraintEnd_toEndOf="@id/rightGuideline"
+            app:layout_constraintStart_toStartOf="@id/leftGuideline"/>
+
+        <TextView
+            android:id="@+id/manual_location_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/enter_location_manually"
+            app:layout_constraintBottom_toTopOf="@+id/enableButton"
+            app:layout_constraintEnd_toEndOf="@id/enableButton"
+            app:layout_constraintStart_toStartOf="@id/enableButton"
+            app:layout_constraintTop_toBottomOf="@+id/locationMessage" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/leftGuideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent=".1"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/rightGuideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent=".9"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/bottomGuideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent=".95"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/imageGuidelineTop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent=".3"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/imageGuidelineLeft"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.4" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/imageGuidelineRight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.6" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/imageGuidelineBottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.4" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

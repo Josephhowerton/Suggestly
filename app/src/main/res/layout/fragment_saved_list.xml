@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="user"
+            type="com.mortonsworld.suggest.model.user.User" />
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.library.SavedListFragment">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <ImageView
+            android:id="@+id/addToFavoritesImage"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="@{user.isSavedSuggestionsEmpty() ? View.VISIBLE : View.GONE}"
+            app:layout_constraintTop_toTopOf="@id/topImageGuideline"
+            app:layout_constraintBottom_toBottomOf="@id/bottomImageGuideline"
+            app:layout_constraintStart_toStartOf="@id/leftImageGuideline"
+            app:layout_constraintEnd_toEndOf="@id/rightImageGuideline"
+            android:contentDescription="@string/add_to_favorites_message"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/addToFavoritesMessage"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:visibility="@{user.isSavedSuggestionsEmpty() ? View.VISIBLE : View.GONE}"
+            android:text="@string/add_to_saved_message"
+            app:layout_constraintTop_toBottomOf="@id/bottomImageGuideline"
+            app:layout_constraintStart_toStartOf="@id/leftTextGuideline"
+            app:layout_constraintEnd_toEndOf="@id/rightTextGuideline"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/addToFavoritesButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:visibility="@{user.isSavedSuggestionsEmpty() ? View.VISIBLE : View.GONE}"
+            android:text="@string/add_to_saved_button"
+            app:layout_constraintStart_toStartOf="@id/leftTextGuideline"
+            app:layout_constraintEnd_toEndOf="@id/rightTextGuideline"
+            app:layout_constraintTop_toBottomOf="@id/addToFavoritesMessage"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/topImageGuideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent=".4"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/leftImageGuideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent=".4"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/rightImageGuideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent=".6"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/bottomImageGuideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent=".5"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/leftTextGuideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent=".2"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/rightTextGuideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent=".8"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
