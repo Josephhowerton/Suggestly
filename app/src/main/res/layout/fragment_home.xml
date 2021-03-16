@@ -4,20 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".ui.home.HomeFragment">
     <data>
-        <import type="com.mortonsworld.suggest.utility.Config"/>
-        <import type="com.mortonsworld.suggest.utility.SuggestionType"/>
+        <import type="com.mortonsworld.suggestly.utility.Config"/>
+        <import type="com.mortonsworld.suggestly.utility.SuggestionType"/>
 
         <variable
             name="suggestion"
-            type="com.mortonsworld.suggest.interfaces.Suggestion" />
+            type="com.mortonsworld.suggestly.interfaces.Suggestion" />
 
         <variable
             name="more"
-            type="com.mortonsworld.suggest.interfaces.MoreCallback" />
+            type="com.mortonsworld.suggestly.interfaces.MoreCallback" />
 
         <variable
-            name="top"
-            type="com.mortonsworld.suggest.interfaces.TopSuggestionCallback" />
+            name="details"
+            type="com.mortonsworld.suggestly.interfaces.DetailsCallback" />
     </data>
     <ScrollView
         android:layout_width="match_parent"
@@ -67,7 +67,7 @@
                 app:layout_constraintEnd_toEndOf="@id/endGuideline"
                 app:layout_constraintStart_toStartOf="@id/startGuideline"
                 app:layout_constraintTop_toBottomOf="@id/title_selectedBy"
-                android:onClick="@{() -> top.onTopSuggestionListener(suggestion)}"/>
+                android:onClick="@{() -> details.onSuggestionDetailsListener(suggestion)}"/>
 
             <TextView
                 android:id="@+id/title_topSuggestionTitle"
@@ -456,6 +456,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:layout_marginBottom="100dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@id/right_guideline"
                 app:layout_constraintStart_toStartOf="@id/left_guideline"

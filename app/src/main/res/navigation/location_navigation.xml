@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/navigation_explanation"
-        android:name="com.mortonsworld.suggest.ui.explanation.ExplanationFragment"
+        android:name="com.mortonsworld.suggestly.ui.explanation.ExplanationFragment"
         android:label="Welcome"
         tools:layout="@layout/fragment_welcome" >
         <action
@@ -17,7 +17,7 @@
 
     <fragment
         android:id="@+id/navigation_location_services"
-        android:name="com.mortonsworld.suggest.ui.location.LocationServicesFragment"
+        android:name="com.mortonsworld.suggestly.ui.location.LocationServicesFragment"
         android:label="Location Services"
         tools:layout="@layout/fragment_location_services" >
         <action
@@ -30,7 +30,7 @@
 
     <fragment
         android:id="@+id/navigation_manual_location"
-        android:name="com.mortonsworld.suggest.ui.location.ManualLocationFragment"
+        android:name="com.mortonsworld.suggestly.ui.location.ManualLocationFragment"
         android:label="Manual Location"
         tools:layout="@layout/fragment_manual_location" >
         <action
@@ -40,7 +40,7 @@
 
     <fragment
         android:id="@+id/navigation_finalize"
-        android:name="com.mortonsworld.suggest.ui.finalize.FinalizeFragment"
+        android:name="com.mortonsworld.suggestly.ui.finalize.FinalizeFragment"
         android:label="Finalize"
         tools:layout="@layout/fragment_finalize" />
 

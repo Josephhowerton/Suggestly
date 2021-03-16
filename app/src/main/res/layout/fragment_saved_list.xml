@@ -4,7 +4,7 @@
         <import type="android.view.View"/>
         <variable
             name="user"
-            type="com.mortonsworld.suggest.model.user.User" />
+            type="com.mortonsworld.suggestly.model.user.User" />
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"

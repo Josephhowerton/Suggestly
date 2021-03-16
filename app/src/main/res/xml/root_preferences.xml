@@ -13,7 +13,7 @@
         <Preference
             app:key="CURRENT_USER_MANUAL_LOCATION"
             app:title="Enter Current Location"
-            android:fragment="com.mortonsworld.suggest.ui.settings.ManualLocationFragment"/>
+            android:fragment="com.mortonsworld.suggestly.ui.settings.ManualLocationFragment"/>
 
     </PreferenceCategory>
 

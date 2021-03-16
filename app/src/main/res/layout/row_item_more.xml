@@ -1,64 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_height="wrap_content"
-    android:layout_width="match_parent"
-    android:background="?attr/selectableItemBackground"
-    android:clickable="true"
-    android:focusable="true"
-    android:paddingBottom="10dp"
-    android:paddingTop="10dp"
-    android:paddingStart="@dimen/activity_horizontal_margin"
-    android:paddingEnd="@dimen/activity_horizontal_margin">
-
-    <ImageView
-        android:id="@+id/icon"
-        android:layout_width="50dp"
-        android:layout_height="0dp"
-        android:src="@drawable/suggest_logo"
-        app:layout_constraintTop_toTopOf="@+id/name"
-        app:layout_constraintEnd_toStartOf="@id/name"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="@+id/address"/>
-
-    <TextView
-        android:id="@+id/name"
-        android:layout_width="0dp"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_height="wrap_content"
-        android:text="@string/app_name"
-        app:layout_constraintEnd_toStartOf="@id/icon_save"
-        app:layout_constraintStart_toEndOf="@id/icon"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_width="match_parent"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
+        android:paddingStart="@dimen/activity_horizontal_margin"
+        android:paddingEnd="@dimen/activity_horizontal_margin">
 
-    <TextView
-        android:id="@+id/address"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        <ImageView
+            android:id="@+id/icon"
+            android:layout_width="50dp"
+            android:layout_height="0dp"
+            android:src="@drawable/suggest_logo"
+            android:layout_marginEnd="5dp"
+            app:layout_constraintTop_toTopOf="@+id/name"
+            app:layout_constraintEnd_toStartOf="@id/name"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/address"/>
 
-        android:text="@string/title_address"
-        app:layout_constraintEnd_toStartOf="@id/icon_save"
-        app:layout_constraintStart_toEndOf="@id/icon"
-        app:layout_constraintTop_toBottomOf="@id/name" />
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"
+            android:layout_marginTop="10dp"
+            app:layout_constraintEnd_toStartOf="@id/icon_save"
+            app:layout_constraintStart_toEndOf="@id/icon"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/icon_save"
-        android:layout_width="25dp"
-        android:layout_height="0dp"
-        android:src="@drawable/suggest_logo"
-        app:layout_constraintTop_toTopOf="@+id/name"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/name"
-        app:layout_constraintBottom_toTopOf="@+id/icon_favorite"/>
+        <TextView
+            android:id="@+id/address"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/title_address"
+            app:layout_constraintEnd_toStartOf="@id/icon_save"
+            app:layout_constraintStart_toStartOf="@id/name"
+            app:layout_constraintTop_toBottomOf="@id/name" />
 
-    <ImageView
-        android:id="@+id/icon_favorite"
-        android:layout_width="25dp"
-        android:layout_height="0dp"
-        android:src="@drawable/suggest_logo"
-        app:layout_constraintTop_toBottomOf="@+id/icon_save"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/name"
-        app:layout_constraintBottom_toBottomOf="@+id/address"/>
+        <ImageView
+            android:id="@+id/icon_save"
+            android:layout_width="25dp"
+            android:layout_height="0dp"
+            android:src="@drawable/ic_baseline_bookmark_24"
+            app:layout_constraintBottom_toTopOf="@+id/icon_favorite"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/name"
+            app:layout_constraintTop_toTopOf="parent" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <ImageView
+            android:id="@+id/icon_favorite"
+            android:layout_width="25dp"
+            android:layout_height="0dp"
+            android:src="@drawable/ic_favorites_outline_24dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/name"
+            app:layout_constraintTop_toBottomOf="@+id/icon_save" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
