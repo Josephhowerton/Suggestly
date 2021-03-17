@@ -2,6 +2,12 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="saveCallback"
+            type="com.mortonsworld.suggestly.interfaces.SaveCallback" />
+    </data>
     <androidx.cardview.widget.CardView
         android:id="@+id/card_view"
         android:layout_gravity="center"
@@ -41,6 +47,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:tintMode="multiply"
+                android:src="@drawable/ic_baseline_bookmark_24"
+                android:padding="3dp"
+                android:onClick="@{() -> saveCallback.onSuggestionSaved()}"
                 card_view:layout_constraintEnd_toStartOf="@+id/guideline_right"
                 card_view:layout_constraintTop_toBottomOf="@id/mainImage" />
 
@@ -68,20 +77,6 @@
                 card_view:layout_constraintEnd_toStartOf="@+id/guideline_right"
                 card_view:layout_constraintStart_toStartOf="@+id/guideline_left"
                 card_view:layout_constraintTop_toBottomOf="@+id/categoryName" />
-
-            <ImageView
-                android:id="@+id/venue_image"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginTop="13dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginStart="15dp"
-                android:visibility="visible"
-                android:alpha=".3"
-                card_view:layout_constraintBottom_toBottomOf="@id/guideline_bottom"
-                card_view:layout_constraintEnd_toEndOf="@id/guideline_right"
-                card_view:layout_constraintStart_toStartOf="@+id/guideline_horizontal_65"
-                card_view:layout_constraintTop_toTopOf="@+id/guideline_horizontal_80" />
 
             <TextView
                 android:id="@+id/address"

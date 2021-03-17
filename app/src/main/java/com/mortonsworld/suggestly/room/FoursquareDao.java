@@ -10,6 +10,7 @@ import androidx.room.Transaction;
 import androidx.room.Update;
 
 import com.mortonsworld.suggestly.model.foursquare.Venue;
+import com.mortonsworld.suggestly.model.relations.VenueAndCategory;
 import com.mortonsworld.suggestly.utility.DistanceCalculator;
 
 import java.util.List;
@@ -19,14 +20,24 @@ public abstract class FoursquareDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     public abstract long create(Venue venue);
 
-    @Query("SELECT * FROM Venue WHERE isRecommended = 1")
-    public abstract DataSource.Factory<Integer, Venue> readRecommendedVenuesDataFactory();
-
-    @Query("SELECT * FROM Venue WHERE isRecommended = 1")
-    public abstract List<Venue> readRecommendedVenuesLiveData();
-
     @Query("SELECT * from Venue WHERE id = :id")
     public abstract Venue readVenueById(String id);
+
+    @Transaction
+    @Query("SELECT * FROM venue v JOIN category c ON(v.venue_category_id = c.category_id) WHERE is_venue_recommended = 1")
+    public abstract DataSource.Factory<Integer, VenueAndCategory> readRecommendedVenuesDataFactory();
+
+    @Transaction
+    @Query("SELECT * FROM Venue v JOIN category c ON(v.venue_category_id = c.category_id) WHERE is_venue_recommended = 1")
+    public abstract List<VenueAndCategory> readRecommendedVenuesLiveData();
+
+    @Transaction
+    @Query("select * from venue v JOIN category c ON(v.venue_category_id = c.category_id) where venue_category_id IN (select child from categoryclosure where parent =:categoryId) ")
+    public abstract DataSource.Factory<Integer, VenueAndCategory> readVenueByCategoryId(String categoryId);
+
+    @Transaction
+    @Query("select * from venue v JOIN category c ON(v.venue_category_id = c.category_id) where venue_category_id IN (select child from categoryclosure where parent =:categoryId) ")
+    public abstract DataSource.Factory<Integer, VenueAndCategory> searchVenueByCategoryId(String categoryId);
 
     @Query("SELECT * FROM Venue ORDER BY ABS(lat -:lat) + ABS(lng -:lng) ASC LIMIT 1")
     public abstract Venue readClosestEntry(double lat, double lng);
@@ -47,14 +58,14 @@ public abstract class FoursquareDao {
     public abstract int updateVenueStats(String id, long checkinsCount, long usersCount,
                                          long tipCount, long visitsCount);
 
-    @Query("UPDATE Venue SET url=:url, rating=:rating,"
-            + "rating_color=:ratingColor, rating_signals=:ratingSignals, description=:description WHERE id=:id")
+    @Query("UPDATE Venue SET venue_url=:url, venue_rating=:rating,"
+            + "venue_rating_color=:ratingColor, venue_rating_signals=:ratingSignals, venue_description=:description WHERE id=:id")
     public abstract int updateVenueDescription(String id, String url, float rating,
                                                String ratingColor, long ratingSignals,
                                                String description);
 
-    @Query("UPDATE Venue SET prefix=:prefix, suffix=:suffix,"
-            + "width=:width, height=:height, visibility=:visibility WHERE id=:id")
+    @Query("UPDATE Venue SET venue_photo_prefix=:prefix, venue_photo_suffix=:suffix,"
+            + "venue_photo_width=:width, venue_photo_height=:height, venue_photo_visibility=:visibility WHERE id=:id")
     public abstract int updateVenueImage(String id, String prefix, String suffix,
                                          int width, int height,
                                          String visibility);
@@ -64,10 +75,10 @@ public abstract class FoursquareDao {
     public abstract int updateVenueHours(String id, String status,
                                          boolean isOpen, boolean isLocalHoliday);
 
-    @Query("UPDATE Venue SET isRecommended=:isRecommended WHERE id=:id")
+    @Query("UPDATE Venue SET is_venue_recommended=:isRecommended WHERE id=:id")
     public abstract int updateVenueRecommended(String id, boolean isRecommended);
 
-    @Query("UPDATE Venue SET hasDetails=:hasDetails WHERE id=:id")
+    @Query("UPDATE Venue SET venue_has_details=:hasDetails WHERE id=:id")
     public abstract int updateVenueHasDetails(String id, boolean hasDetails);
 
     @Delete

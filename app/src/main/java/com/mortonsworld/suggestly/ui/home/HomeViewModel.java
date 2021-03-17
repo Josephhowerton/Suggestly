@@ -9,6 +9,7 @@ import androidx.paging.PagedList;
 
 import com.mortonsworld.suggestly.Repository;
 import com.mortonsworld.suggestly.model.foursquare.Venue;
+import com.mortonsworld.suggestly.model.relations.VenueAndCategory;
 import com.mortonsworld.suggestly.model.nyt.Book;
 import com.mortonsworld.suggestly.utility.Config;
 
@@ -19,7 +20,13 @@ public class HomeViewModel extends AndroidViewModel {
 
     public LiveData<PagedList<Book>> fictionBooksPagedList;
     public LiveData<PagedList<Book>> nonFictionBooksPagedList;
-    public LiveData<PagedList<Venue>> recommendedVenuePagedList;
+    public LiveData<PagedList<VenueAndCategory>> recommendedVenuePagedList;
+    public LiveData<PagedList<VenueAndCategory>> foodVenuePagedList;
+    public LiveData<PagedList<VenueAndCategory>> breweryVenuePagedList;
+    public LiveData<PagedList<VenueAndCategory>> familyVenuePagedList;
+    public LiveData<PagedList<VenueAndCategory>> activeVenuePagedList;
+    public LiveData<PagedList<VenueAndCategory>> socialVenuePagedList;
+    public LiveData<PagedList<VenueAndCategory>> entertainmentVenuePagedList;
 
     public HomeViewModel(Application application) {
         super(application);
@@ -35,6 +42,13 @@ public class HomeViewModel extends AndroidViewModel {
         fictionBooksPagedList = new LivePagedListBuilder<>(repository.readNewYorkTimesBestsellingList(Config.HARD_COVER_FICTION), config).build();
         nonFictionBooksPagedList = new LivePagedListBuilder<>(repository.readNewYorkTimesBestsellingList(Config.HARD_COVER_NON_FICTION), config).build();
         recommendedVenuePagedList = new LivePagedListBuilder<>(repository.readRecommendedVenuesDataFactory(), config).build();
+        foodVenuePagedList = new LivePagedListBuilder<>(repository.readVenuesUsingCategoryId(Config.FOOD), config).build();
+        breweryVenuePagedList = new LivePagedListBuilder<>(repository.readVenuesUsingCategoryId(Config.BREWERY), config).build();
+        familyVenuePagedList = new LivePagedListBuilder<>(repository.readVenuesUsingCategoryId(Config.FAMILY_FUN), config).build();
+        activeVenuePagedList = new LivePagedListBuilder<>(repository.readVenuesUsingCategoryId(Config.ACTIVE), config).build();
+        socialVenuePagedList = new LivePagedListBuilder<>(repository.readVenuesUsingCategoryId(Config.SOCIAL), config).build();
+        entertainmentVenuePagedList = new LivePagedListBuilder<>(repository.readVenuesUsingCategoryId(Config.EVENTS), config).build();
+
     }
 
     public void saveSuggestionToLibrary(Venue venue){

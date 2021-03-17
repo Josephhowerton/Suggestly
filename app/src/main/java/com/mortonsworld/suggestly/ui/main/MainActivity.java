@@ -47,7 +47,6 @@ public class MainActivity extends AppCompatActivity implements NavController.OnD
 
     @Override
     public void onDestinationChanged(@NonNull NavController controller, @NonNull NavDestination destination, @Nullable Bundle arguments) {
-        Log.println(Log.ASSERT, "MainActivity", "onDestinationChanged");
         if(R.id.navigation_home == destination.getId() || R.id.navigation_search == destination.getId()
                 || R.id.navigation_library == destination.getId()){
             navView.setVisibility(View.VISIBLE);

@@ -15,7 +15,7 @@
         <!-- Customize your theme here. -->
         <item name="android:windowFullscreen">true</item>
         <item name="android:background">@drawable/authentication_screen</item>
-        <item name="progressBarStyle">@drawable/progress_bar</item>
+        <item name="android:progressBarStyle">@style/Suggest.ProgressBar</item>
     </style>
 
     <style name="Theme.Suggest.NoActionBar" parent="Theme.MaterialComponents.DayNight.NoActionBar">
@@ -32,7 +32,7 @@
         <!-- Customize your theme here. -->
         <item name="android:windowFullscreen">true</item>
         <item name="android:background">@drawable/authentication_screen</item>
-        <item name="progressBarStyle">@drawable/progress_bar</item>
+        <item name="android:progressBarStyle">@style/Suggest.ProgressBar</item>
     </style>
 
     <style name="Theme.Suggest.SplashTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">

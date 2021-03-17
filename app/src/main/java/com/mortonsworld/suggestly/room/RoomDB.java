@@ -17,7 +17,7 @@ import com.mortonsworld.suggestly.model.user.User;
 
 import org.jetbrains.annotations.NotNull;
 
-@Database(entities = {Venue.class, Category.class, CategoryClosure.class, User.class, Book.class}, exportSchema = false, version = 16)
+@Database(entities = {Venue.class, Category.class, CategoryClosure.class, User.class, Book.class}, exportSchema = false, version = 21)
 @TypeConverters({Converter.class})
 public abstract class RoomDB extends RoomDatabase {
     public final static String DATABASE_NAME = "RoomDB";

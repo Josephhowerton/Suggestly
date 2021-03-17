@@ -70,11 +70,11 @@ public class MoreFragment extends Fragment implements DetailsCallback {
     }
 
     public void initRecommendedVenues(){
-        moreViewModel.initRecommendedVenues().observe(getViewLifecycleOwner(), data -> {
-            suggestions.clear();
-            suggestions.addAll(data);
-            adapter.notifyDataSetChanged();
-        });
+//        moreViewModel.initRecommendedVenues().observe(getViewLifecycleOwner(), data -> {
+//            suggestions.clear();
+//            suggestions.addAll(data);
+//            adapter.notifyDataSetChanged();
+//        });
     }
 
     public void initVenueByCategory(String id){

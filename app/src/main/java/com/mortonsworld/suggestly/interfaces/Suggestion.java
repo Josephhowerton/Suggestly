@@ -15,6 +15,7 @@ public abstract class Suggestion {
     public abstract SuggestionType getSuggestionType();
 
     public Boolean equals(Suggestion suggestion){
-        return getId() == suggestion.getId();
+        return getId().equals(suggestion.getId());
     }
+
 }

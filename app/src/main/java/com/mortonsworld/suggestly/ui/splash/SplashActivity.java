@@ -11,6 +11,7 @@ import com.mortonsworld.suggestly.R;
 import com.mortonsworld.suggestly.model.user.User;
 import com.mortonsworld.suggestly.ui.init.InitializeActivity;
 import com.mortonsworld.suggestly.ui.main.MainActivity;
+import com.mortonsworld.suggestly.utility.Config;
 import com.mortonsworld.suggestly.utility.DistanceCalculator;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
@@ -63,6 +64,23 @@ public class SplashActivity extends AppCompatActivity {
     public void goToInitializeActivity(){
         Intent intent = new Intent(this, InitializeActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(Config.INITIALIZE, Config.INITIALIZE_USER);
+        startActivity(intent);
+        finish();
+    }
+
+    public void goToInitializeActivityRefreshSuggestions(){
+        Intent intent = new Intent(this, InitializeActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(Config.INITIALIZE, Config.REFRESH_FLAG);
+        startActivity(intent);
+        finish();
+    }
+
+    public void goToInitializeActivityLocation(){
+        Intent intent = new Intent(this, InitializeActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(Config.INITIALIZE, Config.LOCATION_FLAG);
         startActivity(intent);
         finish();
     }
@@ -92,7 +110,7 @@ public class SplashActivity extends AppCompatActivity {
             if(DistanceCalculator.hasValidLocation(target.lat, target.lng)){
                 isFoursquareTableFresh(target.lat, target.lng);
             }else{
-                goToInitializeActivity();
+                goToInitializeActivityLocation();
             }
         });
     }
@@ -101,7 +119,7 @@ public class SplashActivity extends AppCompatActivity {
             if(isFresh){
                 goToMainActivity();
             }else{
-                goToInitializeActivity();
+                goToInitializeActivityRefreshSuggestions();
             }
         });
     }

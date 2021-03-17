@@ -14,7 +14,7 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
         <item name="android:windowFullscreen">true</item>
-        <item name="progressBarStyle">@drawable/progress_bar</item>
+        <item name="android:progressBarStyle">@style/Suggest.ProgressBar</item>
     </style>
 
     <style name="Theme.Suggest.NoActionBar" parent="Theme.MaterialComponents.DayNight.NoActionBar">
@@ -30,11 +30,16 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
         <item name="android:windowFullscreen">true</item>
-        <item name="progressBarStyle">@drawable/progress_bar</item>
+        <item name="android:progressBarStyle">@style/Suggest.ProgressBar</item>
     </style>
 
     <style name="Theme.Suggest.SplashTheme" parent="Theme.Suggest.NoActionBar">
         <item name="android:windowBackground">@drawable/splash_screen</item>
         <item name="android:windowFullscreen">true</item>
     </style>
+
+    <style name="Suggest.ProgressBar" parent="Widget.AppCompat.ProgressBar">
+        <item name="android:indeterminateDrawable">@drawable/progress_bar</item>
+    </style>
+
 </resources>

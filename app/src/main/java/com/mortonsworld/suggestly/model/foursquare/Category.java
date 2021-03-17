@@ -10,6 +10,8 @@ import com.google.gson.annotations.SerializedName;
 import com.mortonsworld.suggestly.interfaces.Suggestion;
 import com.mortonsworld.suggestly.utility.SuggestionType;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 @Entity()
@@ -21,14 +23,15 @@ public class Category extends Suggestion {
     public String id;
 
     @SerializedName("name")
+    @ColumnInfo(name = "category_name")
     public String name;
 
     @SerializedName("pluralName")
-    @ColumnInfo(name = "plural_name")
+    @ColumnInfo(name = "category_plural_name")
     public String pluralName;
 
     @SerializedName("shortName")
-    @ColumnInfo(name = "short_name")
+    @ColumnInfo(name = "category_short_name")
     public String shortName;
 
     @SerializedName("icon")
@@ -37,17 +40,21 @@ public class Category extends Suggestion {
     @Ignore public List<Category> categories;
 
     public static class Icon{
+        @ColumnInfo(name = "category_icon_prefix")
         public String prefix;
+
+        @ColumnInfo(name = "category_icon_suffix")
         public String suffix;
     }
 
     public Category(){}
 
+    @NotNull
     public String getId() {
         return id;
     }
 
-    public void setId(String categoryId) {
+    public void setId(@NotNull String categoryId) {
         this.id = categoryId;
     }
 
@@ -75,6 +82,20 @@ public class Category extends Suggestion {
         this.shortName = shortName;
     }
 
+    public String getIconWithBGUrl(int size){
+        if(icon != null){
+            return icon.prefix + "bg_" + size + icon.suffix;
+        }
+        return "";
+    }
+
+    public String getIconUrl(String size){
+        if(icon != null){
+            return icon.prefix + size + icon.suffix;
+        }
+        return "";
+    }
+
     public Boolean hasChildren(){
         return categories != null && categories.size() > 0;
     }
@@ -86,6 +107,7 @@ public class Category extends Suggestion {
         return null;
     }
 
+    @NotNull
     public SuggestionType getSuggestionType(){
         return SuggestionType.FOURSQUARE_CATEGORY;
     }

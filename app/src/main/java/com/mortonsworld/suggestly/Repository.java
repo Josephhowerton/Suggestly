@@ -7,6 +7,7 @@ import com.mortonsworld.suggestly.interfaces.Suggestion;
 import com.mortonsworld.suggestly.model.foursquare.Category;
 import com.mortonsworld.suggestly.model.foursquare.FoursquareResult;
 import com.mortonsworld.suggestly.model.foursquare.Venue;
+import com.mortonsworld.suggestly.model.relations.VenueAndCategory;
 import com.mortonsworld.suggestly.model.google.GeocodeResponse;
 import com.mortonsworld.suggestly.model.google.Geometry;
 import com.mortonsworld.suggestly.model.nyt.Book;
@@ -28,6 +29,8 @@ import com.google.android.libraries.places.api.model.AutocompletePrediction;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -558,8 +561,7 @@ public class Repository{
             @Override
             public void onNext(@NonNull List<Venue> venues) {
                 for(Venue foursquareVenue: venues){
-                    String categoryId = foursquareVenue.categories.get(0).id;
-                    foursquareVenue.categoryId = categoryId;
+                    foursquareVenue.categoryId = foursquareVenue.categories.get(0).id;
                     createVenue(foursquareVenue);
                 }
                 mutableLiveData.postValue(venues.size() > 0);
@@ -612,6 +614,7 @@ public class Repository{
         return mutableLiveData;
     }
 
+    @NotNull
     private LiveData<Boolean> getFoursquareVenuesDetails(Venue venue){
         MutableLiveData<Boolean> mutableLiveData = new MutableLiveData<>();
         foursquareSource.getFoursquareVenuesDetails(venue.venueId, new Observer<Venue>() {
@@ -640,6 +643,7 @@ public class Repository{
         return mutableLiveData;
     }
 
+    @NotNull
     private LiveData<Boolean> getFoursquareVenuesSimilar(String id){
         MutableLiveData<Boolean> mutableLiveData = new MutableLiveData<>();
         foursquareSource.getSimilarFoursquareVenuesNearby(id, new Observer<List<Venue>>() {
@@ -653,8 +657,7 @@ public class Repository{
             public void onNext(@NonNull List<Venue> venues) {
                 for(Venue foursquareVenue: venues){
                     //todo create relationship to other venue;
-                    String categoryId = foursquareVenue.categories.get(0).id;
-                    foursquareVenue.categoryId = categoryId;
+                    foursquareVenue.categoryId = foursquareVenue.categories.get(0).id;
                     createVenue(foursquareVenue);
                 }
             }
@@ -777,13 +780,17 @@ public class Repository{
         });
     }
 
-    public DataSource.Factory<Integer, Venue> readRecommendedVenuesDataFactory(){
+    public DataSource.Factory<Integer, VenueAndCategory> readRecommendedVenuesDataFactory(){
         return foursquareSource.readRecommendedVenuesDataFactory();
     }
 
-    public LiveData<List<Suggestion>> readRecommendedVenuesLiveData(){
-        MutableLiveData<List<Suggestion>> mutableLiveData = new MutableLiveData<>();
-        List<Suggestion> suggestions = new ArrayList<>(foursquareSource.readRecommendedVenuesLiveData());
+    public DataSource.Factory<Integer, VenueAndCategory> readVenuesUsingCategoryId(String categoryId){
+        return foursquareSource.readVenuesUsingCategoryIdDataFactory(categoryId);
+    }
+
+    public LiveData<List<VenueAndCategory>> readRecommendedVenuesLiveData(){
+        MutableLiveData<List<VenueAndCategory>> mutableLiveData = new MutableLiveData<>();
+        List<VenueAndCategory> suggestions = new ArrayList<>(foursquareSource.readRecommendedVenuesLiveData());
         mutableLiveData.postValue(suggestions);
         return mutableLiveData;
     }

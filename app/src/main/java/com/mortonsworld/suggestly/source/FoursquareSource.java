@@ -10,6 +10,7 @@ import com.mortonsworld.suggestly.model.foursquare.Category;
 import com.mortonsworld.suggestly.model.foursquare.CategoryClosure;
 import com.mortonsworld.suggestly.model.foursquare.FoursquareResult;
 import com.mortonsworld.suggestly.model.foursquare.Venue;
+import com.mortonsworld.suggestly.model.relations.VenueAndCategory;
 import com.mortonsworld.suggestly.room.FoursquareCategoryDao;
 import com.mortonsworld.suggestly.utility.Config;
 import com.mortonsworld.suggestly.retrofit.FoursquareManager;
@@ -98,11 +99,9 @@ public class FoursquareSource {
 /* *****************************************************************************************
     FOURSQUARE VENUES
 ******************************************************************************************** */
-    private static final String TAG = "FoursquareSource";
     public void isVenueTableFresh(double lat, double lng, Observer<Boolean> observer){
         Observable<Boolean> observable = Observable.create(source -> {
             Boolean isFresh = foursquareDao.isFresh(lat, lng);
-            Log.println(Log.ASSERT, TAG, "isVenueTableFresh " + isFresh);
             if(isFresh){
                 source.onNext(isFresh);
             }else{
@@ -185,7 +184,7 @@ public class FoursquareSource {
                 .subscribe(observer);
     }
 
-    public DataSource.Factory<Integer, Venue> readRecommendedVenuesDataFactory(){
+    public DataSource.Factory<Integer, VenueAndCategory> readRecommendedVenuesDataFactory(){
         try{
             return executorService.submit(foursquareDao::readRecommendedVenuesDataFactory).get();
         } catch (InterruptedException | ExecutionException e) {
@@ -194,7 +193,16 @@ public class FoursquareSource {
         return null;
     }
 
-    public List<Venue> readRecommendedVenuesLiveData(){
+    public DataSource.Factory<Integer, VenueAndCategory> readVenuesUsingCategoryIdDataFactory(String categoryId){
+        try{
+            return executorService.submit(() -> foursquareDao.readVenueByCategoryId(categoryId)).get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public List<VenueAndCategory> readRecommendedVenuesLiveData(){
         try{
             return executorService.submit(foursquareDao::readRecommendedVenuesLiveData).get();
         } catch (InterruptedException | ExecutionException e) {
@@ -202,6 +210,8 @@ public class FoursquareSource {
         }
         return null;
     }
+
+
 
     public void readVenueDetails(String id, Observer<Venue> observer){
         Observable<Venue> observable = Observable.create(source -> {

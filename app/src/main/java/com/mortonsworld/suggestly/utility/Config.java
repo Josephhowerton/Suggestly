@@ -35,4 +35,9 @@ public class Config {
 
     public static final int LOCATION_REQUEST_CODE = 102;
     public static final int AUTHENTICATION_REQUEST_CODE = 101;
+
+    public static final String INITIALIZE = "INITIALIZE";
+    public static final int INITIALIZE_USER = 0;
+    public static final int LOCATION_FLAG = 1;
+    public static final int REFRESH_FLAG = 2;
 }

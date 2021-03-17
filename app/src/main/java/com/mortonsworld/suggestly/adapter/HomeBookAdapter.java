@@ -16,15 +16,22 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.mortonsworld.suggestly.R;
 import com.mortonsworld.suggestly.databinding.CardViewHomeBinding;
+import com.mortonsworld.suggestly.interfaces.SaveCallback;
+import com.mortonsworld.suggestly.interfaces.Suggestion;
 import com.mortonsworld.suggestly.model.nyt.Book;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class HomeBookAdapter extends PagedListAdapter<Book, HomeBookAdapter.HomeViewHolder> {
 
     private final BookSelectedListener listener;
+    private final SaveCallback saveVenueListener;
 
-    public HomeBookAdapter(@NonNull DiffUtil.ItemCallback<Book> diffCallback, BookSelectedListener listener) {
+    public HomeBookAdapter(@NonNull DiffUtil.ItemCallback<Book> diffCallback, BookSelectedListener listener, SaveCallback saveVenueListener) {
         super(diffCallback);
         this.listener = listener;
+        this.saveVenueListener = saveVenueListener;
     }
 
     @NonNull
@@ -34,14 +41,16 @@ public class HomeBookAdapter extends PagedListAdapter<Book, HomeBookAdapter.Home
                 LayoutInflater.from(parent.getContext()),
                 R.layout.card_view_home, parent,
                 false);
-
+        binding.setSaveCallback(saveVenueListener);
         return new HomeViewHolder(binding);
     }
 
     @Override
     public void onBindViewHolder(@NonNull HomeViewHolder holder, int position) {
         final Book book = getItem(position);
-        holder.bind(book);
+        if(book != null){
+            holder.bind(book);
+        }
     }
 
     @Override
@@ -63,7 +72,6 @@ public class HomeBookAdapter extends PagedListAdapter<Book, HomeBookAdapter.Home
             binding.distance.setText(book.getAuthor());
             binding.distance.setTypeface(Typeface.DEFAULT_BOLD);
             binding.address.setText(book.getDescription());
-            binding.venueImage.setVisibility(View.GONE);
             binding.cardView.setOnClickListener(view -> listener.onBookSelected(book));
             Glide.with(binding.getRoot())
                     .load(book.getBookImage())

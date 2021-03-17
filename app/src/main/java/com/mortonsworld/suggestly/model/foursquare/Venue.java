@@ -7,6 +7,7 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import com.google.gson.annotations.SerializedName;
 import com.mortonsworld.suggestly.interfaces.Suggestion;
 import com.mortonsworld.suggestly.utility.SuggestionType;
 
@@ -17,34 +18,66 @@ import java.util.List;
 public class Venue extends Suggestion {
 
     @ColumnInfo(name = "id")
+    @SerializedName(value = "id")
     @PrimaryKey
     @NonNull
     public String venueId;
 
-    @ColumnInfo(name = "category_id")
+    @NonNull
+    @ColumnInfo(name = "venue_category_id")
     public String categoryId;
+
+    @ColumnInfo(name = "venue_id")
     public String name;
+    
     @Embedded public Contact contact;
     @Embedded public Location location;
     @Ignore public List<Category> categories;
+
+    @ColumnInfo(name = "venue_verified")
     public boolean verified;
     @Embedded public Stats stats;
+
+    @ColumnInfo(name = "venue_url")
     public String url;
+    
+    @ColumnInfo(name = "venue_rating")
     public Float rating;
-    @ColumnInfo(name = "rating_color")
+    
+    @ColumnInfo(name = "venue_rating_color")
     public String ratingColor;
-    @ColumnInfo(name = "rating_signals")
+    
+    @ColumnInfo(name = "venue_rating_signals")
     public Long ratingSignals;
+    
+    @ColumnInfo(name = "venue_description")
     public String description;
+    
     @Embedded public Hours hours;
     @Embedded public BestPhoto bestPhoto;
+    
+    @ColumnInfo(name = "is_venue_recommended")
     public Boolean isRecommended = false;
+
+    @ColumnInfo(name = "venue_has_details")
     public Boolean hasDetails = false;
 
+    @ColumnInfo(name = "venue_created_at")
     public Date createdAt;
+
+    @ColumnInfo(name = "venue_updated_at")
     public Date updateAt;
 
-    public Venue() {}
+    @ColumnInfo(name = "venue_icon_prefix")
+    public String prefix;
+
+    @ColumnInfo(name = "venue_icon_suffix")
+    public String suffix;
+
+    public Venue() {
+        venueId = "venueId";
+        categoryId = "categoryId";
+    }
 
     public static class Stats{
         public long checkinsCount;
@@ -149,12 +182,17 @@ public class Venue extends Suggestion {
     }
 
     public static class BestPhoto{
-        @ColumnInfo(name = "photo_id")
+        @ColumnInfo(name = "venue_photo_id")
         public String id;
+        @ColumnInfo(name = "venue_photo_prefix")
         public String prefix;
+        @ColumnInfo(name = "venue_photo_suffix")
         public String suffix;
+        @ColumnInfo(name = "venue_photo_width")
         public int width;
+        @ColumnInfo(name = "venue_photo_height")
         public int height;
+        @ColumnInfo(name = "venue_photo_visibility")
         public String visibility;
 
         public String getId() {
@@ -285,6 +323,28 @@ public class Venue extends Suggestion {
         this.location = location;
     }
 
+    public String getFormattedAddress(){
+        String formattedAddress = "";
+        if(location != null){
+            if(location.address != null){
+                formattedAddress += location.address + "\n";
+            }
+
+            if(location.city != null){
+                formattedAddress += location.city;
+            }
+
+            if(location.country != null){
+                formattedAddress += " " + location.country;
+            }
+
+            if(location.postalCode != null){
+                formattedAddress += " " + location.postalCode;
+            }
+        }
+        return formattedAddress;
+    }
+
     public List<Category> getCategories() {
         return categories;
     }
@@ -363,6 +423,13 @@ public class Venue extends Suggestion {
 
     public void setBestPhoto(BestPhoto bestPhoto) {
         this.bestPhoto = bestPhoto;
+    }
+
+    public String getBestPhotoUrl(){
+        if(bestPhoto != null){
+            return bestPhoto.prefix + bestPhoto.height + "X" + bestPhoto.width + bestPhoto.suffix;
+        }
+        return "";
     }
 
     public Boolean getIsRecommended() {
