@@ -27,4 +27,26 @@ Coming Soon!
 
 
 ## Highlighted Challlenge
-Two challenges that presented the most difficulty was creating a reactive backend where streams of data are funneled through dedicated pipelines and triggering subsequent behavior. The second challenge was traversing a complex heirarchal tree of categorical data recieved from a API response and building a closure table.
+Two challenges that presented the most difficulty were creating a reactive backend where streams of data pass through dedicated pipelines triggering subsequent behavior. The second challenge was traversing categorical data received from an API response, building transitive closure between related nodes, and inserting into a table. Data is only relevant if it wired back together and presented to the end user. The first function is a recursive function which builds and inserts each node into the transitive closure table, and the second function is an abstract function which brings the data back together.
+```java
+  public void buildCategoryClosureTable(List<Category> tree, Category target, int depth){
+        tree.add(target);
+
+        while (target.hasChildren()){
+            Category child = target.removeChild();
+            buildCategoryClosureTable(tree, child, depth + 1);
+        }
+
+        for(Category parent : tree){
+            CategoryClosure categoryClosure = new CategoryClosure(parent.getId(), target.getId(), depth--);
+            createCategoryClosureTable(categoryClosure);
+        }
+
+        createCategoryBaseTable(target);
+        tree.remove(target);
+    }
+    
+    @Transaction
+    @Query("select * from venue v JOIN category c ON(v.venue_category_id = c.category_id) where venue_category_id IN (select child from categoryclosure where parent =:categoryId) ")
+    public abstract DataSource.Factory<Integer, VenueAndCategory> readVenueByCategoryId(String categoryId);
+```
