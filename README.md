@@ -44,9 +44,9 @@ Two challenges that presented the most difficulty were creating a reactive backe
 
         createCategoryBaseTable(target);
         tree.remove(target);
-    }
-    
-    @Transaction
-    @Query("select * from venue v JOIN category c ON(v.venue_category_id = c.category_id) where venue_category_id IN (select child from categoryclosure where parent =:categoryId) ")
-    public abstract DataSource.Factory<Integer, VenueAndCategory> readVenueByCategoryId(String categoryId);
+  }
+
+  @Transaction
+  @Query("select * from venue v JOIN category c ON(v.venue_category_id = c.category_id) where venue_category_id IN (select child from categoryclosure where parent =:categoryId) ")
+  public abstract DataSource.Factory<Integer, VenueAndCategory> readVenueByCategoryId(String categoryId);
 ```
