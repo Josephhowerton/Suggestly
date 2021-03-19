@@ -109,7 +109,7 @@
                 app:layout_constraintStart_toEndOf="@id/inner_right_guideline"
                 app:layout_constraintTop_toTopOf="@id/suggestion_recommended_title"
                 app:layout_constraintBottom_toBottomOf="@+id/suggestion_recommended_title"
-                android:onClick="@{() -> more.onMoreRecommended()}"/>
+                android:onClick="@{() -> more.onMoreSuggestions(SuggestionType.RECOMMENDED_VENUE, Config.LIST_RECOMMENDED_ID_KEY, @string/suggestion_recommended_title)}"/>
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/suggestions_recommended_short_description"
@@ -150,7 +150,7 @@
                 app:layout_constraintStart_toEndOf="@id/inner_right_guideline"
                 app:layout_constraintTop_toTopOf="@+id/suggestions_restaurant_title"
                 app:layout_constraintBottom_toBottomOf="@+id/suggestions_restaurant_title"
-                android:onClick="@{() -> more.onMoreSuggestions(SuggestionType.FOURSQUARE_VENUE, Config.FOOD)}"/>
+                android:onClick="@{() -> more.onMoreSuggestions(SuggestionType.FOURSQUARE_VENUE, Config.FOOD, @string/suggestion_restaurants_title)}"/>
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/suggestions_restaurants_short_description"
@@ -191,7 +191,7 @@
                 app:layout_constraintStart_toEndOf="@id/inner_right_guideline"
                 app:layout_constraintTop_toTopOf="@id/suggestions_nyt_fiction_title"
                 app:layout_constraintBottom_toBottomOf="@+id/suggestions_nyt_fiction_title"
-                android:onClick="@{() -> more.onMoreSuggestions(SuggestionType.BOOK, Config.HARD_COVER_FICTION)}"/>
+                android:onClick="@{() -> more.onMoreSuggestions(SuggestionType.BOOK, Config.HARD_COVER_FICTION, @string/suggestion_bestsellers_title)}"/>
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/suggestions_nyt_fiction_short_description"
@@ -233,7 +233,7 @@
                 app:layout_constraintStart_toEndOf="@id/inner_right_guideline"
                 app:layout_constraintTop_toTopOf="@id/suggestions_brewery_title"
                 app:layout_constraintBottom_toBottomOf="@+id/suggestions_brewery_title"
-                android:onClick="@{() -> more.onMoreSuggestions(SuggestionType.FOURSQUARE_VENUE, Config.BREWERY)}"/>
+                android:onClick="@{() -> more.onMoreSuggestions(SuggestionType.FOURSQUARE_VENUE, Config.BREWERY, @string/suggestion_breweries_title)}"/>
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/suggestions_brewery_short_description"
@@ -274,7 +274,7 @@
                 app:layout_constraintEnd_toEndOf="@id/right_guideline"
                 app:layout_constraintStart_toEndOf="@id/inner_right_guideline"
                 app:layout_constraintTop_toTopOf="@id/suggestions_family_fun_title"
-                android:onClick="@{() -> more.onMoreSuggestions(SuggestionType.FOURSQUARE_VENUE, Config.FAMILY_FUN)}"/>
+                android:onClick="@{() -> more.onMoreSuggestions(SuggestionType.FOURSQUARE_VENUE, Config.FAMILY_FUN, @string/suggestion_family_fun_title)}"/>
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/suggestions_family_fun_short_description"
@@ -315,7 +315,7 @@
                 app:layout_constraintEnd_toEndOf="@id/right_guideline"
                 app:layout_constraintStart_toEndOf="@id/inner_right_guideline"
                 app:layout_constraintTop_toTopOf="@id/suggestions_nyt_nonfiction_title"
-                android:onClick="@{() -> more.onMoreSuggestions(SuggestionType.BOOK, Config.HARD_COVER_NON_FICTION)}"/>
+                android:onClick="@{() -> more.onMoreSuggestions(SuggestionType.BOOK, Config.HARD_COVER_NON_FICTION, @string/suggestion_nyt_nonfiction_title)}"/>
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/suggestions_nyt_nonfiction_description"
@@ -356,7 +356,7 @@
                 app:layout_constraintEnd_toEndOf="@id/right_guideline"
                 app:layout_constraintStart_toEndOf="@id/inner_right_guideline"
                 app:layout_constraintTop_toTopOf="@id/suggestions_active_title"
-                android:onClick="@{() -> more.onMoreSuggestions(SuggestionType.FOURSQUARE_VENUE, Config.ACTIVE)}"/>
+                android:onClick="@{() -> more.onMoreSuggestions(SuggestionType.FOURSQUARE_VENUE, Config.ACTIVE, @string/suggestion_active_title)}"/>
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/suggestions_active_short_description"
@@ -397,7 +397,7 @@
                 app:layout_constraintEnd_toEndOf="@id/right_guideline"
                 app:layout_constraintStart_toEndOf="@id/inner_right_guideline"
                 app:layout_constraintTop_toTopOf="@id/suggestions_social_title"
-                android:onClick="@{() -> more.onMoreSuggestions(SuggestionType.FOURSQUARE_VENUE, Config.SOCIAL)}"/>
+                android:onClick="@{() -> more.onMoreSuggestions(SuggestionType.FOURSQUARE_VENUE, Config.SOCIAL, @string/suggestion_social_title)}"/>
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/suggestions_social_short_description"
@@ -439,7 +439,7 @@
                 app:layout_constraintStart_toEndOf="@id/inner_right_guideline"
                 app:layout_constraintTop_toTopOf="@id/suggestions_entertainment_title"
                 app:layout_constraintBottom_toBottomOf="@+id/suggestions_entertainment_title"
-                android:onClick="@{() -> more.onMoreSuggestions(SuggestionType.FOURSQUARE_VENUE, Config.EVENTS)}"/>
+                android:onClick="@{() -> more.onMoreSuggestions(SuggestionType.FOURSQUARE_VENUE, Config.EVENTS, @string/suggestion_entertainment_title)}"/>
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/suggestions_entertainment_short_description"

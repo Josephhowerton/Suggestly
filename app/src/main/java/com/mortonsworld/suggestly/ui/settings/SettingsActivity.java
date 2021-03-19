@@ -33,12 +33,12 @@ public class SettingsActivity extends AppCompatActivity implements
                     .replace(R.id.settings, new PreferencesFragment())
                     .commit();
         } else {
-            setTitle(savedInstanceState.getCharSequence(TITLE_TAG));
+            setTitle(R.string.title_user_preferences);
         }
         getSupportFragmentManager().addOnBackStackChangedListener(
                 () -> {
                     if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
-                        setTitle(R.string.user_preferences_title);
+                        setTitle(R.string.title_user_preferences);
                     }
                 });
         ActionBar actionBar = getSupportActionBar();

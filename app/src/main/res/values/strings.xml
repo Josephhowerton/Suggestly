@@ -25,8 +25,8 @@
     <string name="search_for_your_location">Search For Your Location</string>
     <string name="close">close</string>
     <string name="title_powered_by_google">Powered By Google</string>
-    <string name="title_activity_settings">SettingsActivity</string>
-    <string name="user_preferences_title">User Preferences</string>
+    <string name="title_activity_settings">User Preferences</string>
+    <string name="title_user_preferences">User Preferences</string>
     <string name="add_to_saved_button">add to saved</string>
     <string name="add_to_saved_message">Looks like you haven\'t saved anything yet!</string>
     <string name="add_to_favorites_button">add to favorites</string>
@@ -55,6 +55,32 @@
     <string name="suggestion_entertainment_title">Entertainment Title</string>
     <string name="suggestion_entertainment_short_description">Entertainment Description</string>
     <string name="title_address">Address / Description</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_italian_button">Italian Restaurants</string>
+    <string name="title_brewery_button">Brewery</string>
+    <string name="title_active_button">Active</string>
+    <string name="title_nightlife_button">Nightlife</string>
+    <string name="title_parks_button">Parks</string>
+    <string name="title_shopping_button">Shopping</string>
+    <string name="title_thai_button">Thai Restaurants</string>
+    <string name="title_meet_up_button">Meet Ups</string>
+    <string name="title_japanese_button">Japanese Restaurants</string>
+    <string name="title_chinese_button">Chinese Restaurants</string>
+    <string name="title_coffee_shop_button">Coffee Shops</string>
+    <string name="title_korean_button">Korean Restaurants</string>
+    <string name="title_events_button">Events</string>
+    <string name="title_shows_button">Shows</string>
+    <string name="title_movies_button">Movies</string>
+    <string name="title_yoga_button">Yoga</string>
+    <string name="title_recipes_button">Recipes</string>
+    <string name="title_mexican_button">Mexican Restaurants</string>
+    <string name="title_fiction_button">Fiction Books</string>
+    <string name="title_non_fiction_button">NonFiction Books</string>
+    <string name="title_indian_button">Indian Restaurants</string>
+    <string name="title_baking_button">Baking</string>
+    <string name="title_categories">Categories</string>
+    <string name="title_hint_email">email</string>
+    <string name="title_hint_about">about</string>
+    <string name="title_hint_feedback">feedback</string>
+    <string name="title_button_send">send</string>
+    <string name="email_application_not_found">Email application not found!</string>
 </resources>

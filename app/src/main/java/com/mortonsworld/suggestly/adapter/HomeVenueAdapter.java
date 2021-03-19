@@ -1,5 +1,6 @@
 package com.mortonsworld.suggestly.adapter;
 
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -17,16 +18,21 @@ import com.mortonsworld.suggestly.interfaces.Suggestion;
 import com.mortonsworld.suggestly.model.foursquare.Category;
 import com.mortonsworld.suggestly.model.foursquare.Venue;
 import com.mortonsworld.suggestly.model.relations.VenueAndCategory;
+import com.mortonsworld.suggestly.model.user.LocationTuple;
+import com.mortonsworld.suggestly.utility.DistanceCalculator;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class HomeVenueAdapter extends PagedListAdapter<VenueAndCategory, HomeVenueAdapter.HomeViewHolder> {
 
     private final VenueSelectedListener listener;
     private final SaveCallback saveVenueListener;
+    private LocationTuple locationTuple;
+
     public HomeVenueAdapter(@NonNull DiffUtil.ItemCallback<VenueAndCategory> diffCallback, VenueSelectedListener listener, SaveCallback saveVenueListener) {
         super(diffCallback);
         this.listener = listener;
@@ -57,6 +63,11 @@ public class HomeVenueAdapter extends PagedListAdapter<VenueAndCategory, HomeVen
         }
     }
 
+    public void setLocationTuple(LocationTuple locationTuple){
+        this.locationTuple = locationTuple;
+    }
+
+
     public class HomeViewHolder extends RecyclerView.ViewHolder {
         private final CardViewHomeBinding binding;
 
@@ -68,8 +79,10 @@ public class HomeVenueAdapter extends PagedListAdapter<VenueAndCategory, HomeVen
 
         public void bindVenue(@NotNull Venue venue){
             binding.name.setText(venue.getName());
-            binding.address.setText(venue.getFormattedAddress());
+            binding.distance.setText(formatDistance(venue));
+            binding.distance.setTypeface(Typeface.DEFAULT_BOLD);
             binding.address.setMaxLines(2);
+            binding.address.setText(venue.getFormattedAddress());
             binding.cardView.setOnClickListener(view -> listener.onVenueSelected(venue));
 
         }
@@ -89,6 +102,15 @@ public class HomeVenueAdapter extends PagedListAdapter<VenueAndCategory, HomeVen
             Glide.with(binding.getRoot()).load(url)
                     .placeholder(R.drawable.progress_bar)
                     .into(binding.mainImage);
+        }
+
+        public String formatDistance(Venue venue){
+            if(locationTuple == null){
+                return "";
+            }
+
+            return String.format(Locale.ENGLISH, "%.1f", DistanceCalculator.distanceMile(locationTuple.lat, venue.location.lat, locationTuple.lng, venue.location.lng))
+                    + " miles";
         }
 
         public void clear(){

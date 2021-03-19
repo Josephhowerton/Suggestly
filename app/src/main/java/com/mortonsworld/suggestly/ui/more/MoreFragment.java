@@ -2,6 +2,8 @@ package com.mortonsworld.suggestly.ui.more;
 
 import android.os.Bundle;
 
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -35,6 +37,7 @@ public class MoreFragment extends Fragment implements DetailsCallback {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         moreViewModel = new ViewModelProvider(this).get(MoreViewModel.class);
+        adapter = new MoreFragmentAdapter(requireContext(), suggestions, this);
     }
 
     @Override
@@ -42,25 +45,26 @@ public class MoreFragment extends Fragment implements DetailsCallback {
                              Bundle savedInstanceState) {
 
         FragmentMoreBinding binding = DataBindingUtil.inflate(inflater, R.layout.fragment_more, container, false);
-
-        adapter = new MoreFragmentAdapter(requireContext(), suggestions, this);
-
+        moreViewModel.initUserLocation().observe(getViewLifecycleOwner(), adapter::setLocationTuple);
         binding.recyclerView.setAdapter(adapter);
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false));
-
         if(getArguments() != null){
             String id = getArguments().getString(Config.LIST_SUGGESTION_ID_KEY);
+            String title = getArguments().getString(Config.LIST_SUGGESTION_TITLE_KEY);
             SuggestionType type = (SuggestionType) getArguments().getSerializable(Config.LIST_SUGGESTION_TYPE_KEY);
             switch (type){
                 case RECOMMENDED_VENUE:
+                    initTitle(title);
                     initRecommendedVenues();
                     break;
 
                 case FOURSQUARE_VENUE:
+                    initTitle(title);
                     initVenueByCategory(id);
                     break;
 
                 case BOOK:
+                    initTitle(title);
                     initBooksByListName(id);
                     break;
             }
@@ -70,14 +74,19 @@ public class MoreFragment extends Fragment implements DetailsCallback {
     }
 
     public void initRecommendedVenues(){
-//        moreViewModel.initRecommendedVenues().observe(getViewLifecycleOwner(), data -> {
-//            suggestions.clear();
-//            suggestions.addAll(data);
-//            adapter.notifyDataSetChanged();
-//        });
+        moreViewModel.initRecommendedVenues().observe(getViewLifecycleOwner(), data -> {
+            suggestions.clear();
+            suggestions.addAll(data);
+            adapter.notifyDataSetChanged();
+        });
     }
 
     public void initVenueByCategory(String id){
+        moreViewModel.initVenues(id).observe(getViewLifecycleOwner(), data -> {
+            suggestions.clear();
+            suggestions.addAll(data);
+            adapter.notifyDataSetChanged();
+        });
     }
 
     public void initBooksByListName(String listName){
@@ -88,6 +97,12 @@ public class MoreFragment extends Fragment implements DetailsCallback {
         });
     }
 
+    public void initTitle(String title){
+        ActionBar actionBar = ((AppCompatActivity) requireActivity()).getSupportActionBar();
+        if(actionBar != null){
+            actionBar.setTitle(title);
+        }
+    }
 
     @Override
     public void onSuggestionDetailsListener(Suggestion suggestion) {

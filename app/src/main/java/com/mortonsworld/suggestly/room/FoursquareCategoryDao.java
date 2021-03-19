@@ -1,5 +1,6 @@
 package com.mortonsworld.suggestly.room;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
@@ -29,4 +30,7 @@ public abstract class FoursquareCategoryDao {
 
     @Query("SELECT * FROM CategoryClosure where parent = :id")
     public abstract List<CategoryClosure> readAllCategoriesWithParentId(String id);
+
+    @Query("SELECT * FROM Category where category_id = :id")
+    public abstract LiveData<Category> readFoursquareCategory(String id);
 }

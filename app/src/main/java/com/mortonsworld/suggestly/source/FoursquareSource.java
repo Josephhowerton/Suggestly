@@ -4,6 +4,7 @@ import android.app.Application;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
 import androidx.paging.DataSource;
 
 import com.mortonsworld.suggestly.model.foursquare.Category;
@@ -96,7 +97,17 @@ public class FoursquareSource {
         foursquareCategoryDao.readAllCategoriesWithParentId(Id);
     }
 
-/* *****************************************************************************************
+    public LiveData<Category> getFoursquareCategoryName(String categoryId){
+        try{
+            return executorService.submit(() -> foursquareCategoryDao.readFoursquareCategory(categoryId)).get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+    /* *****************************************************************************************
     FOURSQUARE VENUES
 ******************************************************************************************** */
     public void isVenueTableFresh(double lat, double lng, Observer<Boolean> observer){
@@ -211,7 +222,14 @@ public class FoursquareSource {
         return null;
     }
 
-
+    public List<VenueAndCategory> readVenuesLiveData(String categoryId){
+        try{
+            return executorService.submit(() -> foursquareDao.readVenueByCategoryIdLiveData(categoryId)).get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     public void readVenueDetails(String id, Observer<Venue> observer){
         Observable<Venue> observable = Observable.create(source -> {

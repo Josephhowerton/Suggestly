@@ -519,6 +519,10 @@ public class Repository{
         });
     }
 
+    public LiveData<Category> getFoursquareCategoryName(String id){
+        return foursquareSource.getFoursquareCategoryName(id);
+    }
+
 /* ********************************************************************************************
     Foursquare Venues
 *********************************************************************************************** */
@@ -788,9 +792,16 @@ public class Repository{
         return foursquareSource.readVenuesUsingCategoryIdDataFactory(categoryId);
     }
 
-    public LiveData<List<VenueAndCategory>> readRecommendedVenuesLiveData(){
-        MutableLiveData<List<VenueAndCategory>> mutableLiveData = new MutableLiveData<>();
-        List<VenueAndCategory> suggestions = new ArrayList<>(foursquareSource.readRecommendedVenuesLiveData());
+    public LiveData<List<Suggestion>> readRecommendedVenuesLiveData(){
+        MutableLiveData<List<Suggestion>> mutableLiveData = new MutableLiveData<>();
+        List<Suggestion> suggestions = new ArrayList<>(foursquareSource.readRecommendedVenuesLiveData());
+        mutableLiveData.postValue(suggestions);
+        return mutableLiveData;
+    }
+
+    public LiveData<List<Suggestion>> readVenuesUsingCategoryIdLiveData(String categoryId){
+        MutableLiveData<List<Suggestion>> mutableLiveData = new MutableLiveData<>();
+        List<Suggestion> suggestions = new ArrayList<>(foursquareSource.readVenuesLiveData(categoryId));
         mutableLiveData.postValue(suggestions);
         return mutableLiveData;
     }

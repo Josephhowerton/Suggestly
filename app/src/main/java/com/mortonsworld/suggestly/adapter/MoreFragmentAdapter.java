@@ -13,14 +13,18 @@ import com.mortonsworld.suggestly.interfaces.DetailsCallback;
 import com.mortonsworld.suggestly.interfaces.Suggestion;
 import com.mortonsworld.suggestly.model.foursquare.Venue;
 import com.mortonsworld.suggestly.model.nyt.Book;
+import com.mortonsworld.suggestly.model.relations.VenueAndCategory;
+import com.mortonsworld.suggestly.model.user.LocationTuple;
+import com.mortonsworld.suggestly.utility.DistanceCalculator;
 
 import java.util.List;
+import java.util.Locale;
 
 public class MoreFragmentAdapter extends RecyclerView.Adapter<MoreFragmentAdapter.MoreViewHolder> {
     private final Context context;
     private final List<Suggestion> suggestions;
     private final DetailsCallback listener;
-
+    private LocationTuple locationTuple;
     public MoreFragmentAdapter(Context context, List<Suggestion> suggestions, DetailsCallback detailsCallback){
         this.context = context;
         this.suggestions = suggestions;
@@ -44,7 +48,9 @@ public class MoreFragmentAdapter extends RecyclerView.Adapter<MoreFragmentAdapte
         return suggestions.size();
     }
 
-
+    public void setLocationTuple(LocationTuple locationTuple){
+        this.locationTuple = locationTuple;
+    }
 
     public class MoreViewHolder extends RecyclerView.ViewHolder{
         RowItemMoreBinding binding;
@@ -56,7 +62,7 @@ public class MoreFragmentAdapter extends RecyclerView.Adapter<MoreFragmentAdapte
         public void bind(Suggestion suggestion){
             switch (suggestion.getSuggestionType()){
                 case FOURSQUARE_VENUE:
-                    bindVenue((Venue) suggestion);
+                    bindVenue((VenueAndCategory) suggestion);
                     break;
                 case BOOK:
                     bindBook((Book) suggestion);
@@ -64,11 +70,10 @@ public class MoreFragmentAdapter extends RecyclerView.Adapter<MoreFragmentAdapte
             }
         }
 
-        private void bindVenue(Venue venue){
-            binding.name.setText(venue.getName());
-            binding.address.setText(venue.location.getFormattedAddress());
-            //todo add icon image from url
-            binding.getRoot().setOnClickListener(view -> listener.onSuggestionDetailsListener(venue));
+        private void bindVenue(VenueAndCategory venueAndCategory){
+            binding.name.setText(venueAndCategory.venue.getName());
+            binding.address.setText(venueAndCategory.venue.location.getFormattedAddress());
+            binding.getRoot().setOnClickListener(view -> listener.onSuggestionDetailsListener(venueAndCategory.venue));
         }
 
         private void bindBook(Book book){
@@ -76,6 +81,16 @@ public class MoreFragmentAdapter extends RecyclerView.Adapter<MoreFragmentAdapte
             binding.address.setText(book.getDescription());
             Glide.with(binding.getRoot()).load(book.getBookImage()).placeholder(R.drawable.progress_bar).into(binding.icon);
             binding.getRoot().setOnClickListener(view -> listener.onSuggestionDetailsListener(book));
+        }
+
+        public String formatDistance(Venue venue){
+            if(locationTuple == null){
+                return "";
+            }
+
+            return String.format(Locale.ENGLISH, "%.1f",
+                    DistanceCalculator.distanceMile(locationTuple.lat, venue.location.lat, locationTuple.lng, venue.location.lng)
+            );
         }
     }
 }

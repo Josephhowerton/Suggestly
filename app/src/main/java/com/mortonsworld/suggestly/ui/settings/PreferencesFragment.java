@@ -12,6 +12,7 @@ import android.provider.Settings;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
@@ -68,8 +69,17 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Pre
                 case Config.USER_SHARED_PREFERENCE_DELETE:
                     deleteAccountConfirmationDialog();
                     break;
+
+                case Config.USER_SHARED_PREFERENCE_PRIVACY_POLICY:
+                    goToWebFragment(Config.SUGGESTLY_PP_URL);
+                    break;
+
+                case Config.USER_SHARED_PREFERENCE_TERMS_OF_SERVICE:
+                    goToWebFragment(Config.SUGGESTLY_TOS_URL);
+                    break;
             }
         }
+
         return super.onPreferenceTreeClick(preference);
     }
 
@@ -185,6 +195,12 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Pre
                 .build();
 
         startActivityForResult(intent, RC_RE_AUTH_BEFORE_DELETE);
+    }
+
+    public void goToWebFragment(String url){
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(url));
+        startActivity(intent);
     }
 
     public void deleteCurrentUserRoom(){

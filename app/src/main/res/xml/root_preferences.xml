@@ -20,14 +20,15 @@
     <PreferenceCategory
         app:title="About Us">
         <Preference
-            app:key="CURRENT_USER_PRIVACY_POLICY"
+            app:key="PRIVACY_POLICY"
             app:title="Private Policy" />
         <Preference
-            app:key="CURRENT_USER_TERMS_OF_SERVICE"
+            app:key="TERMS_OF_SERVICE"
             app:title="Terms Of Service" />
         <Preference
-            app:key="CURRENT_USER_FEEDBACK"
-            app:title="Feedback" />
+            app:key="FEEDBACK"
+            app:title="Feedback"
+            android:fragment="com.mortonsworld.suggestly.ui.settings.FeedbackFragment"/>
     </PreferenceCategory>
 
     <PreferenceCategory

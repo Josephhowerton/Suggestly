@@ -23,6 +23,7 @@ import com.bumptech.glide.Glide;
 import com.mortonsworld.suggestly.R;
 import com.mortonsworld.suggestly.adapter.HomeBookAdapter;
 import com.mortonsworld.suggestly.adapter.HomeVenueAdapter;
+import com.mortonsworld.suggestly.adapter.MoreFragmentAdapter;
 import com.mortonsworld.suggestly.databinding.FragmentHomeBinding;
 import com.mortonsworld.suggestly.interfaces.DetailsCallback;
 import com.mortonsworld.suggestly.interfaces.MoreCallback;
@@ -58,8 +59,17 @@ public class HomeFragment extends Fragment implements MoreCallback, DetailsCallb
         homeViewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
         mainViewModel = new ViewModelProvider(requireActivity()).get(MainViewModel.class);
 
-        initializeTopSuggestion();
+        homeViewModel.locationTupleLiveData.observe(getViewLifecycleOwner(), locationTuple -> {
+            recommendedAdapter.setLocationTuple(locationTuple);
+            foodAdapter.setLocationTuple(locationTuple);
+            breweryAdapter.setLocationTuple(locationTuple);
+            familyAdapter.setLocationTuple(locationTuple);
+            activeAdapter.setLocationTuple(locationTuple);
+            socialAdapter.setLocationTuple(locationTuple);
+            entertainmentAdapter.setLocationTuple(locationTuple);
+        });
 
+        initializeTopSuggestion();
         initializeRecommendedVenues();
         initializeFoodVenues();
         initializeFictionBooks();
@@ -98,13 +108,8 @@ public class HomeFragment extends Fragment implements MoreCallback, DetailsCallb
     }
 
     @Override
-    public void onMoreRecommended() {
-        navigateToList(SuggestionType.RECOMMENDED_VENUE, Config.LIST_RECOMMENDED_ID_KEY);
-    }
-
-    @Override
-    public void onMoreSuggestions(SuggestionType type, String id) {
-        navigateToList(type, id);
+    public void onMoreSuggestions(SuggestionType type, String id, String title) {
+        navigateToList(type, id, title);
     }
 
     @Override
@@ -129,14 +134,10 @@ public class HomeFragment extends Fragment implements MoreCallback, DetailsCallb
         Log.println(Log.ASSERT, "Saved", "saving");
     }
 
-    @Override
-    public void onSuggestionFavorite() {
-        Log.println(Log.ASSERT, "Favorite", "saving");
-    }
-
-    private void navigateToList(SuggestionType type, String id){
+    private void navigateToList(SuggestionType type, String id, String title){
         Bundle bundle = new Bundle();
         bundle.putString(Config.LIST_SUGGESTION_ID_KEY, id);
+        bundle.putString(Config.LIST_SUGGESTION_TITLE_KEY, title);
         bundle.putSerializable(Config.LIST_SUGGESTION_TYPE_KEY, type);
         Navigation.findNavController(requireActivity(), R.id.nav_host_fragment).navigate(R.id.navigation_more, bundle);
     }

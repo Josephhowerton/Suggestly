@@ -7,10 +7,12 @@ import androidx.lifecycle.LiveData;
 import androidx.paging.LivePagedListBuilder;
 import androidx.paging.PagedList;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.mortonsworld.suggestly.Repository;
 import com.mortonsworld.suggestly.model.foursquare.Venue;
 import com.mortonsworld.suggestly.model.relations.VenueAndCategory;
 import com.mortonsworld.suggestly.model.nyt.Book;
+import com.mortonsworld.suggestly.model.user.LocationTuple;
 import com.mortonsworld.suggestly.utility.Config;
 
 public class HomeViewModel extends AndroidViewModel {
@@ -28,10 +30,14 @@ public class HomeViewModel extends AndroidViewModel {
     public LiveData<PagedList<VenueAndCategory>> socialVenuePagedList;
     public LiveData<PagedList<VenueAndCategory>> entertainmentVenuePagedList;
 
+    public LiveData<LocationTuple> locationTupleLiveData;
+
     public HomeViewModel(Application application) {
         super(application);
         repository = Repository.getInstance(application);
         topSuggestion = repository.readTopSuggestionNewYorkTimesBooksTable();
+
+        locationTupleLiveData = repository.readUserLocation(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         PagedList.Config config = new PagedList.Config.Builder()
                 .setPageSize(5)

@@ -1,19 +1,24 @@
 package com.mortonsworld.suggestly.ui.explore;
 
+import android.app.Application;
+
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class ExploreViewModel extends ViewModel {
+import com.mortonsworld.suggestly.Repository;
 
-    private MutableLiveData<String> mText;
+public class ExploreViewModel extends AndroidViewModel {
+    private Repository repository;
 
-    public ExploreViewModel() {
-        mText = new MutableLiveData<>();
-        mText.setValue("This is dashboard fragment");
+    public ExploreViewModel(Application application) {
+        super(application);
+
+        repository = Repository.getInstance(application);
     }
 
-    public LiveData<String> getText() {
-        return mText;
+    public void search(String query){
+
     }
 }

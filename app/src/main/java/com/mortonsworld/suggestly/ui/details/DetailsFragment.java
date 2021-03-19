@@ -18,16 +18,18 @@ import com.bumptech.glide.Glide;
 import com.mortonsworld.suggestly.R;
 import com.mortonsworld.suggestly.databinding.FragmentDetailsBinding;
 import com.mortonsworld.suggestly.interfaces.DetailsCallback;
+import com.mortonsworld.suggestly.interfaces.FavoriteCallback;
 import com.mortonsworld.suggestly.interfaces.MoreCallback;
 import com.mortonsworld.suggestly.interfaces.SaveCallback;
 import com.mortonsworld.suggestly.interfaces.Suggestion;
+import com.mortonsworld.suggestly.model.foursquare.Venue;
 import com.mortonsworld.suggestly.ui.main.MainActivity;
 import com.mortonsworld.suggestly.utility.Config;
 import com.mortonsworld.suggestly.utility.SuggestionType;
 
 import org.jetbrains.annotations.NotNull;
 
-public class DetailsFragment extends Fragment implements MoreCallback, DetailsCallback, SaveCallback {
+public class DetailsFragment extends Fragment implements MoreCallback, DetailsCallback, SaveCallback, FavoriteCallback {
 
     private DetailsViewModel mViewModel;
     private FragmentDetailsBinding binding;
@@ -72,11 +74,17 @@ public class DetailsFragment extends Fragment implements MoreCallback, DetailsCa
                 actionBar.setTitle(venue.getName());
             }
 
-            Glide.with(requireContext())
-                    .load(venue.bestPhoto.getPrefix() + "540X540" + venue.bestPhoto.suffix)
-                    .placeholder(R.drawable.progress_bar)
-                    .into(binding.bestPhoto);
+            if(venue.bestPhoto != null){
+                initVenueImage(venue.bestPhoto);
+            }
         });
+    }
+
+    public void initVenueImage(Venue.BestPhoto bestPhoto){
+        Glide.with(requireContext())
+                .load(bestPhoto.getPrefix() + "540X540" + bestPhoto.suffix)
+                .placeholder(R.drawable.progress_bar)
+                .into(binding.bestPhoto);
     }
 
     public void initializeBook(String isbn13){
@@ -98,13 +106,8 @@ public class DetailsFragment extends Fragment implements MoreCallback, DetailsCa
     }
 
     @Override
-    public void onMoreRecommended() {
-        navigateToList(SuggestionType.RECOMMENDED_VENUE, Config.LIST_RECOMMENDED_ID_KEY);
-    }
-
-    @Override
-    public void onMoreSuggestions(SuggestionType type, String id) {
-        navigateToList(type, id);
+    public void onMoreSuggestions(@NotNull SuggestionType type, @NotNull String id, @NotNull String title) {
+        navigateToList(type, id, title);
     }
 
     @Override
@@ -117,9 +120,10 @@ public class DetailsFragment extends Fragment implements MoreCallback, DetailsCa
 
     }
 
-    private void navigateToList(SuggestionType type, String id){
+    private void navigateToList(SuggestionType type, String id, String title){
         Bundle bundle = new Bundle();
         bundle.putString(Config.LIST_SUGGESTION_ID_KEY, id);
+        bundle.putString(Config.LIST_SUGGESTION_TITLE_KEY, title);
         bundle.putSerializable(Config.LIST_SUGGESTION_TYPE_KEY, type);
         Navigation.findNavController(requireActivity(), R.id.nav_host_fragment).navigate(R.id.navigation_more, bundle);
     }
