@@ -34,7 +34,10 @@ public abstract class UserDao {
     public abstract User readCurrentUser(String id);
 
     @Query("select lat,lng from user where id=:id")
-    public abstract Observable<LocationTuple> readUserLocation(String id);
+    public abstract Observable<LocationTuple> readUserLocationObservable(String id);
+
+    @Query("select lat,lng from user where id=:id")
+    public abstract LocationTuple readUserLocation(String id);
 
     @Query("UPDATE user SET latest_sign_in =:latestSignIn WHERE id=:id")
     public abstract int updateUserLastSignedIn(String id, Date latestSignIn);

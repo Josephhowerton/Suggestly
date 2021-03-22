@@ -17,10 +17,11 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Suggest.ActionBar">
+        android:theme="@style/Theme.Suggest.NoActionBar">
         <activity
             android:name="com.mortonsworld.suggestly.ui.settings.SettingsActivity"
-            android:label="@string/title_activity_settings" >
+            android:label="@string/title_activity_settings"
+            android:theme="@style/Theme.Suggest.ActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.SENDTO" />
                 <data android:scheme="mailto"/>

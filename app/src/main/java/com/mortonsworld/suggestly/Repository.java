@@ -1,13 +1,16 @@
 package com.mortonsworld.suggestly;
 
 import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.location.Location;
 
-import com.mortonsworld.suggestly.interfaces.Suggestion;
+import com.mortonsworld.suggestly.model.Suggestion;
 import com.mortonsworld.suggestly.model.foursquare.Category;
 import com.mortonsworld.suggestly.model.foursquare.FoursquareResult;
+import com.mortonsworld.suggestly.model.foursquare.SimilarVenues;
 import com.mortonsworld.suggestly.model.foursquare.Venue;
-import com.mortonsworld.suggestly.model.relations.VenueAndCategory;
+import com.mortonsworld.suggestly.model.foursquare.VenueAndCategory;
 import com.mortonsworld.suggestly.model.google.GeocodeResponse;
 import com.mortonsworld.suggestly.model.google.Geometry;
 import com.mortonsworld.suggestly.model.nyt.Book;
@@ -46,6 +49,7 @@ public class Repository{
     private static final String TAG = "Repository";
     private static Repository INSTANCE;
     private NewYorkTimesSource newYorkTimesSource;
+    private SharedPreferences sharedPreferences;
     private FoursquareSource foursquareSource;
     private LocationSource locationSource;
     private GoogleSource googleSource;
@@ -71,10 +75,11 @@ public class Repository{
 *********************************************************************************************** */
     public void initializeSources(Application application, ExecutorService service){
         newYorkTimesSource = new NewYorkTimesSource(application, service);
+        sharedPreferences = application.getSharedPreferences(Config.USER_SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE);
         foursquareSource = new FoursquareSource(application, service);
         locationSource = new LocationSource(application);
         googleSource = new GoogleSource(application);
-        userSource = new UserSource(application);
+        userSource = new UserSource(application, service);
     }
 
     public void initializeLocationObservable(){
@@ -88,6 +93,7 @@ public class Repository{
             @Override
             public void onNext(@NonNull Location location) {
                 updateUserLocation(FirebaseAuth.getInstance().getCurrentUser().getUid(), location.getLatitude(), location.getLongitude());
+                updateVenueDistance(location.getLatitude(), location.getLongitude());
             }
 
             @Override
@@ -114,6 +120,20 @@ public class Repository{
 
     public void disableLocationServices() {
         locationSource.unsubscribeToLocationUpdates();
+    }
+
+    public void storeLastFetchedLocation(double lat, double lng){
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(Config.USER_SHARED_PREFERENCE_PREVIOUS_LATITUDE, String.valueOf(lat));
+        editor.putString(Config.USER_SHARED_PREFERENCE_PREVIOUS_LONGITUDE, String.valueOf(lng));
+        editor.apply();
+    }
+
+    public LocationTuple getLastFetchedLocation(double lat, double lng){
+        LocationTuple locationTuple = new LocationTuple();
+        locationTuple.lat = Double.parseDouble(sharedPreferences.getString(Config.USER_SHARED_PREFERENCE_PREVIOUS_LATITUDE, String.valueOf(lat)));
+        locationTuple.lng = Double.parseDouble(sharedPreferences.getString(Config.USER_SHARED_PREFERENCE_PREVIOUS_LONGITUDE, String.valueOf(lng)));
+        return locationTuple;
     }
 
     public LiveData<List<AutocompletePrediction>> subscribeToAddressAutoCompletePredictions(){
@@ -161,6 +181,7 @@ public class Repository{
             public void onNext(@NonNull GeocodeResponse geocodeResponse) {
                 Geometry geometry = geocodeResponse.results.get(0).geometry;
                 updateUserLocation(FirebaseAuth.getInstance().getCurrentUser().getUid(), geometry.location.lat, geometry.location.lng);
+                updateVenueDistance(geometry.location.lat, geometry.location.lng);
                 mutableLiveData.postValue(true);
             }
 
@@ -272,7 +293,7 @@ public class Repository{
         return mutableLiveData;
     }
 
-    public LiveData<LocationTuple>  readUserLocation(String id){
+    public LiveData<LocationTuple> readUserLocationLiveData(String id){
         MutableLiveData<LocationTuple> mutableLiveData = new MutableLiveData<>();
         userSource.readUserLocation(id, new Observer<LocationTuple>() {
             Disposable disposable;
@@ -297,6 +318,10 @@ public class Repository{
             }
         });
         return mutableLiveData;
+    }
+
+    public LocationTuple readUserLocation(String id){
+        return userSource.readUserLocation(id);
     }
 
     public LiveData<Boolean> updateUser(User user){
@@ -523,6 +548,9 @@ public class Repository{
         return foursquareSource.getFoursquareCategoryName(id);
     }
 
+    public DataSource.Factory<Integer, Category>readRelatedCategoriesDataFactory(String categoryId){
+        return foursquareSource.readRelatedCategoriesDataFactory(categoryId);
+    }
 /* ********************************************************************************************
     Foursquare Venues
 *********************************************************************************************** */
@@ -619,7 +647,7 @@ public class Repository{
     }
 
     @NotNull
-    private LiveData<Boolean> getFoursquareVenuesDetails(Venue venue){
+    public LiveData<Boolean> getFoursquareVenuesDetails(Venue venue){
         MutableLiveData<Boolean> mutableLiveData = new MutableLiveData<>();
         foursquareSource.getFoursquareVenuesDetails(venue.venueId, new Observer<Venue>() {
             Disposable disposable;
@@ -630,11 +658,13 @@ public class Repository{
 
             @Override
             public void onNext(@NonNull Venue venue) {
+                mutableLiveData.postValue(true);
                 updateVenueWithDetails(venue);
             }
 
             @Override
             public void onError(@NonNull Throwable e) {
+                mutableLiveData.postValue(false);
                 e.printStackTrace();
             }
 
@@ -648,9 +678,9 @@ public class Repository{
     }
 
     @NotNull
-    private LiveData<Boolean> getFoursquareVenuesSimilar(String id){
+    public LiveData<Boolean> getFoursquareVenuesSimilar(Venue venue){
         MutableLiveData<Boolean> mutableLiveData = new MutableLiveData<>();
-        foursquareSource.getSimilarFoursquareVenuesNearby(id, new Observer<List<Venue>>() {
+        foursquareSource.getSimilarFoursquareVenuesNearby(venue.venueId, new Observer<List<Venue>>() {
             Disposable disposable;
             @Override
             public void onSubscribe(@NonNull Disposable d) {
@@ -663,6 +693,8 @@ public class Repository{
                     //todo create relationship to other venue;
                     foursquareVenue.categoryId = foursquareVenue.categories.get(0).id;
                     createVenue(foursquareVenue);
+
+                    createSimilarVenue(venue, foursquareVenue);
                 }
             }
 
@@ -705,6 +737,13 @@ public class Repository{
                 disposable.dispose();
             }
         });
+    }
+
+    public void createSimilarVenue(Venue owner, Venue sibling){
+        SimilarVenues similarVenues = new SimilarVenues();
+        similarVenues.ownerId = owner.venueId;
+        similarVenues.siblingId = sibling.venueId;
+        foursquareSource.createSimilarVenue(similarVenues);
     }
 
     public void createRecommendedVenue(Venue venue){
@@ -759,6 +798,10 @@ public class Repository{
         });
     }
 
+    public void updateVenueDistance(double lat, double lng){
+        foursquareSource.updateVenueDistance(lat, lng);
+    }
+
     public void updateVenueWithDetails(Venue venue){
         foursquareSource.updateVenueWithDetails(venue, new Observer<Boolean>() {
             Disposable disposable;
@@ -799,16 +842,13 @@ public class Repository{
         return mutableLiveData;
     }
 
-    public LiveData<List<Suggestion>> readVenuesUsingCategoryIdLiveData(String categoryId){
-        MutableLiveData<List<Suggestion>> mutableLiveData = new MutableLiveData<>();
-        List<Suggestion> suggestions = new ArrayList<>(foursquareSource.readVenuesLiveData(categoryId));
-        mutableLiveData.postValue(suggestions);
-        return mutableLiveData;
+    public LiveData<List<VenueAndCategory>> readSimilarVenuesLiveData(String id){
+        return foursquareSource.readSimilarVenuesLiveData(id);
     }
 
-    public LiveData<Venue> readVenuesDetails(String id){
-        MutableLiveData<Venue> mutableLiveData = new MutableLiveData<>();
-        foursquareSource.readVenueDetails(id, new Observer<Venue>() {
+    public LiveData<List<Suggestion>> readVenuesUsingCategoryIdLiveData(String categoryId){
+        MutableLiveData<List<Suggestion>> mutableLiveData = new MutableLiveData<>();
+        foursquareSource.readVenuesObservable(categoryId, new Observer<List<VenueAndCategory>>() {
             Disposable disposable;
             @Override
             public void onSubscribe(@NonNull Disposable d) {
@@ -816,13 +856,8 @@ public class Repository{
             }
 
             @Override
-            public void onNext(@NonNull Venue foursquareVenue) {
-                if(!foursquareVenue.hasDetails){
-                    getFoursquareVenuesDetails(foursquareVenue);
-                    getFoursquareVenuesSimilar(foursquareVenue.getId());
-                }
-
-                mutableLiveData.postValue(foursquareVenue);
+            public void onNext(@NonNull List<VenueAndCategory> venueAndCategories) {
+                mutableLiveData.postValue(new ArrayList<>(venueAndCategories));
             }
 
             @Override
@@ -835,7 +870,12 @@ public class Repository{
                 disposable.dispose();
             }
         });
+
         return mutableLiveData;
+    }
+
+    public LiveData<Venue> readVenuesDetails(String id){
+        return foursquareSource.readVenueDetails(id);
     }
 
     /* ********************************************************************************************
@@ -989,6 +1029,10 @@ public class Repository{
         List<Suggestion> suggestions = new ArrayList<>(newYorkTimesSource.readBooksByListName(listName));
         mutableLiveData.postValue(suggestions);
         return mutableLiveData;
+    }
+
+    public List<Suggestion> readNewYorkTimesBestsellingListLimitThree(String isbn13, String listName){
+        return new ArrayList<>(newYorkTimesSource.readBooksByListNameLimitThree(isbn13, listName));
     }
 
 }

@@ -11,7 +11,7 @@ import com.mortonsworld.suggestly.utility.Config;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class FinalizeViewModel extends AndroidViewModel {
-    private Repository repository;
+    private final Repository repository;
 
     public FinalizeViewModel(Application application){
         super(application);
@@ -21,6 +21,11 @@ public class FinalizeViewModel extends AndroidViewModel {
     public LiveData<User> getUserLocationLiveData(){
         return repository.readUser(FirebaseAuth.getInstance().getCurrentUser().getUid());
     }
+
+    public void storeLastFetchedLocation(double lat, double lng){
+        repository.storeLastFetchedLocation(lat, lng);
+    }
+
 
     public LiveData<Boolean> getRecommendedFoursquareVenuesNearUser(double lat, double lng){
         return repository.getRecommendedFoursquareVenuesNearUser(lat, lng);

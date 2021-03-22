@@ -8,342 +8,361 @@
         <import type="com.mortonsworld.suggestly.utility.Config"/>
         <variable
             name="categoryCallback"
-            type="com.mortonsworld.suggestly.interfaces.CategoryCallback" />
+            type="com.mortonsworld.suggestly.callbacks.CategoryCallback" />
 
     </data>
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-        <androidx.appcompat.widget.SearchView
-            android:id="@+id/search_bar"
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/app_bar_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginStart="5dp"
-            app:iconifiedByDefault="false"
-            android:background="@drawable/shape_search_view"
-            app:layout_constraintTop_toTopOf="parent"/>
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/title_category"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/title_categories"
-            app:layout_constraintBottom_toTopOf="@id/description_category"
-            app:layout_constraintStart_toStartOf="@id/startGuideline"
-            app:layout_constraintEnd_toEndOf="@id/endGuideline"/>
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                app:title="@string/title_search"
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize">
 
-        <TextView
-            android:id="@+id/description_category"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@id/guideline"
-            app:layout_constraintStart_toStartOf="@id/startGuideline"
-            app:layout_constraintEnd_toEndOf="@id/endGuideline"/>
+                <androidx.appcompat.widget.SearchView
+                    android:id="@+id/search_bar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginStart="0dp"
+                    app:iconifiedByDefault="false"
+                    android:background="@drawable/shape_search_view"
+                    app:layout_constraintTop_toTopOf="parent"/>
 
-        <HorizontalScrollView
-            android:id="@+id/categories_horizontal_scroll_view"
+            </androidx.appcompat.widget.Toolbar>
+
+        </com.google.android.material.appbar.AppBarLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="20dp"
-            app:layout_constraintTop_toBottomOf="@id/description_category">
+            android:layout_height="match_parent"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="40dp"
-                android:paddingEnd="20dp"
-                android:paddingStart="3dp"
+            <TextView
+                android:id="@+id/title_category"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/title_categories"
+                app:layout_constraintBottom_toTopOf="@id/description_category"
+                app:layout_constraintStart_toStartOf="@id/startGuideline"
+                app:layout_constraintEnd_toEndOf="@id/endGuideline"/>
+
+            <TextView
+                android:id="@+id/description_category"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toTopOf="@id/guideline"
+                app:layout_constraintStart_toStartOf="@id/startGuideline"
+                app:layout_constraintEnd_toEndOf="@id/endGuideline"/>
+
+            <HorizontalScrollView
+                android:id="@+id/categories_horizontal_scroll_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="20dp"
+                app:layout_constraintTop_toBottomOf="@id/description_category">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="40dp"
+                    android:paddingEnd="20dp"
+                    android:paddingStart="3dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/buttonOne"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:onClick="@{() -> categoryCallback.onVenueCategoryClickListener(Config.ITALIAN, @string/title_italian_button)}"
+                        android:text="@string/title_italian_button"
+                        app:icon="@drawable/category_italian"
+                        android:layout_marginStart="10dp"
+                        style="@style/Suggest.Button"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/buttonTwo"/>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/buttonTwo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:onClick="@{() -> categoryCallback.onVenueCategoryClickListener(Config.BREWERY, @string/title_brewery_button)}"
+                        android:text="@string/title_brewery_button"
+                        style="@style/Suggest.Button"
+                        app:icon="@drawable/category_brewery"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/buttonOne"/>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/buttonThree"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:onClick="@{() -> categoryCallback.onVenueCategoryClickListener(Config.ACTIVE, @string/title_active_button)}"
+                        android:text="@string/title_active_button"
+                        app:icon="@drawable/category_active"
+                        style="@style/Suggest.Button"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/buttonTwo"/>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/buttonFour"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:onClick="@{() -> categoryCallback.onBookCategoryClickListener(Config.HARD_COVER_NON_FICTION, @string/title_non_fiction_button)}"
+                        android:text="@string/title_non_fiction_button"
+                        app:icon="@drawable/category_book"
+                        style="@style/Suggest.Button"
+                        app:layout_constraintStart_toEndOf="@+id/buttonThree"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/buttonFive"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:onClick="@{() -> categoryCallback.onVenueCategoryClickListener(Config.PARKS, @string/title_parks_button)}"
+                        android:text="@string/title_parks_button"
+                        app:icon="@drawable/category_park"
+                        style="@style/Suggest.Button"
+                        app:layout_constraintStart_toEndOf="@+id/buttonFour"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/buttonSix"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:onClick="@{() -> categoryCallback.onVenueCategoryClickListener(Config.SHOPPING, @string/title_shopping_button)}"
+                        android:text="@string/title_shopping_button"
+                        app:icon="@drawable/category_shopping"
+                        style="@style/Suggest.Button"
+                        app:layout_constraintStart_toEndOf="@id/buttonFive"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/buttonSeven"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:onClick="@{() -> categoryCallback.onVenueCategoryClickListener(Config.NIGHTLIFE, @string/title_nightlife_button)}"
+                        android:text="@string/title_nightlife_button"
+                        app:icon="@drawable/category_nightlife"
+                        style="@style/Suggest.Button"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/buttonSix"/>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/buttonNine"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:onClick="@{() -> categoryCallback.onVenueCategoryClickListener(Config.JAPANESE, @string/title_japanese_button)}"
+                        android:text="@string/title_japanese_button"
+                        app:icon="@drawable/category_japanese"
+                        style="@style/Suggest.Button"
+                        android:layout_marginStart="10dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/buttonOne" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/buttonTen"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:onClick="@{() -> categoryCallback.onBookCategoryClickListener(Config.HARD_COVER_FICTION, @string/title_fiction_button)}"
+                        android:text="@string/title_fiction_button"
+                        app:icon="@drawable/category_book"
+                        style="@style/Suggest.Button"
+                        app:layout_constraintBottom_toBottomOf="@+id/buttonNine"
+                        app:layout_constraintStart_toEndOf="@id/buttonNine"
+                        app:layout_constraintTop_toTopOf="@id/buttonNine" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/buttonEleven"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:onClick="@{() -> categoryCallback.onVenueCategoryClickListener(Config.COFFEE_SHOP, @string/title_coffee_shop_button)}"
+                        android:text="@string/title_coffee_shop_button"
+                        app:icon="@drawable/category_coffee"
+                        style="@style/Suggest.Button"
+                        app:layout_constraintBottom_toBottomOf="@id/buttonNine"
+                        app:layout_constraintStart_toEndOf="@id/buttonTen"
+                        app:layout_constraintTop_toTopOf="@id/buttonNine" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/buttonTwelve"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:onClick="@{() -> categoryCallback.onVenueCategoryClickListener(Config.KOREAN, @string/title_korean_button)}"
+                        android:text="@string/title_korean_button"
+                        app:icon="@drawable/category_korean"
+                        style="@style/Suggest.Button"
+                        app:layout_constraintBottom_toBottomOf="@id/buttonNine"
+                        app:layout_constraintStart_toEndOf="@id/buttonEleven"
+                        app:layout_constraintTop_toTopOf="@id/buttonNine" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/buttonThirteen"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:onClick="@{() -> categoryCallback.onVenueCategoryClickListener(Config.CHINESE, @string/title_chinese_button)}"
+                        android:text="@string/title_chinese_button"
+                        app:icon="@drawable/category_chinese"
+                        style="@style/Suggest.Button"
+                        app:layout_constraintBottom_toBottomOf="@id/buttonNine"
+                        app:layout_constraintStart_toEndOf="@id/buttonTwelve"
+                        app:layout_constraintTop_toTopOf="@id/buttonNine" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/buttonFourteen"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:onClick="@{() -> categoryCallback.onVenueCategoryClickListener(Config.SHOWS, @string/title_shows_button)}"
+                        android:text="@string/title_shows_button"
+                        android:layout_marginStart="10dp"
+                        app:icon="@drawable/category_shows_movies"
+                        style="@style/Suggest.Button"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/buttonNine" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/buttonFifteen"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:onClick="@{() -> categoryCallback.onVenueCategoryClickListener(Config.YOGA, @string/title_yoga_button)}"
+                        android:text="@string/title_yoga_button"
+                        app:icon="@drawable/category_yoga"
+                        style="@style/Suggest.Button"
+                        app:layout_constraintBottom_toBottomOf="@id/buttonFourteen"
+                        app:layout_constraintStart_toEndOf="@id/buttonFourteen"
+                        app:layout_constraintTop_toTopOf="@id/buttonFourteen" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/buttonSixteen"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:onClick="@{() -> categoryCallback.onVenueCategoryClickListener(Config.MEXICAN, @string/title_mexican_button)}"
+                        android:text="@string/title_mexican_button"
+                        app:icon="@drawable/category_mexican"
+                        style="@style/Suggest.Button"
+                        app:layout_constraintBottom_toBottomOf="@id/buttonFourteen"
+                        app:layout_constraintStart_toEndOf="@id/buttonFifteen"
+                        app:layout_constraintTop_toTopOf="@id/buttonFourteen" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/buttonSeventeen"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:onClick="@{() -> categoryCallback.onVenueCategoryClickListener(Config.MOVIES, @string/title_movies_button)}"
+                        android:text="@string/title_movies_button"
+                        android:layout_marginStart="10dp"
+                        app:icon="@drawable/category_shows_movies"
+                        style="@style/Suggest.Button"
+                        app:layout_constraintBottom_toBottomOf="@id/buttonFourteen"
+                        app:layout_constraintStart_toEndOf="@+id/buttonSixteen"
+                        app:layout_constraintTop_toTopOf="@id/buttonFourteen" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/buttonEighteen"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:onClick="@{() -> categoryCallback.onVenueCategoryClickListener(Config.INDIAN, @string/title_indian_button)}"
+                        android:text="@string/title_indian_button"
+                        app:icon="@drawable/category_indian"
+                        style="@style/Suggest.Button"
+                        app:layout_constraintBottom_toBottomOf="@id/buttonFourteen"
+                        app:layout_constraintStart_toEndOf="@id/buttonSeventeen"
+                        app:layout_constraintTop_toTopOf="@id/buttonFourteen" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/buttonNineteen"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:onClick="@{() -> categoryCallback.onVenueCategoryClickListener(Config.THAI, @string/title_thai_button)}"
+                        android:text="@string/title_thai_button"
+                        app:icon="@drawable/category_thai"
+                        style="@style/Suggest.Button"
+                        app:layout_constraintTop_toTopOf="@+id/buttonFourteen"
+                        app:layout_constraintBottom_toBottomOf="@id/buttonFourteen"
+                        app:layout_constraintStart_toEndOf="@+id/buttonEighteen"/>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/buttonTwenty"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:onClick="@{() -> categoryCallback.onVenueCategoryClickListener(Config.EVENTS, @string/title_events_button)}"
+                        android:text="@string/title_events_button"
+                        app:icon="@drawable/category_events"
+                        style="@style/Suggest.Button"
+                        app:layout_constraintStart_toEndOf="@id/buttonNineteen"
+                        app:layout_constraintTop_toTopOf="@id/buttonFourteen"
+                        app:layout_constraintBottom_toBottomOf="@id/buttonFourteen"/>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/buttonTwentyOne"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:onClick="@{() -> categoryCallback.onVenueCategoryClickListener(Config.SOCIAL, @string/title_meet_up_button)}"
+                        android:text="@string/title_meet_up_button"
+                        app:icon="@drawable/category_meet_up"
+                        android:layout_marginStart="10dp"
+                        style="@style/Suggest.Button"
+                        app:layout_constraintBottom_toBottomOf="@id/buttonThirteen"
+                        app:layout_constraintStart_toEndOf="@+id/buttonThirteen"
+                        app:layout_constraintTop_toTopOf="@+id/buttonThirteen" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </HorizontalScrollView>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:background="@color/quantum_white_100"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent=".5" />
 
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/startGuideline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent=".05" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/buttonOne"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="@{() -> categoryCallback.onVenueCategoryClickListener(Config.ITALIAN, @string/title_italian_button)}"
-                    android:text="@string/title_italian_button"
-                    app:icon="@drawable/category_italian"
-                    android:layout_marginStart="10dp"
-                    style="@style/Suggest.Button"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/buttonTwo"/>
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/endGuideline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent=".95" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/buttonTwo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:onClick="@{() -> categoryCallback.onVenueCategoryClickListener(Config.BREWERY, @string/title_brewery_button)}"
-                    android:text="@string/title_brewery_button"
-                    style="@style/Suggest.Button"
-                    app:icon="@drawable/category_brewery"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/buttonOne"/>
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/buttonThree"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:onClick="@{() -> categoryCallback.onVenueCategoryClickListener(Config.ACTIVE, @string/title_active_button)}"
-                    android:text="@string/title_active_button"
-                    app:icon="@drawable/category_active"
-                    style="@style/Suggest.Button"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/buttonTwo"/>
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/buttonFour"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:onClick="@{() -> categoryCallback.onBookCategoryClickListener(Config.HARD_COVER_NON_FICTION, @string/title_non_fiction_button)}"
-                    android:text="@string/title_non_fiction_button"
-                    app:icon="@drawable/category_book"
-                    style="@style/Suggest.Button"
-                    app:layout_constraintStart_toEndOf="@+id/buttonThree"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/buttonFive"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:onClick="@{() -> categoryCallback.onVenueCategoryClickListener(Config.PARKS, @string/title_parks_button)}"
-                    android:text="@string/title_parks_button"
-                    app:icon="@drawable/category_park"
-                    style="@style/Suggest.Button"
-                    app:layout_constraintStart_toEndOf="@+id/buttonFour"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/buttonSix"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:onClick="@{() -> categoryCallback.onVenueCategoryClickListener(Config.SHOPPING, @string/title_shopping_button)}"
-                    android:text="@string/title_shopping_button"
-                    app:icon="@drawable/category_shopping"
-                    style="@style/Suggest.Button"
-                    app:layout_constraintStart_toEndOf="@id/buttonFive"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/buttonSeven"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:onClick="@{() -> categoryCallback.onVenueCategoryClickListener(Config.NIGHTLIFE, @string/title_nightlife_button)}"
-                    android:text="@string/title_nightlife_button"
-                    app:icon="@drawable/category_nightlife"
-                    style="@style/Suggest.Button"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/buttonSix"/>
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/buttonNine"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="@{() -> categoryCallback.onVenueCategoryClickListener(Config.JAPANESE, @string/title_japanese_button)}"
-                    android:text="@string/title_japanese_button"
-                    app:icon="@drawable/category_japanese"
-                    style="@style/Suggest.Button"
-                    android:layout_marginStart="10dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/buttonOne" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/buttonTen"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:onClick="@{() -> categoryCallback.onBookCategoryClickListener(Config.HARD_COVER_FICTION, @string/title_fiction_button)}"
-                    android:text="@string/title_fiction_button"
-                    app:icon="@drawable/category_book"
-                    style="@style/Suggest.Button"
-                    app:layout_constraintBottom_toBottomOf="@+id/buttonNine"
-                    app:layout_constraintStart_toEndOf="@id/buttonNine"
-                    app:layout_constraintTop_toTopOf="@id/buttonNine" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/buttonEleven"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:onClick="@{() -> categoryCallback.onVenueCategoryClickListener(Config.COFFEE_SHOP, @string/title_coffee_shop_button)}"
-                    android:text="@string/title_coffee_shop_button"
-                    app:icon="@drawable/category_coffee"
-                    style="@style/Suggest.Button"
-                    app:layout_constraintBottom_toBottomOf="@id/buttonNine"
-                    app:layout_constraintStart_toEndOf="@id/buttonTen"
-                    app:layout_constraintTop_toTopOf="@id/buttonNine" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/buttonTwelve"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:onClick="@{() -> categoryCallback.onVenueCategoryClickListener(Config.KOREAN, @string/title_korean_button)}"
-                    android:text="@string/title_korean_button"
-                    app:icon="@drawable/category_korean"
-                    style="@style/Suggest.Button"
-                    app:layout_constraintBottom_toBottomOf="@id/buttonNine"
-                    app:layout_constraintStart_toEndOf="@id/buttonEleven"
-                    app:layout_constraintTop_toTopOf="@id/buttonNine" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/buttonThirteen"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:onClick="@{() -> categoryCallback.onVenueCategoryClickListener(Config.CHINESE, @string/title_chinese_button)}"
-                    android:text="@string/title_chinese_button"
-                    app:icon="@drawable/category_chinese"
-                    style="@style/Suggest.Button"
-                    app:layout_constraintBottom_toBottomOf="@id/buttonNine"
-                    app:layout_constraintStart_toEndOf="@id/buttonTwelve"
-                    app:layout_constraintTop_toTopOf="@id/buttonNine" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/buttonFourteen"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="@{() -> categoryCallback.onVenueCategoryClickListener(Config.SHOWS, @string/title_shows_button)}"
-                    android:text="@string/title_shows_button"
-                    android:layout_marginStart="10dp"
-                    app:icon="@drawable/category_shows_movies"
-                    style="@style/Suggest.Button"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/buttonNine" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/buttonFifteen"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:onClick="@{() -> categoryCallback.onVenueCategoryClickListener(Config.YOGA, @string/title_yoga_button)}"
-                    android:text="@string/title_yoga_button"
-                    app:icon="@drawable/category_yoga"
-                    style="@style/Suggest.Button"
-                    app:layout_constraintBottom_toBottomOf="@id/buttonFourteen"
-                    app:layout_constraintStart_toEndOf="@id/buttonFourteen"
-                    app:layout_constraintTop_toTopOf="@id/buttonFourteen" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/buttonSixteen"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:onClick="@{() -> categoryCallback.onVenueCategoryClickListener(Config.MEXICAN, @string/title_mexican_button)}"
-                    android:text="@string/title_mexican_button"
-                    app:icon="@drawable/category_mexican"
-                    style="@style/Suggest.Button"
-                    app:layout_constraintBottom_toBottomOf="@id/buttonFourteen"
-                    app:layout_constraintStart_toEndOf="@id/buttonFifteen"
-                    app:layout_constraintTop_toTopOf="@id/buttonFourteen" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/buttonSeventeen"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="@{() -> categoryCallback.onVenueCategoryClickListener(Config.MOVIES, @string/title_movies_button)}"
-                    android:text="@string/title_movies_button"
-                    android:layout_marginStart="10dp"
-                    app:icon="@drawable/category_shows_movies"
-                    style="@style/Suggest.Button"
-                    app:layout_constraintBottom_toBottomOf="@id/buttonFourteen"
-                    app:layout_constraintStart_toEndOf="@+id/buttonSixteen"
-                    app:layout_constraintTop_toTopOf="@id/buttonFourteen" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/buttonEighteen"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:onClick="@{() -> categoryCallback.onVenueCategoryClickListener(Config.INDIAN, @string/title_indian_button)}"
-                    android:text="@string/title_indian_button"
-                    app:icon="@drawable/category_indian"
-                    style="@style/Suggest.Button"
-                    app:layout_constraintBottom_toBottomOf="@id/buttonFourteen"
-                    app:layout_constraintStart_toEndOf="@id/buttonSeventeen"
-                    app:layout_constraintTop_toTopOf="@id/buttonFourteen" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/buttonNineteen"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:onClick="@{() -> categoryCallback.onVenueCategoryClickListener(Config.THAI, @string/title_thai_button)}"
-                    android:text="@string/title_thai_button"
-                    app:icon="@drawable/category_thai"
-                    style="@style/Suggest.Button"
-                    app:layout_constraintTop_toTopOf="@+id/buttonFourteen"
-                    app:layout_constraintBottom_toBottomOf="@id/buttonFourteen"
-                    app:layout_constraintStart_toEndOf="@+id/buttonEighteen"/>
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/buttonTwenty"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:onClick="@{() -> categoryCallback.onVenueCategoryClickListener(Config.EVENTS, @string/title_events_button)}"
-                    android:text="@string/title_events_button"
-                    app:icon="@drawable/category_events"
-                    style="@style/Suggest.Button"
-                    app:layout_constraintStart_toEndOf="@id/buttonNineteen"
-                    app:layout_constraintTop_toTopOf="@id/buttonFourteen"
-                    app:layout_constraintBottom_toBottomOf="@id/buttonFourteen"/>
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/buttonTwentyOne"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="@{() -> categoryCallback.onVenueCategoryClickListener(Config.SOCIAL, @string/title_meet_up_button)}"
-                    android:text="@string/title_meet_up_button"
-                    app:icon="@drawable/category_meet_up"
-                    android:layout_marginStart="10dp"
-                    style="@style/Suggest.Button"
-                    app:layout_constraintBottom_toBottomOf="@id/buttonThirteen"
-                    app:layout_constraintStart_toEndOf="@+id/buttonThirteen"
-                    app:layout_constraintTop_toTopOf="@+id/buttonThirteen" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </HorizontalScrollView>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:background="@color/quantum_white_100"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/search_bar" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent=".5" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/startGuideline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent=".05" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/endGuideline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent=".95" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

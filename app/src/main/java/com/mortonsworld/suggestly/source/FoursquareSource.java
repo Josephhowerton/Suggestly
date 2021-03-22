@@ -1,7 +1,6 @@
 package com.mortonsworld.suggestly.source;
 
 import android.app.Application;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
@@ -10,8 +9,9 @@ import androidx.paging.DataSource;
 import com.mortonsworld.suggestly.model.foursquare.Category;
 import com.mortonsworld.suggestly.model.foursquare.CategoryClosure;
 import com.mortonsworld.suggestly.model.foursquare.FoursquareResult;
+import com.mortonsworld.suggestly.model.foursquare.SimilarVenues;
 import com.mortonsworld.suggestly.model.foursquare.Venue;
-import com.mortonsworld.suggestly.model.relations.VenueAndCategory;
+import com.mortonsworld.suggestly.model.foursquare.VenueAndCategory;
 import com.mortonsworld.suggestly.room.FoursquareCategoryDao;
 import com.mortonsworld.suggestly.utility.Config;
 import com.mortonsworld.suggestly.retrofit.FoursquareManager;
@@ -180,6 +180,10 @@ public class FoursquareSource {
                 .subscribe(observer);
     }
 
+    public void createSimilarVenue(SimilarVenues venue){
+        executorService.execute(() -> foursquareDao.createSimilarVenue(venue));
+    }
+
     public void createRecommendedVenue(Venue venue, Observer<Boolean> observer){
         Observable<Boolean> observable = Observable.create(source -> {
             long result = foursquareDao.create(venue);
@@ -213,6 +217,16 @@ public class FoursquareSource {
         return null;
     }
 
+
+    public DataSource.Factory<Integer, Category> readRelatedCategoriesDataFactory(String categoryId){
+        try{
+            return executorService.submit(() -> foursquareCategoryDao.readRelatedCategories(categoryId)).get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public List<VenueAndCategory> readRecommendedVenuesLiveData(){
         try{
             return executorService.submit(foursquareDao::readRecommendedVenuesLiveData).get();
@@ -222,31 +236,33 @@ public class FoursquareSource {
         return null;
     }
 
-    public List<VenueAndCategory> readVenuesLiveData(String categoryId){
+    public LiveData<List<VenueAndCategory>> readSimilarVenuesLiveData(String id){
         try{
-            return executorService.submit(() -> foursquareDao.readVenueByCategoryIdLiveData(categoryId)).get();
+            return executorService.submit(() -> foursquareDao.readSimilarVenuesLiveData(id)).get();
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public void readVenueDetails(String id, Observer<Venue> observer){
-        Observable<Venue> observable = Observable.create(source -> {
-            Venue result = foursquareDao.readVenueById(id);
-            if(result != null){
-                source.onNext(result);
-            }
-            source.onComplete();
-        });
-
-        observable.subscribeOn(Schedulers.io())
+    public void readVenuesObservable(String categoryId, Observer<List<VenueAndCategory>> observer){
+        foursquareDao.readVenueByCategoryIdObservable(categoryId)
+                .subscribeOn(Schedulers.io())
                 .subscribe(observer);
+    }
+
+    public LiveData<Venue> readVenueDetails(String id){
+        try{
+            return executorService.submit(() -> foursquareDao.readVenueById(id)).get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public void updateVenue(Venue venue, Observer<Boolean> observer){
         Observable<Boolean> observable = Observable.create(source -> {
-            venue.updateAt = new Date(System.currentTimeMillis());
+            venue.venueUpdatedDate = new Date(System.currentTimeMillis());
             int result = foursquareDao.update(venue);
             if(result >= 0){
                 source.onNext(true);
@@ -259,16 +275,19 @@ public class FoursquareSource {
                 .subscribe(observer);
     }
 
+    public void updateVenueDistance(double lat, double lng){
+        executorService.execute(() ->foursquareDao.updateVenueDistance(lat, lng));
+    }
+
     public void updateVenueWithDetails(Venue venue, Observer<Boolean> observer){
         Observable<Boolean> observable = Observable.create(source -> {
-            venue.updateAt = new Date(System.currentTimeMillis());
-            updateVenueContact(venue);
+            venue.venueUpdatedDate = new Date(System.currentTimeMillis());
+            updateVenueHasDetails(venue, true);
             updateVenueContact(venue);
             updateVenueStats(venue);
             updateVenueDescription(venue);
             updateVenueImage(venue);
-            updateVenueHours(venue);
-            int result = updateVenueHasDetails(venue, true);
+            int result = updateVenueHours(venue);
             if(result >= 0){
                 source.onNext(true);
             }else{
@@ -316,7 +335,7 @@ public class FoursquareSource {
     }
 
     public int updateVenueHasDetails(Venue venue, boolean hasDetails){
-        return foursquareDao.updateVenueRecommended(venue.venueId, hasDetails);
+        return foursquareDao.updateVenueHasDetails(venue.venueId, hasDetails);
     }
 
     public void deleteVenue(Venue venue, Observer<Boolean> observer){

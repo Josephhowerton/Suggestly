@@ -7,7 +7,7 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import com.google.gson.annotations.SerializedName;
-import com.mortonsworld.suggestly.interfaces.Suggestion;
+import com.mortonsworld.suggestly.model.Suggestion;
 import com.mortonsworld.suggestly.utility.SuggestionType;
 
 import org.jetbrains.annotations.NotNull;

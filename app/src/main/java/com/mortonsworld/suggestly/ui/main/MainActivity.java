@@ -1,24 +1,32 @@
 package com.mortonsworld.suggestly.ui.main;
 
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
+import android.app.Fragment;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.mortonsworld.suggestly.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.mortonsworld.suggestly.ui.home.HomeFragment;
+import com.mortonsworld.suggestly.ui.home.HomeViewModel;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-public class MainActivity extends AppCompatActivity implements NavController.OnDestinationChangedListener{
+public class MainActivity extends AppCompatActivity implements NavController.OnDestinationChangedListener, View.OnClickListener{
     private BottomNavigationView navView;
+    private OnReloadListener listener;
+    private FloatingActionButton FAB;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,9 +39,18 @@ public class MainActivity extends AppCompatActivity implements NavController.OnD
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         navController.addOnDestinationChangedListener(this);
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
 
+        FAB = findViewById(R.id.reload_floating_action_button);
+        FAB.setOnClickListener(view -> listener.onReloadClickListener());
+        HomeViewModel homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
+        homeViewModel.getLoad().observe(this, aBoolean -> {
+            if(aBoolean) {
+                FAB.setVisibility(View.VISIBLE);
+            }else{
+                FAB.setVisibility(View.GONE);
+            }
+        });
     }
 
     @Override
@@ -54,5 +71,29 @@ public class MainActivity extends AppCompatActivity implements NavController.OnD
         }
         navView.setVisibility(View.GONE);
     }
+
+    @Override
+    public void onClick(View v) {
+        listener.onReloadClickListener();
+    }
+
+    public void setOnReloadClickListener(OnReloadListener listener){
+        this.listener = listener;
+    }
+
+    public void showReloadVenueOptionListener(){
+        ObjectAnimator scaleDown = ObjectAnimator.ofPropertyValuesHolder(FAB,
+                PropertyValuesHolder.ofFloat("scaleX", 1.2f),
+                PropertyValuesHolder.ofFloat("scaleY", 1.2f));
+        scaleDown.setDuration(310);
+        scaleDown.setRepeatCount(ObjectAnimator.INFINITE);
+        scaleDown.setRepeatMode(ObjectAnimator.REVERSE);
+        scaleDown.start();
+    }
+
+    public interface OnReloadListener {
+        void onReloadClickListener();
+    }
+
 
 }

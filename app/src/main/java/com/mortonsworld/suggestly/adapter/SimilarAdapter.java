@@ -1,6 +1,8 @@
 package com.mortonsworld.suggestly.adapter;
 
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -12,14 +14,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.mortonsworld.suggestly.R;
 import com.mortonsworld.suggestly.databinding.CardViewHomeBinding;
+import com.mortonsworld.suggestly.model.Suggestion;
 import com.mortonsworld.suggestly.model.foursquare.Venue;
+import com.mortonsworld.suggestly.model.nyt.Book;
 
-public class SimilarAdapter extends PagedListAdapter<Venue, SimilarAdapter.SimilarViewHolder> {
+import java.util.List;
 
-private final VenueSelectedListener listener;
+public class SimilarAdapter extends RecyclerView.Adapter<SimilarAdapter.SimilarViewHolder> {
+    private final List<Suggestion> list;
+    private final SuggestionSelectedListener listener;
 
-    public SimilarAdapter(@NonNull DiffUtil.ItemCallback<Venue> diffCallback, VenueSelectedListener listener) {
-        super(diffCallback);
+    public SimilarAdapter(List<Suggestion> list, SuggestionSelectedListener listener) {
+        this.list = list;
         this.listener = listener;
     }
 
@@ -33,13 +39,20 @@ private final VenueSelectedListener listener;
 
     @Override
     public void onBindViewHolder(@NonNull SimilarViewHolder holder, int position) {
-        final Venue venue = getItem(position);
-        if(venue != null){
-            holder.bind(venue);
+        final Suggestion suggestion = list.get(position);
+        switch (suggestion.getSuggestionType()){
+            case FOURSQUARE_VENUE:
+                break;
+
+            case BOOK:
+                holder.bindBook((Book)suggestion);
+                break;
         }
-        else{
-            holder.clear();
-        }
+    }
+
+    @Override
+    public int getItemCount() {
+        return list.size();
     }
 
     public class SimilarViewHolder extends RecyclerView.ViewHolder {
@@ -50,7 +63,7 @@ private final VenueSelectedListener listener;
             this.binding = binding;
         }
 
-        public void bind(Venue venue){
+        public void bindVenue(Venue venue){
             binding.name.setText(venue.getName());
             binding.address.setText(venue.location.address);
             binding.address.setMaxLines(2);
@@ -60,10 +73,22 @@ private final VenueSelectedListener listener;
             binding.cardView.setOnClickListener(view -> listener.onVenueSelected(venue));
         }
 
-        public void clear(){}
+        public void bindBook(Book book){
+            binding.name.setText(book.getTitle());
+            binding.categoryName.setText(book.getDisplayName());
+            binding.distance.setText(book.getAuthor());
+            binding.distance.setTypeface(Typeface.DEFAULT_BOLD);
+            binding.address.setVisibility(View.GONE);
+            binding.saveImage.setVisibility(View.GONE);
+            binding.cardView.setOnClickListener(view -> listener.onVenueSelected(book));
+            Glide.with(binding.getRoot())
+                    .load(book.getBookImage())
+                    .placeholder(R.drawable.progress_bar)
+                    .into(binding.mainImage);
+        }
     }
 
-    public interface VenueSelectedListener{
-        void onVenueSelected(Venue venue);
+    public interface SuggestionSelectedListener{
+        void onVenueSelected(Suggestion suggestion);
     }
 }

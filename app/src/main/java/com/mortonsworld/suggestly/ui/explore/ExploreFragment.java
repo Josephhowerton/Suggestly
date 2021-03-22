@@ -1,7 +1,6 @@
 package com.mortonsworld.suggestly.ui.explore;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,10 +15,9 @@ import androidx.recyclerview.widget.DiffUtil;
 
 import com.mortonsworld.suggestly.R;
 import com.mortonsworld.suggestly.databinding.FragmentExploreBinding;
-import com.mortonsworld.suggestly.interfaces.CategoryCallback;
-import com.mortonsworld.suggestly.interfaces.Suggestion;
-import com.mortonsworld.suggestly.interfaces.SuggestionCallback;
-import com.mortonsworld.suggestly.model.relations.VenueAndCategory;
+import com.mortonsworld.suggestly.callbacks.CategoryCallback;
+import com.mortonsworld.suggestly.model.Suggestion;
+import com.mortonsworld.suggestly.callbacks.SuggestionCallback;
 import com.mortonsworld.suggestly.utility.Config;
 import com.mortonsworld.suggestly.utility.SuggestionType;
 

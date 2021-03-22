@@ -67,4 +67,12 @@ public class DistanceCalculator {
 
         return Math.sqrt(distance);
     }
+
+    public static double meterToMiles(double distance) {
+        return distance * 0.000621371;
+    }
+
+    public static double milesToMeter(double distance) {
+        return distance * 1609.34;
+    }
 }

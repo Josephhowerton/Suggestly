@@ -41,6 +41,9 @@ public abstract class NewYorkTimesDAO {
     @Query("SELECT * FROM Book WHERE listNameEncoded =:name")
     public abstract List<Book> readBooksByListName(String name);
 
+    @Query("SELECT * FROM Book WHERE (listNameEncoded=:name AND primaryIsbn13 !=:isbn13 AND RANDOM()) LIMIT 3")
+    public abstract List<Book> readBooksByListNameLimit3(String isbn13, String name);
+
     @Query("SELECT * FROM Book")
     public abstract Observable<List<Book>> readAllBooks();
 

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".ui.home.HomeFragment">
@@ -9,496 +10,517 @@
 
         <variable
             name="suggestion"
-            type="com.mortonsworld.suggestly.interfaces.Suggestion" />
+            type="com.mortonsworld.suggestly.model.Suggestion" />
 
         <variable
             name="more"
-            type="com.mortonsworld.suggestly.interfaces.MoreCallback" />
+            type="com.mortonsworld.suggestly.callbacks.MoreCallback" />
 
         <variable
             name="details"
-            type="com.mortonsworld.suggestly.interfaces.DetailsCallback" />
+            type="com.mortonsworld.suggestly.callbacks.DetailsCallback" />
     </data>
-    <ScrollView
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/home_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/startGuideline"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent=".05"/>
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                app:title="@string/title_home"
+                app:titleTextColor="@color/white"
+                app:menu="@menu/home_menu"
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize"
+                android:theme = "@android:style/ThemeOverlay.Material.Dark.ActionBar"/>
 
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/endGuideline"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent=".95"/>
+        </com.google.android.material.appbar.AppBarLayout>
 
-            <TextView
-                android:id="@+id/title_topSuggestion"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/title_topSuggestion"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="@id/endGuideline"
-                app:layout_constraintStart_toStartOf="@id/startGuideline" />
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/title_selectedBy"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/title_selectedBy"
-                app:layout_constraintStart_toStartOf="@id/startGuideline"
-                app:layout_constraintTop_toBottomOf="@id/title_topSuggestion"
-                app:layout_constraintEnd_toEndOf="@id/title_topSuggestionTitle"/>
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/startGuideline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent=".05"/>
 
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/endGuideline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent=".95"/>
 
-            <ImageView
-                android:id="@+id/image_topSuggestion"
-                android:layout_width="0dp"
-                android:layout_height="200dp"
-                android:background="@color/wolf_grey"
-                app:layout_constraintEnd_toEndOf="@id/endGuideline"
-                app:layout_constraintStart_toStartOf="@id/startGuideline"
-                app:layout_constraintTop_toBottomOf="@id/title_selectedBy"
-                android:onClick="@{() -> details.onSuggestionDetailsListener(suggestion)}"/>
+                <TextView
+                    android:id="@+id/title_topSuggestion"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/title_topSuggestion"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="@id/endGuideline"
+                    app:layout_constraintStart_toStartOf="@id/startGuideline" />
 
-            <TextView
-                android:id="@+id/title_topSuggestionTitle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:ellipsize="end"
-                app:layout_constraintEnd_toEndOf="@id/endGuideline"
-                app:layout_constraintStart_toStartOf="@id/startGuideline"
-                app:layout_constraintTop_toBottomOf="@id/image_topSuggestion"/>
-
-            <TextView
-                android:id="@+id/title_topSuggestionDescription"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:ellipsize="end"
-                app:layout_constraintEnd_toEndOf="@id/endGuideline"
-                app:layout_constraintStart_toStartOf="@id/startGuideline"
-                app:layout_constraintTop_toBottomOf="@id/title_topSuggestionTitle" />
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/suggestion_recommended_title"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="150dp"
-                android:text="@string/suggestion_recommended_title"
-                app:layout_constraintEnd_toStartOf="@id/more_suggestions_recommended"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@id/left_guideline"
-                app:layout_constraintTop_toBottomOf="@id/title_topSuggestionDescription" />
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/more_suggestions_recommended"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:text="@string/more"
-                app:layout_constraintEnd_toEndOf="@id/right_guideline"
-                app:layout_constraintStart_toEndOf="@id/inner_right_guideline"
-                app:layout_constraintTop_toTopOf="@id/suggestion_recommended_title"
-                app:layout_constraintBottom_toBottomOf="@+id/suggestion_recommended_title"
-                android:onClick="@{() -> more.onMoreSuggestions(SuggestionType.RECOMMENDED_VENUE, Config.LIST_RECOMMENDED_ID_KEY, @string/suggestion_recommended_title)}"/>
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/suggestions_recommended_short_description"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:text="@string/suggestion_recommended_short_description"
-                app:layout_constraintEnd_toStartOf="@+id/right_guideline"
-                app:layout_constraintStart_toStartOf="@id/left_guideline"
-                app:layout_constraintTop_toBottomOf="@id/suggestion_recommended_title" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/suggestions_recommended_recycler_view"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintEnd_toEndOf="@id/right_guideline"
-                app:layout_constraintStart_toStartOf="@id/left_guideline"
-                app:layout_constraintTop_toBottomOf="@+id/suggestions_recommended_short_description" />
-
-            <!-- - - - - - - - - - - - - - - - Restaurants - - - - - - - - - - - - - - - - - - - - - - - -->
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/suggestions_restaurant_title"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
-                android:text="@string/suggestion_restaurants_title"
-                app:layout_constraintEnd_toStartOf="@id/more_suggestions_restaurants"
-                app:layout_constraintStart_toStartOf="@id/left_guideline"
-                app:layout_constraintTop_toBottomOf="@id/suggestions_recommended_recycler_view" />
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/more_suggestions_restaurants"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:text="@string/more"
-                app:layout_constraintEnd_toEndOf="@id/right_guideline"
-                app:layout_constraintStart_toEndOf="@id/inner_right_guideline"
-                app:layout_constraintTop_toTopOf="@+id/suggestions_restaurant_title"
-                app:layout_constraintBottom_toBottomOf="@+id/suggestions_restaurant_title"
-                android:onClick="@{() -> more.onMoreSuggestions(SuggestionType.FOURSQUARE_VENUE, Config.FOOD, @string/suggestion_restaurants_title)}"/>
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/suggestions_restaurants_short_description"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:text="@string/suggestion_restaurants_short_description"
-                app:layout_constraintEnd_toStartOf="@+id/right_guideline"
-                app:layout_constraintStart_toStartOf="@id/left_guideline"
-                app:layout_constraintTop_toBottomOf="@id/suggestions_restaurant_title" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/suggestions_restaurants_recycler_view"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintEnd_toEndOf="@id/right_guideline"
-                app:layout_constraintStart_toStartOf="@id/left_guideline"
-                app:layout_constraintTop_toBottomOf="@+id/suggestions_restaurants_short_description" />
-
-            <!-- - - - - - - - - - - - - - - - Bestsellers - - - - - - - - - - - - - - - - - - - - - - - -->
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/suggestions_nyt_fiction_title"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
-                android:text="@string/suggestion_bestsellers_title"
-                app:layout_constraintEnd_toStartOf="@id/more_suggestions_nyt_fiction"
-                app:layout_constraintStart_toStartOf="@id/left_guideline"
-                app:layout_constraintTop_toBottomOf="@id/suggestions_restaurants_recycler_view" />
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/more_suggestions_nyt_fiction"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:text="@string/more"
-                app:layout_constraintEnd_toEndOf="@id/right_guideline"
-                app:layout_constraintStart_toEndOf="@id/inner_right_guideline"
-                app:layout_constraintTop_toTopOf="@id/suggestions_nyt_fiction_title"
-                app:layout_constraintBottom_toBottomOf="@+id/suggestions_nyt_fiction_title"
-                android:onClick="@{() -> more.onMoreSuggestions(SuggestionType.BOOK, Config.HARD_COVER_FICTION, @string/suggestion_bestsellers_title)}"/>
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/suggestions_nyt_fiction_short_description"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:text="@string/suggestion_bestsellers_short_description"
-                app:layout_constraintEnd_toStartOf="@+id/right_guideline"
-                app:layout_constraintStart_toStartOf="@id/left_guideline"
-                app:layout_constraintTop_toBottomOf="@id/suggestions_nyt_fiction_title" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/suggestions_nyt_fiction_recycler_view"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintEnd_toEndOf="@id/right_guideline"
-                app:layout_constraintStart_toStartOf="@id/left_guideline"
-                app:layout_constraintTop_toBottomOf="@+id/suggestions_nyt_fiction_short_description" />
+                <TextView
+                    android:id="@+id/title_selectedBy"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/title_selectedBy"
+                    app:layout_constraintStart_toStartOf="@id/startGuideline"
+                    app:layout_constraintTop_toBottomOf="@id/title_topSuggestion"
+                    app:layout_constraintEnd_toEndOf="@id/title_topSuggestionTitle"/>
 
 
-            <!-- - - - - - - - - - - - - - - - Breweries - - - - - - - - - - - - - - - - - - - - - - - -->
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/suggestions_brewery_title"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
-                android:text="@string/suggestion_breweries_title"
-                app:layout_constraintEnd_toStartOf="@id/more_suggestions_recommended"
-                app:layout_constraintStart_toStartOf="@id/left_guideline"
-                app:layout_constraintTop_toBottomOf="@id/suggestions_nyt_fiction_recycler_view" />
+                <ImageView
+                    android:id="@+id/image_topSuggestion"
+                    android:layout_width="0dp"
+                    android:layout_height="200dp"
+                    android:background="@color/wolf_grey"
+                    app:layout_constraintEnd_toEndOf="@id/endGuideline"
+                    app:layout_constraintStart_toStartOf="@id/startGuideline"
+                    app:layout_constraintTop_toBottomOf="@id/title_selectedBy"
+                    android:onClick="@{() -> details.onSuggestionDetailsListener(suggestion)}"/>
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/more_suggestions_brewery"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:text="@string/more"
-                app:layout_constraintEnd_toEndOf="@id/right_guideline"
-                app:layout_constraintStart_toEndOf="@id/inner_right_guideline"
-                app:layout_constraintTop_toTopOf="@id/suggestions_brewery_title"
-                app:layout_constraintBottom_toBottomOf="@+id/suggestions_brewery_title"
-                android:onClick="@{() -> more.onMoreSuggestions(SuggestionType.FOURSQUARE_VENUE, Config.BREWERY, @string/suggestion_breweries_title)}"/>
+                <TextView
+                    android:id="@+id/title_topSuggestionTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    app:layout_constraintEnd_toEndOf="@id/endGuideline"
+                    app:layout_constraintStart_toStartOf="@id/startGuideline"
+                    app:layout_constraintTop_toBottomOf="@id/image_topSuggestion"/>
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/suggestions_brewery_short_description"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:text="@string/suggestion_breweries_short_description"
-                app:layout_constraintEnd_toStartOf="@+id/right_guideline"
-                app:layout_constraintStart_toStartOf="@id/left_guideline"
-                app:layout_constraintTop_toBottomOf="@id/suggestions_brewery_title" />
+                <TextView
+                    android:id="@+id/title_topSuggestionDescription"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    app:layout_constraintEnd_toEndOf="@id/endGuideline"
+                    app:layout_constraintStart_toStartOf="@id/startGuideline"
+                    app:layout_constraintTop_toBottomOf="@id/title_topSuggestionTitle" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/suggestions_brewery_recycler_view"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintEnd_toEndOf="@id/right_guideline"
-                app:layout_constraintStart_toStartOf="@id/left_guideline"
-                app:layout_constraintTop_toBottomOf="@+id/suggestions_brewery_short_description" />
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/suggestion_recommended_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="150dp"
+                    android:text="@string/suggestion_recommended_title"
+                    app:layout_constraintEnd_toStartOf="@id/more_suggestions_recommended"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="@id/left_guideline"
+                    app:layout_constraintTop_toBottomOf="@id/title_topSuggestionDescription" />
 
-            <!-- - - - - - - - - - - - - - - - Fun - - - - - - - - - - - - - - - - - - - - - - - -->
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/suggestions_family_fun_title"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
-                android:text="@string/suggestion_family_fun_title"
-                app:layout_constraintEnd_toStartOf="@id/more_suggestions_family_fun"
-                app:layout_constraintStart_toStartOf="@id/left_guideline"
-                app:layout_constraintTop_toBottomOf="@id/suggestions_brewery_recycler_view" />
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/more_suggestions_recommended"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:text="@string/more"
+                    app:layout_constraintEnd_toEndOf="@id/right_guideline"
+                    app:layout_constraintStart_toEndOf="@id/inner_right_guideline"
+                    app:layout_constraintTop_toTopOf="@id/suggestion_recommended_title"
+                    app:layout_constraintBottom_toBottomOf="@+id/suggestion_recommended_title"
+                    android:onClick="@{() -> more.onMoreSuggestions(SuggestionType.RECOMMENDED_VENUE, Config.LIST_RECOMMENDED_ID_KEY, @string/suggestion_recommended_title)}"/>
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/more_suggestions_family_fun"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:text="@string/more"
-                app:layout_constraintBottom_toBottomOf="@+id/suggestions_family_fun_title"
-                app:layout_constraintEnd_toEndOf="@id/right_guideline"
-                app:layout_constraintStart_toEndOf="@id/inner_right_guideline"
-                app:layout_constraintTop_toTopOf="@id/suggestions_family_fun_title"
-                android:onClick="@{() -> more.onMoreSuggestions(SuggestionType.FOURSQUARE_VENUE, Config.FAMILY_FUN, @string/suggestion_family_fun_title)}"/>
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/suggestions_recommended_short_description"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="@string/suggestion_recommended_short_description"
+                    app:layout_constraintEnd_toStartOf="@+id/right_guideline"
+                    app:layout_constraintStart_toStartOf="@id/left_guideline"
+                    app:layout_constraintTop_toBottomOf="@id/suggestion_recommended_title" />
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/suggestions_family_fun_short_description"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:text="@string/suggestion_family_fun_short_description"
-                app:layout_constraintEnd_toStartOf="@+id/right_guideline"
-                app:layout_constraintStart_toStartOf="@id/left_guideline"
-                app:layout_constraintTop_toBottomOf="@id/suggestions_family_fun_title" />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/suggestions_recommended_recycler_view"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="@id/right_guideline"
+                    app:layout_constraintStart_toStartOf="@id/left_guideline"
+                    app:layout_constraintTop_toBottomOf="@+id/suggestions_recommended_short_description" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/suggestions_family_fun_recycler_view"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintEnd_toEndOf="@id/right_guideline"
-                app:layout_constraintStart_toStartOf="@id/left_guideline"
-                app:layout_constraintTop_toBottomOf="@+id/suggestions_family_fun_short_description" />
+                <!-- - - - - - - - - - - - - - - - Restaurants - - - - - - - - - - - - - - - - - - - - - - - -->
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/suggestions_restaurant_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="40dp"
+                    android:text="@string/suggestion_restaurants_title"
+                    app:layout_constraintEnd_toStartOf="@id/more_suggestions_restaurants"
+                    app:layout_constraintStart_toStartOf="@id/left_guideline"
+                    app:layout_constraintTop_toBottomOf="@id/suggestions_recommended_recycler_view" />
 
-            <!-- - - - - - - - - - - - - - - - Recipes - - - - - - - - - - - - - - - - - - - - - - - -->
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/suggestions_nyt_nonfiction_title"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
-                android:text="@string/suggestion_nyt_nonfiction_title"
-                app:layout_constraintEnd_toStartOf="@id/more_suggestions_nyt_nonfiction"
-                app:layout_constraintStart_toStartOf="@id/left_guideline"
-                app:layout_constraintTop_toBottomOf="@id/suggestions_family_fun_recycler_view" />
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/more_suggestions_restaurants"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:text="@string/more"
+                    app:layout_constraintEnd_toEndOf="@id/right_guideline"
+                    app:layout_constraintStart_toEndOf="@id/inner_right_guideline"
+                    app:layout_constraintTop_toTopOf="@+id/suggestions_restaurant_title"
+                    app:layout_constraintBottom_toBottomOf="@+id/suggestions_restaurant_title"
+                    android:onClick="@{() -> more.onMoreSuggestions(SuggestionType.FOURSQUARE_VENUE, Config.FOOD, @string/suggestion_restaurants_title)}"/>
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/more_suggestions_nyt_nonfiction"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:text="@string/more"
-                app:layout_constraintBottom_toBottomOf="@+id/suggestions_nyt_nonfiction_title"
-                app:layout_constraintEnd_toEndOf="@id/right_guideline"
-                app:layout_constraintStart_toEndOf="@id/inner_right_guideline"
-                app:layout_constraintTop_toTopOf="@id/suggestions_nyt_nonfiction_title"
-                android:onClick="@{() -> more.onMoreSuggestions(SuggestionType.BOOK, Config.HARD_COVER_NON_FICTION, @string/suggestion_nyt_nonfiction_title)}"/>
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/suggestions_restaurants_short_description"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="@string/suggestion_restaurants_short_description"
+                    app:layout_constraintEnd_toStartOf="@+id/right_guideline"
+                    app:layout_constraintStart_toStartOf="@id/left_guideline"
+                    app:layout_constraintTop_toBottomOf="@id/suggestions_restaurant_title" />
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/suggestions_nyt_nonfiction_description"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:text="@string/suggestion_nyt_non_fiction_short_description"
-                app:layout_constraintEnd_toStartOf="@+id/right_guideline"
-                app:layout_constraintStart_toStartOf="@id/left_guideline"
-                app:layout_constraintTop_toBottomOf="@id/suggestions_nyt_nonfiction_title" />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/suggestions_restaurants_recycler_view"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="@id/right_guideline"
+                    app:layout_constraintStart_toStartOf="@id/left_guideline"
+                    app:layout_constraintTop_toBottomOf="@+id/suggestions_restaurants_short_description" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/suggestions_nyt_nonfiction_recycler_view"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintEnd_toEndOf="@id/right_guideline"
-                app:layout_constraintStart_toStartOf="@id/left_guideline"
-                app:layout_constraintTop_toBottomOf="@+id/suggestions_nyt_nonfiction_description" />
+                <!-- - - - - - - - - - - - - - - - Bestsellers - - - - - - - - - - - - - - - - - - - - - - - -->
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/suggestions_nyt_fiction_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="40dp"
+                    android:text="@string/suggestion_bestsellers_title"
+                    app:layout_constraintEnd_toStartOf="@id/more_suggestions_nyt_fiction"
+                    app:layout_constraintStart_toStartOf="@id/left_guideline"
+                    app:layout_constraintTop_toBottomOf="@id/suggestions_restaurants_recycler_view" />
 
-            <!-- - - - - - - - - - - - - - - - Active - - - - - - - - - - - - - - - - - - - - - - - -->
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/suggestions_active_title"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
-                android:text="@string/suggestion_active_title"
-                app:layout_constraintEnd_toStartOf="@id/more_suggestions_active"
-                app:layout_constraintStart_toStartOf="@id/left_guideline"
-                app:layout_constraintTop_toBottomOf="@id/suggestions_nyt_nonfiction_recycler_view" />
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/more_suggestions_nyt_fiction"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:text="@string/more"
+                    app:layout_constraintEnd_toEndOf="@id/right_guideline"
+                    app:layout_constraintStart_toEndOf="@id/inner_right_guideline"
+                    app:layout_constraintTop_toTopOf="@id/suggestions_nyt_fiction_title"
+                    app:layout_constraintBottom_toBottomOf="@+id/suggestions_nyt_fiction_title"
+                    android:onClick="@{() -> more.onMoreSuggestions(SuggestionType.BOOK, Config.HARD_COVER_FICTION, @string/suggestion_bestsellers_title)}"/>
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/more_suggestions_active"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:text="@string/more"
-                app:layout_constraintBottom_toBottomOf="@+id/suggestions_active_title"
-                app:layout_constraintEnd_toEndOf="@id/right_guideline"
-                app:layout_constraintStart_toEndOf="@id/inner_right_guideline"
-                app:layout_constraintTop_toTopOf="@id/suggestions_active_title"
-                android:onClick="@{() -> more.onMoreSuggestions(SuggestionType.FOURSQUARE_VENUE, Config.ACTIVE, @string/suggestion_active_title)}"/>
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/suggestions_nyt_fiction_short_description"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="@string/suggestion_bestsellers_short_description"
+                    app:layout_constraintEnd_toStartOf="@+id/right_guideline"
+                    app:layout_constraintStart_toStartOf="@id/left_guideline"
+                    app:layout_constraintTop_toBottomOf="@id/suggestions_nyt_fiction_title" />
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/suggestions_active_short_description"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:text="@string/suggestion_active_short_description"
-                app:layout_constraintEnd_toStartOf="@+id/right_guideline"
-                app:layout_constraintStart_toStartOf="@id/left_guideline"
-                app:layout_constraintTop_toBottomOf="@id/suggestions_active_title" />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/suggestions_nyt_fiction_recycler_view"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="@id/right_guideline"
+                    app:layout_constraintStart_toStartOf="@id/left_guideline"
+                    app:layout_constraintTop_toBottomOf="@+id/suggestions_nyt_fiction_short_description" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/suggestions_active_recycler_view"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintEnd_toEndOf="@id/right_guideline"
-                app:layout_constraintStart_toStartOf="@id/left_guideline"
-                app:layout_constraintTop_toBottomOf="@+id/suggestions_active_short_description" />
 
-            <!-- - - - - - - - - - - - - - - - Social - - - - - - - - - - - - - - - - - - - - - - - -->
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/suggestions_social_title"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
-                android:text="@string/suggestion_social_title"
-                app:layout_constraintEnd_toStartOf="@id/more_suggestions_social"
-                app:layout_constraintStart_toStartOf="@id/left_guideline"
-                app:layout_constraintTop_toBottomOf="@id/suggestions_active_recycler_view" />
+                <!-- - - - - - - - - - - - - - - - Breweries - - - - - - - - - - - - - - - - - - - - - - - -->
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/suggestions_brewery_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="40dp"
+                    android:text="@string/suggestion_breweries_title"
+                    app:layout_constraintEnd_toStartOf="@id/more_suggestions_recommended"
+                    app:layout_constraintStart_toStartOf="@id/left_guideline"
+                    app:layout_constraintTop_toBottomOf="@id/suggestions_nyt_fiction_recycler_view" />
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/more_suggestions_social"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:text="@string/more"
-                app:layout_constraintBottom_toBottomOf="@id/suggestions_social_title"
-                app:layout_constraintEnd_toEndOf="@id/right_guideline"
-                app:layout_constraintStart_toEndOf="@id/inner_right_guideline"
-                app:layout_constraintTop_toTopOf="@id/suggestions_social_title"
-                android:onClick="@{() -> more.onMoreSuggestions(SuggestionType.FOURSQUARE_VENUE, Config.SOCIAL, @string/suggestion_social_title)}"/>
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/more_suggestions_brewery"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:text="@string/more"
+                    app:layout_constraintEnd_toEndOf="@id/right_guideline"
+                    app:layout_constraintStart_toEndOf="@id/inner_right_guideline"
+                    app:layout_constraintTop_toTopOf="@id/suggestions_brewery_title"
+                    app:layout_constraintBottom_toBottomOf="@+id/suggestions_brewery_title"
+                    android:onClick="@{() -> more.onMoreSuggestions(SuggestionType.FOURSQUARE_VENUE, Config.BREWERY, @string/suggestion_breweries_title)}"/>
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/suggestions_social_short_description"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:text="@string/suggestion_social_short_description"
-                app:layout_constraintEnd_toStartOf="@+id/right_guideline"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@id/left_guideline"
-                app:layout_constraintTop_toBottomOf="@id/suggestions_social_title" />
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/suggestions_brewery_short_description"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="@string/suggestion_breweries_short_description"
+                    app:layout_constraintEnd_toStartOf="@+id/right_guideline"
+                    app:layout_constraintStart_toStartOf="@id/left_guideline"
+                    app:layout_constraintTop_toBottomOf="@id/suggestions_brewery_title" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/suggestions_social_recycler_view"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintEnd_toEndOf="@id/right_guideline"
-                app:layout_constraintStart_toStartOf="@id/left_guideline"
-                app:layout_constraintTop_toBottomOf="@+id/suggestions_social_short_description" />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/suggestions_brewery_recycler_view"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="@id/right_guideline"
+                    app:layout_constraintStart_toStartOf="@id/left_guideline"
+                    app:layout_constraintTop_toBottomOf="@+id/suggestions_brewery_short_description" />
 
-            <!-- - - - - - - - - - - - - - - - Entertainment - - - - - - - - - - - - - - - - - - - - - - - -->
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/suggestions_entertainment_title"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
-                android:text="@string/suggestion_entertainment_title"
-                app:layout_constraintStart_toStartOf="@id/left_guideline"
-                app:layout_constraintEnd_toStartOf="@id/more_suggestions_entertainment"
-                app:layout_constraintTop_toBottomOf="@id/suggestions_social_recycler_view" />
+                <!-- - - - - - - - - - - - - - - - Fun - - - - - - - - - - - - - - - - - - - - - - - -->
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/suggestions_family_fun_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="40dp"
+                    android:text="@string/suggestion_family_fun_title"
+                    app:layout_constraintEnd_toStartOf="@id/more_suggestions_family_fun"
+                    app:layout_constraintStart_toStartOf="@id/left_guideline"
+                    app:layout_constraintTop_toBottomOf="@id/suggestions_brewery_recycler_view" />
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/more_suggestions_entertainment"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:text="@string/more"
-                app:layout_constraintEnd_toEndOf="@id/right_guideline"
-                app:layout_constraintStart_toEndOf="@id/inner_right_guideline"
-                app:layout_constraintTop_toTopOf="@id/suggestions_entertainment_title"
-                app:layout_constraintBottom_toBottomOf="@+id/suggestions_entertainment_title"
-                android:onClick="@{() -> more.onMoreSuggestions(SuggestionType.FOURSQUARE_VENUE, Config.EVENTS, @string/suggestion_entertainment_title)}"/>
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/more_suggestions_family_fun"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:text="@string/more"
+                    app:layout_constraintBottom_toBottomOf="@+id/suggestions_family_fun_title"
+                    app:layout_constraintEnd_toEndOf="@id/right_guideline"
+                    app:layout_constraintStart_toEndOf="@id/inner_right_guideline"
+                    app:layout_constraintTop_toTopOf="@id/suggestions_family_fun_title"
+                    android:onClick="@{() -> more.onMoreSuggestions(SuggestionType.FOURSQUARE_VENUE, Config.FAMILY_FUN, @string/suggestion_family_fun_title)}"/>
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/suggestions_entertainment_short_description"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:text="@string/suggestion_entertainment_short_description"
-                app:layout_constraintEnd_toStartOf="@+id/right_guideline"
-                app:layout_constraintStart_toStartOf="@id/left_guideline"
-                app:layout_constraintTop_toBottomOf="@id/suggestions_entertainment_title" />
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/suggestions_family_fun_short_description"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="@string/suggestion_family_fun_short_description"
+                    app:layout_constraintEnd_toStartOf="@+id/right_guideline"
+                    app:layout_constraintStart_toStartOf="@id/left_guideline"
+                    app:layout_constraintTop_toBottomOf="@id/suggestions_family_fun_title" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/suggestions_entertainment_recycler_view"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="100dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@id/right_guideline"
-                app:layout_constraintStart_toStartOf="@id/left_guideline"
-                app:layout_constraintTop_toBottomOf="@+id/suggestions_entertainment_short_description" />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/suggestions_family_fun_recycler_view"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="@id/right_guideline"
+                    app:layout_constraintStart_toStartOf="@id/left_guideline"
+                    app:layout_constraintTop_toBottomOf="@+id/suggestions_family_fun_short_description" />
 
-            <!-- - - - - - - - - - - - - - Layout Guidelines - - - - - - - - - - - - - - - - - - - - - - - - -->
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/left_button_guideline"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.25" />
+                <!-- - - - - - - - - - - - - - - - Recipes - - - - - - - - - - - - - - - - - - - - - - - -->
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/suggestions_nyt_nonfiction_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="40dp"
+                    android:text="@string/suggestion_nyt_nonfiction_title"
+                    app:layout_constraintEnd_toStartOf="@id/more_suggestions_nyt_nonfiction"
+                    app:layout_constraintStart_toStartOf="@id/left_guideline"
+                    app:layout_constraintTop_toBottomOf="@id/suggestions_family_fun_recycler_view" />
 
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/right_button_guideline"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.65" />
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/more_suggestions_nyt_nonfiction"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:text="@string/more"
+                    app:layout_constraintBottom_toBottomOf="@+id/suggestions_nyt_nonfiction_title"
+                    app:layout_constraintEnd_toEndOf="@id/right_guideline"
+                    app:layout_constraintStart_toEndOf="@id/inner_right_guideline"
+                    app:layout_constraintTop_toTopOf="@id/suggestions_nyt_nonfiction_title"
+                    android:onClick="@{() -> more.onMoreSuggestions(SuggestionType.BOOK, Config.HARD_COVER_NON_FICTION, @string/suggestion_nyt_nonfiction_title)}"/>
 
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/inner_right_guideline"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent=".8" />
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/suggestions_nyt_nonfiction_description"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="@string/suggestion_nyt_non_fiction_short_description"
+                    app:layout_constraintEnd_toStartOf="@+id/right_guideline"
+                    app:layout_constraintStart_toStartOf="@id/left_guideline"
+                    app:layout_constraintTop_toBottomOf="@id/suggestions_nyt_nonfiction_title" />
 
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/left_guideline"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.05" />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/suggestions_nyt_nonfiction_recycler_view"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="@id/right_guideline"
+                    app:layout_constraintStart_toStartOf="@id/left_guideline"
+                    app:layout_constraintTop_toBottomOf="@+id/suggestions_nyt_nonfiction_description" />
 
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/right_guideline"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.95" />
+                <!-- - - - - - - - - - - - - - - - Active - - - - - - - - - - - - - - - - - - - - - - - -->
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/suggestions_active_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="40dp"
+                    android:text="@string/suggestion_active_title"
+                    app:layout_constraintEnd_toStartOf="@id/more_suggestions_active"
+                    app:layout_constraintStart_toStartOf="@id/left_guideline"
+                    app:layout_constraintTop_toBottomOf="@id/suggestions_nyt_nonfiction_recycler_view" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/more_suggestions_active"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:text="@string/more"
+                    app:layout_constraintBottom_toBottomOf="@+id/suggestions_active_title"
+                    app:layout_constraintEnd_toEndOf="@id/right_guideline"
+                    app:layout_constraintStart_toEndOf="@id/inner_right_guideline"
+                    app:layout_constraintTop_toTopOf="@id/suggestions_active_title"
+                    android:onClick="@{() -> more.onMoreSuggestions(SuggestionType.FOURSQUARE_VENUE, Config.ACTIVE, @string/suggestion_active_title)}"/>
 
-    </ScrollView>
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/suggestions_active_short_description"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="@string/suggestion_active_short_description"
+                    app:layout_constraintEnd_toStartOf="@+id/right_guideline"
+                    app:layout_constraintStart_toStartOf="@id/left_guideline"
+                    app:layout_constraintTop_toBottomOf="@id/suggestions_active_title" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/suggestions_active_recycler_view"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="@id/right_guideline"
+                    app:layout_constraintStart_toStartOf="@id/left_guideline"
+                    app:layout_constraintTop_toBottomOf="@+id/suggestions_active_short_description" />
+
+                <!-- - - - - - - - - - - - - - - - Social - - - - - - - - - - - - - - - - - - - - - - - -->
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/suggestions_social_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="40dp"
+                    android:text="@string/suggestion_social_title"
+                    app:layout_constraintEnd_toStartOf="@id/more_suggestions_social"
+                    app:layout_constraintStart_toStartOf="@id/left_guideline"
+                    app:layout_constraintTop_toBottomOf="@id/suggestions_active_recycler_view" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/more_suggestions_social"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:text="@string/more"
+                    app:layout_constraintBottom_toBottomOf="@id/suggestions_social_title"
+                    app:layout_constraintEnd_toEndOf="@id/right_guideline"
+                    app:layout_constraintStart_toEndOf="@id/inner_right_guideline"
+                    app:layout_constraintTop_toTopOf="@id/suggestions_social_title"
+                    android:onClick="@{() -> more.onMoreSuggestions(SuggestionType.FOURSQUARE_VENUE, Config.SOCIAL, @string/suggestion_social_title)}"/>
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/suggestions_social_short_description"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="@string/suggestion_social_short_description"
+                    app:layout_constraintEnd_toStartOf="@+id/right_guideline"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="@id/left_guideline"
+                    app:layout_constraintTop_toBottomOf="@id/suggestions_social_title" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/suggestions_social_recycler_view"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="@id/right_guideline"
+                    app:layout_constraintStart_toStartOf="@id/left_guideline"
+                    app:layout_constraintTop_toBottomOf="@+id/suggestions_social_short_description" />
+
+                <!-- - - - - - - - - - - - - - - - Entertainment - - - - - - - - - - - - - - - - - - - - - - - -->
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/suggestions_entertainment_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="40dp"
+                    android:text="@string/suggestion_entertainment_title"
+                    app:layout_constraintStart_toStartOf="@id/left_guideline"
+                    app:layout_constraintEnd_toStartOf="@id/more_suggestions_entertainment"
+                    app:layout_constraintTop_toBottomOf="@id/suggestions_social_recycler_view" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/more_suggestions_entertainment"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:text="@string/more"
+                    app:layout_constraintEnd_toEndOf="@id/right_guideline"
+                    app:layout_constraintStart_toEndOf="@id/inner_right_guideline"
+                    app:layout_constraintTop_toTopOf="@id/suggestions_entertainment_title"
+                    app:layout_constraintBottom_toBottomOf="@+id/suggestions_entertainment_title"
+                    android:onClick="@{() -> more.onMoreSuggestions(SuggestionType.FOURSQUARE_VENUE, Config.EVENTS, @string/suggestion_entertainment_title)}"/>
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/suggestions_entertainment_short_description"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="@string/suggestion_entertainment_short_description"
+                    app:layout_constraintEnd_toStartOf="@+id/right_guideline"
+                    app:layout_constraintStart_toStartOf="@id/left_guideline"
+                    app:layout_constraintTop_toBottomOf="@id/suggestions_entertainment_title" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/suggestions_entertainment_recycler_view"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="100dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@id/right_guideline"
+                    app:layout_constraintStart_toStartOf="@id/left_guideline"
+                    app:layout_constraintTop_toBottomOf="@+id/suggestions_entertainment_short_description" />
+
+                <!-- - - - - - - - - - - - - - Layout Guidelines - - - - - - - - - - - - - - - - - - - - - - - - -->
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/left_button_guideline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.25" />
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/right_button_guideline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.65" />
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/inner_right_guideline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent=".8" />
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/left_guideline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.05" />
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/right_guideline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.95" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </ScrollView>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

@@ -35,7 +35,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Pre
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey);
-        getPreferenceManager().setSharedPreferencesName("DEFAULT");
+        getPreferenceManager().setSharedPreferencesName(Config.USER_SHARED_PREFERENCE_NAME);
         getPreferenceManager().setSharedPreferencesMode(Context.MODE_PRIVATE);
         getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
         getPreferenceManager().setOnPreferenceTreeClickListener(this);

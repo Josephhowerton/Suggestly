@@ -9,16 +9,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.mortonsworld.suggestly.R;
 import com.mortonsworld.suggestly.databinding.RowItemMoreBinding;
-import com.mortonsworld.suggestly.interfaces.DetailsCallback;
-import com.mortonsworld.suggestly.interfaces.Suggestion;
-import com.mortonsworld.suggestly.model.foursquare.Venue;
+import com.mortonsworld.suggestly.callbacks.DetailsCallback;
+import com.mortonsworld.suggestly.model.Suggestion;
 import com.mortonsworld.suggestly.model.nyt.Book;
-import com.mortonsworld.suggestly.model.relations.VenueAndCategory;
+import com.mortonsworld.suggestly.model.foursquare.VenueAndCategory;
 import com.mortonsworld.suggestly.model.user.LocationTuple;
-import com.mortonsworld.suggestly.utility.DistanceCalculator;
 
 import java.util.List;
-import java.util.Locale;
 
 public class MoreFragmentAdapter extends RecyclerView.Adapter<MoreFragmentAdapter.MoreViewHolder> {
     private final Context context;
@@ -74,6 +71,7 @@ public class MoreFragmentAdapter extends RecyclerView.Adapter<MoreFragmentAdapte
             binding.name.setText(venueAndCategory.venue.getName());
             binding.address.setText(venueAndCategory.venue.location.getFormattedAddress());
             binding.getRoot().setOnClickListener(view -> listener.onSuggestionDetailsListener(venueAndCategory.venue));
+            Glide.with(binding.getRoot()).load(venueAndCategory.category.getIconWithBGUrl(64)).placeholder(R.drawable.progress_bar).into(binding.icon);
         }
 
         private void bindBook(Book book){
@@ -81,16 +79,6 @@ public class MoreFragmentAdapter extends RecyclerView.Adapter<MoreFragmentAdapte
             binding.address.setText(book.getDescription());
             Glide.with(binding.getRoot()).load(book.getBookImage()).placeholder(R.drawable.progress_bar).into(binding.icon);
             binding.getRoot().setOnClickListener(view -> listener.onSuggestionDetailsListener(book));
-        }
-
-        public String formatDistance(Venue venue){
-            if(locationTuple == null){
-                return "";
-            }
-
-            return String.format(Locale.ENGLISH, "%.1f",
-                    DistanceCalculator.distanceMile(locationTuple.lat, venue.location.lat, locationTuple.lng, venue.location.lng)
-            );
         }
     }
 }

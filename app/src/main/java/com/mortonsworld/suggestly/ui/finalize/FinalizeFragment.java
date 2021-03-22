@@ -28,7 +28,6 @@ public class FinalizeFragment extends Fragment{
     private boolean isEVENTSCompleted = false;
     private boolean isACTIVECompleted = false;
     private boolean isSOCIALCompleted = false;
-    private boolean isENTERTAINMENTCompleted = false;
 
     public static FinalizeFragment newInstance() {
         return new FinalizeFragment();
@@ -46,16 +45,22 @@ public class FinalizeFragment extends Fragment{
         mViewModel = new ViewModelProvider(this).get(FinalizeViewModel.class);
         mViewModel.getUserLocationLiveData().observe(getViewLifecycleOwner(), user -> {
             if(DistanceCalculator.hasValidLocation(user.getLat(), user.getLng())){
+                storeLastFetchedLocation(user.getLat(), user.getLng());
                 getFoursquareVenuesNearUser_RECOMMENDED(user);
                 getFoursquareVenuesNearUser_FOOD(user);
                 getFoursquareVenuesNearUser_BREWERY(user);
                 getFoursquareVenuesNearUser_FAMILY_FUN(user);
                 getFoursquareVenuesNearUser_EVENTS(user);
                 getFoursquareVenuesNearUser_ACTIVE(user);
-                getGeneralFoursquareVenuesNearUserById_SOCIAL(user);
+                getFoursquareVenuesNearUser_SOCIAL(user);
             }
         });
     }
+
+    public void storeLastFetchedLocation(double lat, double lng){
+        mViewModel.storeLastFetchedLocation(lat, lng);
+    }
+
 
     public void getFoursquareVenuesNearUser_RECOMMENDED(User user){
         mViewModel.getRecommendedFoursquareVenuesNearUser(user.getLat(), user.getLng()).observe(requireActivity(), aBoolean -> {
@@ -99,7 +104,7 @@ public class FinalizeFragment extends Fragment{
         });
     }
 
-    public void getGeneralFoursquareVenuesNearUserById_SOCIAL(User user){
+    public void getFoursquareVenuesNearUser_SOCIAL(User user){
         mViewModel.getGeneralFoursquareVenuesNearUserById_SOCIAL(user.getLat(), user.getLng()).observe(requireActivity(), aBoolean -> {
             isSOCIALCompleted = true;
             goToMainActivity();

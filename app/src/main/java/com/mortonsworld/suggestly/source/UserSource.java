@@ -4,7 +4,7 @@ import android.app.Application;
 
 import androidx.room.Insert;
 
-import com.mortonsworld.suggestly.interfaces.Suggestion;
+import com.mortonsworld.suggestly.model.Suggestion;
 import com.mortonsworld.suggestly.model.user.LocationTuple;
 import com.mortonsworld.suggestly.model.user.User;
 import com.mortonsworld.suggestly.room.RoomDB;
@@ -13,6 +13,8 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
 
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Observer;
@@ -20,9 +22,10 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class UserSource {
     private final UserDao userDao;
-
-    public UserSource(Application application){
+    private final ExecutorService executorService;
+    public UserSource(Application application, ExecutorService service){
         userDao = RoomDB.getInstance(application).getUserDao();
+        executorService = service;
     }
 
     public void checkIfUserInRoom(String id, Observer<Boolean> observer){
@@ -64,8 +67,18 @@ public class UserSource {
     }
 
     public void readUserLocation(String id, Observer<LocationTuple> observer){
-        userDao.readUserLocation(id).subscribeOn(Schedulers.io())
+        userDao.readUserLocationObservable(id).subscribeOn(Schedulers.io())
                 .subscribe(observer);
+    }
+
+    public LocationTuple readUserLocation(String id){
+        try {
+            executorService.submit(() -> userDao.readUserLocation(id)).get();
+        }catch (InterruptedException | ExecutionException e){
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     public void updateUserLastSignedIn(String id, Date latestSignIn, Observer<Boolean> observer){

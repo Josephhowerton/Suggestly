@@ -1,5 +1,7 @@
 package com.mortonsworld.suggestly.model.foursquare;
 
+import androidx.room.ColumnInfo;
+
 public class Location {
     public String cc;
     public String city;
@@ -10,7 +12,9 @@ public class Location {
     public String postalCode;
     public Double lat;
     public Double lng;
-    public Integer distance;
+
+    @ColumnInfo(defaultValue = "0")
+    public Double distance;
 
     public String getFormattedAddress(){
         String formattedAddress = "";

@@ -100,4 +100,13 @@ public class NewYorkTimesSource {
         }
         return new ArrayList<>();
     }
+
+    public List<Book> readBooksByListNameLimitThree(String isbn13, String name){
+        try{
+            return executorService.submit(() -> newYorkTimesDAO.readBooksByListNameLimit3(isbn13, name)).get();
+        }catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
 }

@@ -9,7 +9,7 @@ import androidx.paging.PagedListAdapter;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.mortonsworld.suggestly.interfaces.Suggestion;
+import com.mortonsworld.suggestly.model.Suggestion;
 
 import org.jetbrains.annotations.NotNull;
 

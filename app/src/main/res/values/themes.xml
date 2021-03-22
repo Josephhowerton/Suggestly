@@ -40,6 +40,10 @@
         <item name="android:windowFullscreen">true</item>
     </style>
 
+    <style name="Theme.Suggest.Toolbar" parent="Widget.AppCompat.Toolbar">
+        <item name="titleTextColor">@color/white</item>
+    </style>
+
     <style name="Suggest.ProgressBar" parent="Widget.AppCompat.ProgressBar">
         <item name="android:indeterminateDrawable">@drawable/progress_bar</item>
     </style>
@@ -65,4 +69,5 @@
     <style name="ButtonShape" parent="Widget.MaterialComponents.Button">
         <item name="cornerSize">50%</item>
     </style>
+
 </resources>

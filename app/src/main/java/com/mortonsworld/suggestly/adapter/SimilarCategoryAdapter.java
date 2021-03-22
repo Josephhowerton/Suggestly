@@ -18,7 +18,7 @@ public class SimilarCategoryAdapter extends PagedListAdapter<Category, SimilarCa
 
     private final CategorySelectedListener selectedListener;
 
-    protected SimilarCategoryAdapter(@NonNull DiffUtil.ItemCallback<Category> diffCallback, CategorySelectedListener selectedListener) {
+    public SimilarCategoryAdapter(@NonNull DiffUtil.ItemCallback<Category> diffCallback, CategorySelectedListener selectedListener) {
         super(diffCallback);
 
         this.selectedListener = selectedListener;

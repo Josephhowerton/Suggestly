@@ -1,7 +1,7 @@
 package com.mortonsworld.suggestly.utility;
 
 public class Config {
-
+    public static final String DETAILS_SUGGESTION_TITLE_KEY = "DETAILS_SUGGESTION_TITLE";
     public static final String DETAILS_SUGGESTION_ID_KEY = "DETAILS_ID";
     public static final String DETAILS_SUGGESTION_TYPE_KEY = "DETAILS_SUGGESTION_TYPE";
     public static final String LIST_SUGGESTION_ID_KEY = "LIST_ID";
@@ -10,7 +10,7 @@ public class Config {
     public static final String LIST_SUGGESTION_TITLE_KEY = "MORE_FRAGMENT_TITLE";
     public static final String FOURSQUARE_BASE_URL = "https://api.foursquare.com";
     public static final String SUGGESTLY_URL_KEY = "SUGGEST_URL_KEY";
-    public static final String SUGGESTLY_EMAIL = "josephhowerton@suggestlyapp.com";
+    public static final String SUGGESTLY_EMAIL = "feedback@suggestlyapp.com";
     public static final String SUGGESTLY_EMAIL_SUBJECT = "Feedback";
     public static final String SUGGESTLY_BASE_URL = "https://www.suggestlyapp.com/home";
     public static final String SUGGESTLY_PP_URL = "https://www.suggestlyapp.com/privacy-policy";
@@ -50,12 +50,15 @@ public class Config {
     public static final String GEO_CODING_BASE_URL = "https://maps.googleapis.com";
     public static final String GOOGLE_API_KEY = "AIzaSyCk0qCfFw6l8pT-Iohcy0--HqIN5Jb0VCs";
 
+    public static final String USER_SHARED_PREFERENCE_NAME = "DEFAULT";
     public static final String USER_SHARED_PREFERENCE_VALID_LOCATION = "VALID_LOCATION";
     public static final String USER_SHARED_PREFERENCE_LOCATION_UPDATES = "CURRENT_USER_LOCATION_UPDATES";
     public static final String USER_SHARED_PREFERENCE_LOGOUT = "CURRENT_USER_LOGOUT";
     public static final String USER_SHARED_PREFERENCE_DELETE  = "CURRENT_USER_DELETE";
     public static final String USER_SHARED_PREFERENCE_PRIVACY_POLICY = "PRIVACY_POLICY";
     public static final String USER_SHARED_PREFERENCE_TERMS_OF_SERVICE = "TERMS_OF_SERVICE";
+    public static final String USER_SHARED_PREFERENCE_PREVIOUS_LATITUDE = "LAST_FETCHED LAT";
+    public static final String USER_SHARED_PREFERENCE_PREVIOUS_LONGITUDE = "LAST_FETCHED_LNG";
 
     public static final int LOCATION_REQUEST_CODE = 102;
     public static final int AUTHENTICATION_REQUEST_CODE = 101;

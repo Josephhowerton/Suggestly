@@ -1,4 +1,4 @@
-package com.mortonsworld.suggestly.interfaces;
+package com.mortonsworld.suggestly.model;
 
 import androidx.annotation.NonNull;
 

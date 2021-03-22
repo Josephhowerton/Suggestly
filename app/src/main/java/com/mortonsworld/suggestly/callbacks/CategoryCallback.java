@@ -1,4 +1,4 @@
-package com.mortonsworld.suggestly.interfaces;
+package com.mortonsworld.suggestly.callbacks;
 
 public interface CategoryCallback {
     void onVenueCategoryClickListener(String id, String title);

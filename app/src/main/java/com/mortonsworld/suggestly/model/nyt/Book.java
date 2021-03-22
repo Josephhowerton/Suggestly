@@ -3,7 +3,7 @@ import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import com.mortonsworld.suggestly.interfaces.Suggestion;
+import com.mortonsworld.suggestly.model.Suggestion;
 import com.mortonsworld.suggestly.utility.SuggestionType;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

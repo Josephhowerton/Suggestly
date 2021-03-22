@@ -6,9 +6,8 @@ import androidx.room.Embedded;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
-
 import com.google.gson.annotations.SerializedName;
-import com.mortonsworld.suggestly.interfaces.Suggestion;
+import com.mortonsworld.suggestly.model.Suggestion;
 import com.mortonsworld.suggestly.utility.SuggestionType;
 
 import java.sql.Date;
@@ -27,7 +26,7 @@ public class Venue extends Suggestion {
     @ColumnInfo(name = "venue_category_id")
     public String categoryId;
 
-    @ColumnInfo(name = "venue_id")
+    @ColumnInfo(name = "venue_name")
     public String name;
     
     @Embedded public Contact contact;
@@ -59,14 +58,17 @@ public class Venue extends Suggestion {
     @ColumnInfo(name = "is_venue_recommended")
     public Boolean isRecommended = false;
 
+    @Ignore
+    public Boolean isSaved = false;
+
     @ColumnInfo(name = "venue_has_details")
     public Boolean hasDetails = false;
 
     @ColumnInfo(name = "venue_created_at")
-    public Date createdAt;
+    public Date venueCreatedDate;
 
     @ColumnInfo(name = "venue_updated_at")
-    public Date updateAt;
+    public Date venueUpdatedDate;
 
     @ColumnInfo(name = "venue_icon_prefix")
     public String prefix;
@@ -427,7 +429,7 @@ public class Venue extends Suggestion {
 
     public String getBestPhotoUrl(){
         if(bestPhoto != null){
-            return bestPhoto.prefix + bestPhoto.height + "X" + bestPhoto.width + bestPhoto.suffix;
+            return bestPhoto.prefix + bestPhoto.height + "x" + bestPhoto.width + bestPhoto.suffix;
         }
         return "";
     }
@@ -448,19 +450,30 @@ public class Venue extends Suggestion {
         this.hasDetails = hasDetails;
     }
 
-    public Date getCreatedAt() {
-        return createdAt;
+    @Override
+    public boolean equals(Object obj) {
+        if(obj.getClass() != this.getClass()){
+            return false;
+        }else{
+            Venue venue = (Venue) obj;
+            if(compareDistance(venue.location.lat, venue.location.lng)){
+                return venueId.equals(venue.venueId);
+            }else{
+               return false;
+            }
+        }
     }
 
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
+    public boolean compareDistance(double lat, double lng){
+        double epsilon = 0.000001d;
+        return (Math.abs(location.lat - lat) < epsilon && Math.abs(location.lng - lng) < epsilon);
     }
 
-    public Date getUpdateAt() {
-        return updateAt;
-    }
-
-    public void setUpdateAt(Date updateAt) {
-        this.updateAt = updateAt;
+    public String getFormattedDistance(){
+        if(location.distance < 2.0d){
+            return location.distance + " mile";
+        }else{
+            return location.distance + " miles";
+        }
     }
 }

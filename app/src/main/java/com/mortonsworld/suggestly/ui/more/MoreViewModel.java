@@ -6,12 +6,8 @@ import androidx.lifecycle.LiveData;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.mortonsworld.suggestly.Repository;
-import com.mortonsworld.suggestly.interfaces.Suggestion;
-import com.mortonsworld.suggestly.model.foursquare.Category;
-import com.mortonsworld.suggestly.model.foursquare.Venue;
-import com.mortonsworld.suggestly.model.relations.VenueAndCategory;
+import com.mortonsworld.suggestly.model.Suggestion;
 import com.mortonsworld.suggestly.model.user.LocationTuple;
-import com.mortonsworld.suggestly.model.user.User;
 
 import java.util.List;
 
@@ -23,12 +19,8 @@ public class MoreViewModel extends AndroidViewModel {
         repository = Repository.getInstance(application);
     }
 
-    public LiveData<Category> getFoursquareCategoryName(String id){
-        return repository.getFoursquareCategoryName(id);
-    }
-
     public LiveData<LocationTuple> initUserLocation(){
-        return repository.readUserLocation(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        return repository.readUserLocationLiveData(FirebaseAuth.getInstance().getCurrentUser().getUid());
     }
 
     public LiveData<List<Suggestion>> initRecommendedVenues(){
@@ -42,5 +34,7 @@ public class MoreViewModel extends AndroidViewModel {
     public LiveData<List<Suggestion>> initBooksByListName(String listName){
         return repository.readNewYorkTimesBestsellingListLiveData(listName);
     }
-
+    public LiveData<Boolean> fetchVenues(double lat, double lng, String id){
+        return repository.getGeneralFoursquareVenuesNearUserById(lat, lng, id);
+    }
 }

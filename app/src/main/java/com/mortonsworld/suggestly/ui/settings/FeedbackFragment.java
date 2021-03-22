@@ -1,5 +1,6 @@
 package com.mortonsworld.suggestly.ui.settings;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -60,7 +61,7 @@ public class FeedbackFragment extends Fragment implements View.OnClickListener, 
         i.putExtra(Intent.EXTRA_TEXT, message);
         try {
             startActivity(Intent.createChooser(i, "Send feedback..."));
-        } catch (android.content.ActivityNotFoundException ex) {
+        } catch (ActivityNotFoundException ex) {
             Toast.makeText(requireContext(), R.string.email_application_not_found, Toast.LENGTH_SHORT).show();
         }
     }
@@ -72,7 +73,7 @@ public class FeedbackFragment extends Fragment implements View.OnClickListener, 
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-        feedbackButton.setEnabled(isMessageLengthLessThanMin());
+        feedbackButton.setEnabled(!isMessageLengthLessThanMin());
     }
 
     @Override

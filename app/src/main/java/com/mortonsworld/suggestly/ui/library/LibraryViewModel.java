@@ -7,7 +7,7 @@ import androidx.lifecycle.LiveData;
 import androidx.paging.PagedList;
 
 import com.mortonsworld.suggestly.Repository;
-import com.mortonsworld.suggestly.interfaces.Suggestion;
+import com.mortonsworld.suggestly.model.Suggestion;
 import com.mortonsworld.suggestly.model.user.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;

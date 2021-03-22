@@ -27,7 +27,7 @@ public class SplashViewModel extends AndroidViewModel {
     }
 
     public LiveData<LocationTuple> readUserLocation(User user){
-        return repository.readUserLocation(user.getId());
+        return repository.readUserLocationLiveData(user.getId());
     }
 
     public LiveData<Boolean> checkIfUserInRoom(User user){

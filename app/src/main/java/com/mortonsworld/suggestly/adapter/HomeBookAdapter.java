@@ -2,7 +2,6 @@ package com.mortonsworld.suggestly.adapter;
 
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -16,12 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.mortonsworld.suggestly.R;
 import com.mortonsworld.suggestly.databinding.CardViewHomeBinding;
-import com.mortonsworld.suggestly.interfaces.SaveCallback;
-import com.mortonsworld.suggestly.interfaces.Suggestion;
+import com.mortonsworld.suggestly.callbacks.SaveCallback;
 import com.mortonsworld.suggestly.model.nyt.Book;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class HomeBookAdapter extends PagedListAdapter<Book, HomeBookAdapter.HomeViewHolder> {
 
@@ -41,7 +36,7 @@ public class HomeBookAdapter extends PagedListAdapter<Book, HomeBookAdapter.Home
                 LayoutInflater.from(parent.getContext()),
                 R.layout.card_view_home, parent,
                 false);
-        binding.setSaveCallback(saveVenueListener);
+
         return new HomeViewHolder(binding);
     }
 
@@ -73,6 +68,7 @@ public class HomeBookAdapter extends PagedListAdapter<Book, HomeBookAdapter.Home
             binding.distance.setTypeface(Typeface.DEFAULT_BOLD);
             binding.address.setText(book.getDescription());
             binding.cardView.setOnClickListener(view -> listener.onBookSelected(book));
+            binding.saveImage.setOnClickListener(view -> saveVenueListener.onSuggestionSaved(book, getAdapterPosition()));
             Glide.with(binding.getRoot())
                     .load(book.getBookImage())
                     .placeholder(R.drawable.progress_bar)

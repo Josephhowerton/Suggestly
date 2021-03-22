@@ -5,7 +5,9 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
+import androidx.paging.PagedList;
 import androidx.paging.PagedListAdapter;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,18 +15,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.mortonsworld.suggestly.R;
 import com.mortonsworld.suggestly.databinding.CardViewHomeBinding;
-import com.mortonsworld.suggestly.interfaces.SaveCallback;
-import com.mortonsworld.suggestly.interfaces.Suggestion;
+import com.mortonsworld.suggestly.callbacks.SaveCallback;
 import com.mortonsworld.suggestly.model.foursquare.Category;
 import com.mortonsworld.suggestly.model.foursquare.Venue;
-import com.mortonsworld.suggestly.model.relations.VenueAndCategory;
+import com.mortonsworld.suggestly.model.foursquare.VenueAndCategory;
 import com.mortonsworld.suggestly.model.user.LocationTuple;
 import com.mortonsworld.suggestly.utility.DistanceCalculator;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 public class HomeVenueAdapter extends PagedListAdapter<VenueAndCategory, HomeVenueAdapter.HomeViewHolder> {
@@ -33,8 +32,8 @@ public class HomeVenueAdapter extends PagedListAdapter<VenueAndCategory, HomeVen
     private final SaveCallback saveVenueListener;
     private LocationTuple locationTuple;
 
-    public HomeVenueAdapter(@NonNull DiffUtil.ItemCallback<VenueAndCategory> diffCallback, VenueSelectedListener listener, SaveCallback saveVenueListener) {
-        super(diffCallback);
+    public HomeVenueAdapter(VenueSelectedListener listener, SaveCallback saveVenueListener) {
+        super(VENUE_CALLBACK);
         this.listener = listener;
         this.saveVenueListener = saveVenueListener;
     }
@@ -43,7 +42,6 @@ public class HomeVenueAdapter extends PagedListAdapter<VenueAndCategory, HomeVen
     @Override
     public HomeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         CardViewHomeBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.card_view_home, parent, false);
-        binding.setSaveCallback(saveVenueListener);
         return new HomeViewHolder(binding);
     }
 
@@ -58,15 +56,19 @@ public class HomeVenueAdapter extends PagedListAdapter<VenueAndCategory, HomeVen
             holder.bindVenue(venue.venue);
             holder.bindCategory(venue.category);
             holder.bindImage(venue);
-        }else{
-            holder.clear();
         }
     }
 
-    public void setLocationTuple(LocationTuple locationTuple){
+    public void setDistance(LocationTuple locationTuple){
         this.locationTuple = locationTuple;
+        notifyDataSetChanged();
     }
 
+    @Override
+    public void submitList(@Nullable PagedList<VenueAndCategory> pagedList) {
+        super.submitList(pagedList);
+        notifyDataSetChanged();
+    }
 
     public class HomeViewHolder extends RecyclerView.ViewHolder {
         private final CardViewHomeBinding binding;
@@ -74,17 +76,16 @@ public class HomeVenueAdapter extends PagedListAdapter<VenueAndCategory, HomeVen
         public HomeViewHolder(@NotNull CardViewHomeBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
-
         }
 
         public void bindVenue(@NotNull Venue venue){
             binding.name.setText(venue.getName());
-            binding.distance.setText(formatDistance(venue));
+            binding.distance.setText(formatDistance(venue.location.distance));
             binding.distance.setTypeface(Typeface.DEFAULT_BOLD);
             binding.address.setMaxLines(2);
             binding.address.setText(venue.getFormattedAddress());
             binding.cardView.setOnClickListener(view -> listener.onVenueSelected(venue));
-
+            binding.saveImage.setOnClickListener(view -> saveVenueListener.onSuggestionSaved(venue, getAdapterPosition()));
         }
 
         public void bindCategory(@NotNull Category category){
@@ -104,21 +105,25 @@ public class HomeVenueAdapter extends PagedListAdapter<VenueAndCategory, HomeVen
                     .into(binding.mainImage);
         }
 
-        public String formatDistance(Venue venue){
-            if(locationTuple == null){
-                return "";
-            }
-
-            return String.format(Locale.ENGLISH, "%.1f", DistanceCalculator.distanceMile(locationTuple.lat, venue.location.lat, locationTuple.lng, venue.location.lng))
-                    + " miles";
+        public String formatDistance(double distance) {
+            return String.format(Locale.ENGLISH, "%.1f", DistanceCalculator.meterToMiles(distance)) + " miles";
         }
 
-        public void clear(){
-
-        }
     }
 
     public interface VenueSelectedListener{
         void onVenueSelected(Venue venue);
     }
+
+    private static final DiffUtil.ItemCallback<VenueAndCategory> VENUE_CALLBACK = new DiffUtil.ItemCallback<VenueAndCategory>() {
+        @Override
+        public boolean areItemsTheSame(@NonNull VenueAndCategory oldItem, @NonNull VenueAndCategory newItem) {
+            return oldItem.venue.getId().equals(newItem.venue.getId());
+        }
+
+        @Override
+        public boolean areContentsTheSame(@NonNull VenueAndCategory oldItem, @NonNull VenueAndCategory newItem) {
+            return oldItem.venue.equals(newItem.venue);
+        }
+    };
 }

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/loading_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+    <ImageView
+        android:id="@+id/suggestLogo"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:srcCompat="@drawable/suggest_logo"
+        app:layout_constraintStart_toEndOf="@id/leftLogoGuideline"
+        app:layout_constraintEnd_toStartOf="@id/rightLogoGuideline"
+        app:layout_constraintTop_toBottomOf="@id/topLogoGuideline"
+        app:layout_constraintBottom_toTopOf="@id/bottomLogoGuideline"
+        android:contentDescription="@string/suggest_logo_description" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toEndOf="@id/leftProgressBarGuideline"
+        app:layout_constraintEnd_toStartOf="@id/rightProgressBarGuideline"
+        app:layout_constraintTop_toBottomOf="@id/topProgressBarGuideline"
+        app:layout_constraintBottom_toTopOf="@id/bottomProgressBarGuideline"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/leftLogoGuideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent=".45"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/leftProgressBarGuideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent=".4"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/rightLogoGuideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent=".55"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/rightProgressBarGuideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent=".6"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/bottomLogoGuideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent=".4"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/topProgressBarGuideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent=".3"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/topLogoGuideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent=".35"/>
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/bottomProgressBarGuideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent=".45"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
