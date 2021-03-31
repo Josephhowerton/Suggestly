@@ -11,7 +11,8 @@ Suggestly is the first phase of a recommendation app which will serve as the cor
 Suggestly was conceived as a supplementary dimension to unite the gap between extroverted oriented activities and introverted activities, where extroverts may make suggestions to introverts and introverts may make recommendations to extroverts. The primary reason was to both build an app I could use and to learn how Android apps are built and maintained from start to finish. Suggestly falls short of my original intentions to establish this virtual utopia instead serving as the initial building blocks. As of today, Suggestly integrates various APIs into a single application connecting users to events, venues, literature and entertainment.
 
 ## Screenshots
-Coming Soon!
+![Untitled](https://user-images.githubusercontent.com/58564595/113026881-609f8900-913e-11eb-8dcd-865676acb708.png)
+
 
 ## Technologies
 * Android Jetpack
