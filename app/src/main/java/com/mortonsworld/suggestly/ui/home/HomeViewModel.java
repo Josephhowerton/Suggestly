@@ -4,17 +4,18 @@ import android.app.Application;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.paging.LivePagedListBuilder;
 import androidx.paging.PagedList;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.mortonsworld.suggestly.Repository;
 import com.mortonsworld.suggestly.model.foursquare.Venue;
-import com.mortonsworld.suggestly.model.foursquare.VenueAndCategory;
 import com.mortonsworld.suggestly.model.nyt.Book;
+import com.mortonsworld.suggestly.model.relations.VenueAndCategory;
 import com.mortonsworld.suggestly.model.user.LocationTuple;
 import com.mortonsworld.suggestly.utility.Config;
+
+import java.util.List;
 
 public class HomeViewModel extends AndroidViewModel {
     private final Repository repository;
@@ -30,31 +31,43 @@ public class HomeViewModel extends AndroidViewModel {
     public LiveData<PagedList<VenueAndCategory>> activeVenuePagedList;
     public LiveData<PagedList<VenueAndCategory>> socialVenuePagedList;
     public LiveData<PagedList<VenueAndCategory>> entertainmentVenuePagedList;
-    private MutableLiveData<Boolean> load = new MutableLiveData<>();
+
     public HomeViewModel(Application application) {
         super(application);
         repository = Repository.getInstance(application);
         topSuggestion = repository.readTopSuggestionNewYorkTimesBooksTable();
 
         PagedList.Config config = new PagedList.Config.Builder()
-                .setPageSize(4)
-                .setInitialLoadSizeHint(5)
+                .setPageSize(10)
+                .setInitialLoadSizeHint(10)
                 .setEnablePlaceholders(true)
                 .build();
 
-        fictionBooksPagedList = new LivePagedListBuilder<>(repository.readNewYorkTimesBestsellingList(Config.HARD_COVER_FICTION), config).build();
-        nonFictionBooksPagedList = new LivePagedListBuilder<>(repository.readNewYorkTimesBestsellingList(Config.HARD_COVER_NON_FICTION), config).build();
-        recommendedVenuePagedList = new LivePagedListBuilder<>(repository.readRecommendedVenuesDataFactory(), config).build();
-        foodVenuePagedList = new LivePagedListBuilder<>(repository.readVenuesUsingCategoryId(Config.FOOD),config).build();
-        breweryVenuePagedList = new LivePagedListBuilder<>(repository.readVenuesUsingCategoryId(Config.BREWERY), config).build();
-        familyVenuePagedList = new LivePagedListBuilder<>(repository.readVenuesUsingCategoryId(Config.FAMILY_FUN), config).build();
-        activeVenuePagedList = new LivePagedListBuilder<>(repository.readVenuesUsingCategoryId(Config.ACTIVE), config).build();
-        socialVenuePagedList = new LivePagedListBuilder<>(repository.readVenuesUsingCategoryId(Config.SOCIAL), config).build();
-        entertainmentVenuePagedList = new LivePagedListBuilder<>(repository.readVenuesUsingCategoryId(Config.EVENTS), config).build();
+        fictionBooksPagedList = new LivePagedListBuilder<>(repository.readNewYorkTimesBestsellingListHomeFragment(Config.HARD_COVER_FICTION), config).build();
+        nonFictionBooksPagedList = new LivePagedListBuilder<>(repository.readNewYorkTimesBestsellingListHomeFragment(Config.HARD_COVER_NON_FICTION), config).build();
+        recommendedVenuePagedList = new LivePagedListBuilder<>(repository.readRecommendedVenuesDataFactoryHomeFragment(), config).build();
+        foodVenuePagedList = new LivePagedListBuilder<>(repository.readVenuesUsingCategoryDataFactoryHomeFragment(Config.FOOD),config).build();
+        breweryVenuePagedList = new LivePagedListBuilder<>(repository.readVenuesUsingCategoryDataFactoryHomeFragment(Config.BREWERY), config).build();
+        familyVenuePagedList = new LivePagedListBuilder<>(repository.readVenuesUsingCategoryDataFactoryHomeFragment(Config.FAMILY_FUN), config).build();
+        activeVenuePagedList = new LivePagedListBuilder<>(repository.readVenuesUsingCategoryDataFactoryHomeFragment(Config.ACTIVE), config).build();
+        socialVenuePagedList = new LivePagedListBuilder<>(repository.readVenuesUsingCategoryDataFactoryHomeFragment(Config.SOCIAL), config).build();
+        entertainmentVenuePagedList = new LivePagedListBuilder<>(repository.readVenuesUsingCategoryDataFactoryHomeFragment(Config.EVENTS), config).build();
 
     }
 
+    public List<VenueAndCategory> getSavedVenues() {
+        return repository.readSavedVenues();
+    }
+
+    public List<Book> getSavedBooks() {
+        return repository.readSavedBooks();
+    }
+
     public LiveData<LocationTuple> getUserLocation(){
+        if(FirebaseAuth.getInstance().getCurrentUser() == null){
+            return null;
+        }
+
         return repository.readUserLocationLiveData(FirebaseAuth.getInstance().getCurrentUser().getUid());
     }
 
@@ -64,15 +77,6 @@ public class HomeViewModel extends AndroidViewModel {
 
     public LocationTuple getLastFetchedLocation(double lat, double lng){
         return repository.getLastFetchedLocation(lat, lng);
-    }
-
-
-    public void saveSuggestionToLibrary(Venue venue){
-
-    }
-
-    public void saveSuggestionToLibrary(Book book){
-
     }
 
     public LiveData<Boolean> getRecommendedFoursquareVenuesNearUser(double lat, double lng){
@@ -103,11 +107,11 @@ public class HomeViewModel extends AndroidViewModel {
         return repository.getGeneralFoursquareVenuesNearUserById(lat, lng, Config.SOCIAL);
     }
 
-    public LiveData<Boolean> getLoad() {
-        return load;
+    public long updateVenueSavedInUser(Venue savedVenue, Boolean isSaved){
+        return repository.saveBookmarkedVenue(savedVenue, isSaved);
     }
 
-    public void setLoad(boolean load) {
-        this.load.setValue(load);
+    public long updateBookSavedInUser(Book book, Boolean isSaved){
+        return repository.saveBookmarkedBook(book, isSaved);
     }
 }

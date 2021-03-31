@@ -19,10 +19,12 @@ import android.widget.Toast;
 
 import com.mortonsworld.suggestly.R;
 import com.mortonsworld.suggestly.utility.Config;
+import com.mortonsworld.suggestly.utility.NetworkHandler;
 
 public class FeedbackFragment extends Fragment implements View.OnClickListener, TextWatcher {
     private EditText feedbackMessage;
     private Button feedbackButton;
+    private final String MESSAGE = "Connect to the internet to send feedback.";
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -40,13 +42,16 @@ public class FeedbackFragment extends Fragment implements View.OnClickListener, 
 
     @Override
     public void onClick(View v) {
-        if (isMessageLengthLessThanMin()){
-            String MESSAGE_ERROR_MESSAGE_ERROR = "Message must be greater than 5 characters";
-            feedbackMessage.setError(MESSAGE_ERROR_MESSAGE_ERROR);
-            return;
+        if(NetworkHandler.isNetworkConnectionActive(requireActivity())){
+            if (isMessageLengthLessThanMin()){
+                String MESSAGE_ERROR_MESSAGE_ERROR = "Message must be greater than 5 characters";
+                feedbackMessage.setError(MESSAGE_ERROR_MESSAGE_ERROR);
+                return;
+            }
+            composeEmail(feedbackMessage.getText().toString());
+        }else {
+            NetworkHandler.notifyBadConnectionAndDismiss(requireActivity(), MESSAGE);
         }
-
-        composeEmail(feedbackMessage.getText().toString());
     }
 
     public boolean isMessageLengthLessThanMin(){

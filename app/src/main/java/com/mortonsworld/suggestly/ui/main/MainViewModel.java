@@ -15,23 +15,7 @@ public class MainViewModel extends AndroidViewModel{
         repository = Repository.getInstance(application);
     }
 
-    public void moreRecommendedSuggestions(){
-
-    }
-
-    public void moreVenueSuggestions(String categoryId){
-
-    }
-
-    public void moreBookSuggestions(String listName){
-
-    }
-
-    public void fetchSuggestionVenueDetails(String id){
-
-    }
-
-    public void fetchSuggestionBookDetails(String id){
-
+    public void removeSuggestlySearch(){
+        repository.removeSuggestlySearch();
     }
 }

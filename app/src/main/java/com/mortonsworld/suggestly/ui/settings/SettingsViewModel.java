@@ -15,13 +15,28 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.List;
 
 public class SettingsViewModel extends AndroidViewModel {
-    private Repository repository;
-    private PermissionManager permissionManager;
+
+    private final Repository repository;
+    private final PermissionManager permissionManager;
+
     public SettingsViewModel(@NonNull Application application) {
         super(application);
         repository = Repository.getInstance(application);
         permissionManager = new PermissionManager(application);
     }
+/* ***************************************************************************************
+    Push Notifications
+ *************************************************************************************** */
+
+    public void updatePushNotificationsPreference(Application application, Boolean target){
+        if(target){
+            repository.enablePushNotifications(application);
+        }
+        else{
+            repository.disablePushNotifications();
+        }
+    }
+
 
 /* ***************************************************************************************
     Manual Location
@@ -46,7 +61,7 @@ public class SettingsViewModel extends AndroidViewModel {
     }
 
     public Boolean isLocationUpdatesEnabled(){
-        return repository.isLocationUpdatesActive();
+        return repository.isLocationServicesEnabled();
     }
 
     public void enableLocationServices(){

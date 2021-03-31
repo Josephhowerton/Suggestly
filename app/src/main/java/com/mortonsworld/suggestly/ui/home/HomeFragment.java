@@ -1,19 +1,19 @@
 package com.mortonsworld.suggestly.ui.home;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -23,45 +23,48 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.mortonsworld.suggestly.R;
 import com.mortonsworld.suggestly.adapter.HomeBookAdapter;
 import com.mortonsworld.suggestly.adapter.HomeVenueAdapter;
-import com.mortonsworld.suggestly.databinding.FragmentHomeBinding;
 import com.mortonsworld.suggestly.callbacks.DetailsCallback;
 import com.mortonsworld.suggestly.callbacks.MoreCallback;
 import com.mortonsworld.suggestly.callbacks.SaveCallback;
+import com.mortonsworld.suggestly.databinding.FragmentHomeBinding;
 import com.mortonsworld.suggestly.model.Suggestion;
 import com.mortonsworld.suggestly.model.foursquare.Venue;
 import com.mortonsworld.suggestly.model.nyt.Book;
 import com.mortonsworld.suggestly.model.user.LocationTuple;
 import com.mortonsworld.suggestly.ui.main.MainActivity;
-import com.mortonsworld.suggestly.ui.main.MainViewModel;
 import com.mortonsworld.suggestly.ui.settings.SettingsActivity;
 import com.mortonsworld.suggestly.utility.Config;
 import com.mortonsworld.suggestly.utility.DistanceCalculator;
+import com.mortonsworld.suggestly.utility.NetworkHandler;
 import com.mortonsworld.suggestly.utility.SuggestionType;
+
+import org.jetbrains.annotations.NotNull;
 
 public class HomeFragment extends Fragment implements MoreCallback, DetailsCallback, HomeVenueAdapter.VenueSelectedListener,
         HomeBookAdapter.BookSelectedListener, SaveCallback, MainActivity.OnReloadListener {
     private FragmentHomeBinding binding;
     private HomeViewModel homeViewModel;
-    private MainViewModel mainViewModel;
     private final HomeVenueAdapter recommendedAdapter = new HomeVenueAdapter(this, this);
     private final HomeVenueAdapter foodAdapter = new HomeVenueAdapter(this, this);
     private final HomeVenueAdapter breweryAdapter = new HomeVenueAdapter(this, this);
-    private final HomeBookAdapter fictionAdapter = new HomeBookAdapter(BOOK_CALLBACK, this, this);
+    private final HomeBookAdapter fictionAdapter = new HomeBookAdapter(BOOK_CALLBACK,this, this);
     private final HomeVenueAdapter familyAdapter = new HomeVenueAdapter(this, this);
     private final HomeBookAdapter nonFictionAdapter = new HomeBookAdapter(BOOK_CALLBACK, this, this);
     private final HomeVenueAdapter activeAdapter = new HomeVenueAdapter(this, this);
     private final HomeVenueAdapter socialAdapter = new HomeVenueAdapter(this, this);
     private final HomeVenueAdapter entertainmentAdapter = new HomeVenueAdapter(this, this);
+    private final String MESSAGE = "To find Suggestions in your area connect to the Internet.";
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         homeViewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
-        mainViewModel = new ViewModelProvider(requireActivity()).get(MainViewModel.class);
 
+        initializeSavedList();
         initializeTopSuggestion();
         initializeRecommendedVenues();
         initializeFoodVenues();
@@ -75,9 +78,13 @@ public class HomeFragment extends Fragment implements MoreCallback, DetailsCallb
 
         homeViewModel.getUserLocation().observe(getViewLifecycleOwner(), location -> {
             LocationTuple last = homeViewModel.getLastFetchedLocation(location.lat, location.lng);
-            if(DistanceCalculator.distanceMile(location.lat, last.lat, location.lng, last.lng) > 5){
+            if(DistanceCalculator.distanceMile(location.lat, last.lat, location.lng, last.lng) > 2){
                 storeLastFetchedLocation(location.lat, location.lng);
-                fetchVenues(location);
+                if(NetworkHandler.isNetworkConnectionActive(requireActivity())){
+                    fetchVenues(location);
+                }else{
+                    NetworkHandler.notifyBadConnectionAndDismiss(requireActivity(), MESSAGE);
+                }
             }
         });
 
@@ -86,6 +93,18 @@ public class HomeFragment extends Fragment implements MoreCallback, DetailsCallb
 
     public void storeLastFetchedLocation(double lat, double lng){
         homeViewModel.storeLastFetchedLocation(lat, lng);
+    }
+
+    public void initializeSavedList(){
+        fictionAdapter.setSavedList(homeViewModel.getSavedBooks());
+        nonFictionAdapter.setSavedList(homeViewModel.getSavedBooks());
+        recommendedAdapter.setSavedList(homeViewModel.getSavedVenues());
+        foodAdapter.setSavedList(homeViewModel.getSavedVenues());
+        breweryAdapter.setSavedList(homeViewModel.getSavedVenues());
+        familyAdapter.setSavedList(homeViewModel.getSavedVenues());
+        activeAdapter.setSavedList(homeViewModel.getSavedVenues());
+        socialAdapter.setSavedList(homeViewModel.getSavedVenues());
+        entertainmentAdapter.setSavedList(homeViewModel.getSavedVenues());
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -127,13 +146,11 @@ public class HomeFragment extends Fragment implements MoreCallback, DetailsCallb
 
     @Override
     public void onBookSelected(Book book) {
-        mainViewModel.fetchSuggestionBookDetails(book.getPrimaryIsbn13());
         navigateToDetails(book);
     }
 
     @Override
     public void onVenueSelected(Venue venue) {
-        mainViewModel.fetchSuggestionVenueDetails(venue.getId());
         navigateToDetails(venue);
     }
 
@@ -145,8 +162,8 @@ public class HomeFragment extends Fragment implements MoreCallback, DetailsCallb
     private boolean isACTIVECompleted = false;
     private boolean isSOCIALCompleted = false;
 
-    private static final String TAG = "HomeFragment";
     public void fetchVenues(LocationTuple locationTuple) {
+        Toast.makeText(requireContext(), "Finding new suggestions near you!", Toast.LENGTH_SHORT).show();
         getFoursquareVenuesNearUser_RECOMMENDED(locationTuple);
         getFoursquareVenuesNearUser_FOOD(locationTuple);
         getFoursquareVenuesNearUser_BREWERY(locationTuple);
@@ -206,8 +223,8 @@ public class HomeFragment extends Fragment implements MoreCallback, DetailsCallb
     }
 
     public void checkUpdateComplete(){
-        if(isRECOMMENDEDCompleted && isFOODCompleted && isBREWERYCompleted && isFAMILYFUNCompleted && isEVENTSCompleted && isACTIVECompleted && isSOCIALCompleted){
-            homeViewModel.setLoad(true);
+        if(isRECOMMENDEDCompleted && isFOODCompleted && isBREWERYCompleted && isFAMILYFUNCompleted &&
+                isEVENTSCompleted && isACTIVECompleted && isSOCIALCompleted){
             isRECOMMENDEDCompleted = false;
             isFOODCompleted = false;
             isBREWERYCompleted = false;
@@ -220,9 +237,23 @@ public class HomeFragment extends Fragment implements MoreCallback, DetailsCallb
     }
 
     @Override
-    public void onSuggestionSaved(Suggestion suggestion, int position) {
-        Log.println(Log.ASSERT, "Saved", "saving " + ((Venue) suggestion).getName());
+    public void onSuggestionSaved(Suggestion suggestion, Boolean isChecked) {
+        updateSavedSuggestion(suggestion, isChecked);
     }
+
+    private void updateSavedSuggestion(@NotNull Suggestion suggestion, Boolean isSaved){
+        switch (suggestion.getSuggestionType()){
+            case BOOK:
+                homeViewModel.updateBookSavedInUser((Book) suggestion, isSaved);
+                break;
+
+            case FOURSQUARE_VENUE:
+            case RECOMMENDED_VENUE:
+                homeViewModel.updateVenueSavedInUser((Venue) suggestion, isSaved);
+                break;
+        }
+    }
+
 
     private void navigateToList(SuggestionType type, String id, String title){
         Bundle bundle = new Bundle();
@@ -241,28 +272,21 @@ public class HomeFragment extends Fragment implements MoreCallback, DetailsCallb
     }
 
     private void initializeTopSuggestion(){
+        CircularProgressDrawable circularProgressDrawable = new CircularProgressDrawable(requireContext());
+        circularProgressDrawable.start();
         homeViewModel.topSuggestion.observe(getViewLifecycleOwner(), book -> {
-            binding.titleTopSuggestionTitle.setText(book.getTitleWithAuthor());
+            binding.titleMainTitle.setText(book.getTitleWithAuthor());
             binding.titleTopSuggestionDescription.setText(book.getDescription());
             binding.setSuggestion(book);
-            CircularProgressDrawable drawable = new CircularProgressDrawable(requireContext());
             Glide.with(this)
                     .load(book.getBookImage())
-                    .placeholder(ResourcesCompat.getDrawable(getResources(), R.drawable.progress_bar,null))
+                    .placeholder(circularProgressDrawable)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(binding.imageTopSuggestion);
         });
     }
 
     private void initializeRecyclerView(){
-        binding.suggestionsRecommendedRecyclerView.setAdapter(recommendedAdapter);
-        binding.suggestionsRestaurantsRecyclerView.setAdapter(foodAdapter);
-        binding.suggestionsNytFictionRecyclerView.setAdapter(fictionAdapter);
-        binding.suggestionsBreweryRecyclerView.setAdapter(breweryAdapter);
-        binding.suggestionsFamilyFunRecyclerView.setAdapter(familyAdapter);
-        binding.suggestionsNytNonfictionRecyclerView.setAdapter(nonFictionAdapter);
-        binding.suggestionsActiveRecyclerView.setAdapter(activeAdapter);
-        binding.suggestionsSocialRecyclerView.setAdapter(socialAdapter);
-        binding.suggestionsEntertainmentRecyclerView.setAdapter(entertainmentAdapter);
         binding.suggestionsRecommendedRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL,false));
         binding.suggestionsRestaurantsRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL,false));
         binding.suggestionsNytFictionRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL,false));
@@ -272,44 +296,121 @@ public class HomeFragment extends Fragment implements MoreCallback, DetailsCallb
         binding.suggestionsActiveRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL,false));
         binding.suggestionsSocialRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL,false));
         binding.suggestionsEntertainmentRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL,false));
+
+        binding.suggestionsRecommendedRecyclerView.setAdapter(recommendedAdapter);
+        binding.suggestionsRestaurantsRecyclerView.setAdapter(foodAdapter);
+        binding.suggestionsNytFictionRecyclerView.setAdapter(fictionAdapter);
+        binding.suggestionsBreweryRecyclerView.setAdapter(breweryAdapter);
+        binding.suggestionsFamilyFunRecyclerView.setAdapter(familyAdapter);
+        binding.suggestionsNytNonfictionRecyclerView.setAdapter(nonFictionAdapter);
+        binding.suggestionsActiveRecyclerView.setAdapter(activeAdapter);
+        binding.suggestionsSocialRecyclerView.setAdapter(socialAdapter);
+        binding.suggestionsEntertainmentRecyclerView.setAdapter(entertainmentAdapter);
     }
 
+    private boolean hasShown = false;
 
     private void initializeRecommendedVenues(){
-        homeViewModel.recommendedVenuePagedList.observe(getViewLifecycleOwner(), recommendedAdapter::submitList);
+        homeViewModel.recommendedVenuePagedList.observe(getViewLifecycleOwner(), data ->{
+            if(data != null){
+                recommendedAdapter.submitList(data);
+            }else{
+                alertDatabaseError();
+            }
+        });
     }
 
     private void initializeFoodVenues(){
-        homeViewModel.foodVenuePagedList.observe(getViewLifecycleOwner(), foodAdapter::submitList);
+        homeViewModel.foodVenuePagedList.observe(getViewLifecycleOwner(), data -> {
+                if (data != null) {
+                    foodAdapter.submitList(data);
+                }else{
+                    alertDatabaseError();
+                }
+            }
+        );
     }
 
     private void initializeFictionBooks(){
-        homeViewModel.fictionBooksPagedList.observe(getViewLifecycleOwner(), fictionAdapter::submitList);
+        homeViewModel.fictionBooksPagedList.observe(getViewLifecycleOwner(), data -> {
+            if (data != null) {
+                fictionAdapter.submitList(data);
+            }else{
+                alertDatabaseError();
+            }
+        });
     }
 
 
     private void initializeBreweryVenues(){
-        homeViewModel.breweryVenuePagedList.observe(getViewLifecycleOwner(), breweryAdapter::submitList);
+        homeViewModel.breweryVenuePagedList.observe(getViewLifecycleOwner(), data -> {
+            if (data != null) {
+                breweryAdapter.submitList(data);
+            }else{
+                alertDatabaseError();
+            }
+        });
     }
 
     private void initializeFamilyFunVenues(){
-        homeViewModel.familyVenuePagedList.observe(getViewLifecycleOwner(), familyAdapter::submitList);
+        homeViewModel.familyVenuePagedList.observe(getViewLifecycleOwner(), data -> {
+            if (data != null) {
+                familyAdapter.submitList(data);
+            }else{
+                alertDatabaseError();
+            }
+        });
     }
 
     private void initializeNonFictionBooks(){
-        homeViewModel.nonFictionBooksPagedList.observe(getViewLifecycleOwner(), nonFictionAdapter::submitList);
+        homeViewModel.nonFictionBooksPagedList.observe(getViewLifecycleOwner(), data -> {
+            if (data != null) {
+                nonFictionAdapter.submitList(data);
+            }else{
+                alertDatabaseError();
+            }
+        });
     }
 
     private void initializeActiveVenues(){
-        homeViewModel.activeVenuePagedList.observe(getViewLifecycleOwner(), activeAdapter::submitList);
+        homeViewModel.activeVenuePagedList.observe(getViewLifecycleOwner(), data -> {
+            if (data != null) {
+                activeAdapter.submitList(data);
+            }else{
+                alertDatabaseError();
+            }
+        });
     }
 
     private void initializeSocialVenues(){
-        homeViewModel.socialVenuePagedList.observe(getViewLifecycleOwner(), socialAdapter::submitList);
+        homeViewModel.socialVenuePagedList.observe(getViewLifecycleOwner(), data -> {
+            if (data != null) {
+                socialAdapter.submitList(data);
+            }else{
+                alertDatabaseError();
+            }
+        });
     }
 
     private void initializeEntertainmentVenues(){
-        homeViewModel.entertainmentVenuePagedList.observe(getViewLifecycleOwner(), entertainmentAdapter::submitList);
+        homeViewModel.entertainmentVenuePagedList.observe(getViewLifecycleOwner(), data -> {
+            if (data != null) {
+                entertainmentAdapter.submitList(data);
+            }else{
+                alertDatabaseError();
+            }
+        });
+    }
+
+    private void alertDatabaseError(){
+        if(!hasShown){
+            hasShown = true;
+            new AlertDialog.Builder(requireContext()).setTitle("Database Error")
+                    .setMessage( "We experience errors while reading data from database.")
+                    .setCancelable(false)
+                    .setPositiveButton("TRY LATER", (dialogInterface, i) -> dialogInterface.dismiss())
+                    .show();
+        }
     }
 
     public void goToSettingsActivity(){
@@ -354,6 +455,5 @@ public class HomeFragment extends Fragment implements MoreCallback, DetailsCallb
         activeAdapter.notifyDataSetChanged();
         socialAdapter.notifyDataSetChanged();
         entertainmentAdapter.notifyDataSetChanged();
-        homeViewModel.setLoad(false);
     }
 }

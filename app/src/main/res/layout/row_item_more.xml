@@ -15,7 +15,7 @@
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/icon"
             android:layout_width="50dp"
-            android:layout_height="0dp"
+            android:layout_height="50dp"
             android:layout_marginEnd="5dp"
             android:padding="2dp"
             app:layout_constraintTop_toTopOf="parent"
@@ -31,9 +31,9 @@
             android:text="@string/app_name"
             android:textColor="@color/vibrant_pink"
             android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@id/icon_save"
+            app:layout_constraintEnd_toStartOf="@+id/save_toggle"
             app:layout_constraintStart_toEndOf="@id/icon"
-            app:layout_constraintTop_toTopOf="@+id/icon" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/address"
@@ -41,31 +41,39 @@
             android:layout_height="wrap_content"
             android:maxLines="2"
             android:text="@string/title_address"
-            app:layout_constraintBottom_toBottomOf="@+id/icon"
-            app:layout_constraintEnd_toStartOf="@id/icon_save"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/save_toggle"
             app:layout_constraintStart_toStartOf="@id/name"
             app:layout_constraintTop_toBottomOf="@id/name" />
 
-        <ImageView
-            android:id="@+id/icon_save"
-            android:layout_width="25dp"
-            android:layout_height="0dp"
-            android:src="@drawable/ic_baseline_bookmark_24"
-            app:layout_constraintBottom_toBottomOf="@+id/address"
-            app:layout_constraintEnd_toStartOf="@+id/icon_favorite"
-            app:layout_constraintStart_toEndOf="@id/name"
-            app:layout_constraintTop_toTopOf="@+id/icon" />
+        <ToggleButton
+            android:id="@+id/save_toggle"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/selector_saved_venue"
+            android:checked="false"
+            android:text=""
+            android:textOff=""
+            android:textOn=""
+            android:layout_margin="10dp"
+            android:backgroundTint="@color/navy_blue_lighter"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/favorite_toggle"/>
 
-        <ImageView
-            android:id="@+id/icon_favorite"
-            android:layout_width="25dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="5dp"
-            android:src="@drawable/ic_favorites_outline_24dp"
-            app:layout_constraintBottom_toBottomOf="@+id/address"
+        <ToggleButton
+            android:id="@+id/favorite_toggle"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/selector_favorite_venue"
+            android:checked="false"
+            android:text=""
+            android:textOff=""
+            android:textOn=""
+            android:backgroundTint="@color/vibrant_pink"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/icon_save"
-            app:layout_constraintTop_toTopOf="@+id/name" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

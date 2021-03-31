@@ -5,10 +5,14 @@
 
     <PreferenceCategory
         app:title="Notifications &amp; Updates">
+
+        <SwitchPreference
+            app:key="CURRENT_USER_PUSH_NOTIFICATIONS"
+            app:title="Push Notifications" />
+
         <SwitchPreference
             app:key="CURRENT_USER_LOCATION_UPDATES"
-            app:title="Location Updates"
-            app:defaultValue="true"/>
+            app:title="Location Updates" />
 
         <Preference
             app:key="CURRENT_USER_MANUAL_LOCATION"

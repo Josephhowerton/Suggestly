@@ -5,63 +5,63 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.Location;
 
-import com.mortonsworld.suggestly.model.Suggestion;
-import com.mortonsworld.suggestly.model.foursquare.Category;
-import com.mortonsworld.suggestly.model.foursquare.FoursquareResult;
-import com.mortonsworld.suggestly.model.foursquare.SimilarVenues;
-import com.mortonsworld.suggestly.model.foursquare.Venue;
-import com.mortonsworld.suggestly.model.foursquare.VenueAndCategory;
-import com.mortonsworld.suggestly.model.google.GeocodeResponse;
-import com.mortonsworld.suggestly.model.google.Geometry;
-import com.mortonsworld.suggestly.model.nyt.Book;
-import com.mortonsworld.suggestly.source.GoogleSource;
-import com.mortonsworld.suggestly.source.LocationSource;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.paging.DataSource;
 
-import com.mortonsworld.suggestly.model.user.LocationTuple;
-import com.mortonsworld.suggestly.model.user.User;
-import com.mortonsworld.suggestly.source.FoursquareSource;
-import com.mortonsworld.suggestly.source.NewYorkTimesSource;
-import com.mortonsworld.suggestly.source.UserSource;
-import com.mortonsworld.suggestly.utility.Config;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.android.libraries.places.api.model.AutocompletePrediction;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.mortonsworld.suggestly.model.Suggestion;
+import com.mortonsworld.suggestly.model.foursquare.Category;
+import com.mortonsworld.suggestly.model.foursquare.FoursquareResult;
+import com.mortonsworld.suggestly.model.foursquare.Venue;
+import com.mortonsworld.suggestly.model.google.GeocodeResponse;
+import com.mortonsworld.suggestly.model.google.Geometry;
+import com.mortonsworld.suggestly.model.nyt.Book;
+import com.mortonsworld.suggestly.model.relations.CategoryTuple;
+import com.mortonsworld.suggestly.model.relations.SearchTuple;
+import com.mortonsworld.suggestly.model.relations.SimilarVenues;
+import com.mortonsworld.suggestly.model.relations.VenueAndCategory;
+import com.mortonsworld.suggestly.model.user.LocationTuple;
+import com.mortonsworld.suggestly.model.user.User;
+import com.mortonsworld.suggestly.notification.SuggestlyNotificationManager;
+import com.mortonsworld.suggestly.source.FoursquareSource;
+import com.mortonsworld.suggestly.source.GoogleSource;
+import com.mortonsworld.suggestly.source.LocationSource;
+import com.mortonsworld.suggestly.source.NewYorkTimesSource;
+import com.mortonsworld.suggestly.source.SearchSource;
+import com.mortonsworld.suggestly.source.UserSource;
+import com.mortonsworld.suggestly.utility.Config;
+import com.mortonsworld.suggestly.utility.DistanceCalculator;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Observer;
 import io.reactivex.rxjava3.disposables.Disposable;
 
 public class Repository{
-    private static final String TAG = "Repository";
     private static Repository INSTANCE;
     private NewYorkTimesSource newYorkTimesSource;
     private SharedPreferences sharedPreferences;
     private FoursquareSource foursquareSource;
     private LocationSource locationSource;
     private GoogleSource googleSource;
+    private SearchSource searchSource;
     private UserSource userSource;
 
     private Repository(Application application){
-        ExecutorService service = Executors.newFixedThreadPool(10);
         FirebaseApp.initializeApp(application);
-        initializeSources(application, service);
+        initializeSources(application);
         initializeLocationObservable();
         buildFoursquareCategoryTableIfEmpty();
-        fetchNewYorkTimesBooksIfNotFresh();
+        isNewYorkTimesBooksTableFresh();
     }
 
     public static Repository getInstance(Application application){
@@ -70,16 +70,18 @@ public class Repository{
         }
         return INSTANCE;
     }
+
 /* ********************************************************************************************
    Initialization
 *********************************************************************************************** */
-    public void initializeSources(Application application, ExecutorService service){
-        newYorkTimesSource = new NewYorkTimesSource(application, service);
+    public void initializeSources(Application application){
+        newYorkTimesSource = new NewYorkTimesSource(application);
         sharedPreferences = application.getSharedPreferences(Config.USER_SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE);
-        foursquareSource = new FoursquareSource(application, service);
+        foursquareSource = new FoursquareSource(application);
         locationSource = new LocationSource(application);
         googleSource = new GoogleSource(application);
-        userSource = new UserSource(application, service);
+        searchSource = new SearchSource(application);
+        userSource = new UserSource(application);
     }
 
     public void initializeLocationObservable(){
@@ -92,7 +94,10 @@ public class Repository{
 
             @Override
             public void onNext(@NonNull Location location) {
-                updateUserLocation(FirebaseAuth.getInstance().getCurrentUser().getUid(), location.getLatitude(), location.getLongitude());
+                if(FirebaseAuth.getInstance().getCurrentUser()!= null){
+                    updateUserLocation(FirebaseAuth.getInstance().getCurrentUser().getUid(), location.getLatitude(), location.getLongitude());
+                }
+
                 updateVenueDistance(location.getLatitude(), location.getLongitude());
             }
 
@@ -107,18 +112,109 @@ public class Repository{
             }
         });
     }
-/* ********************************************************************************************
-    Location
-*********************************************************************************************** */
+
+    /* ******************************************************************************
+        Cloud Messaging Shared Preferences
+     *******************************************************************************/
+    public Boolean checkHasAskedForPushNotificationsPreviously(){
+        return sharedPreferences.getBoolean(Config.PUSH_NOTIFICATION_PERMISSION_HISTORY, false);
+    }
+
+    public void hasAskForPushNotificationsPreviously(){
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(Config.PUSH_NOTIFICATION_PERMISSION_HISTORY, true);
+        editor.apply();
+    }
+
+    public void enablePushNotifications(Application application){
+        SuggestlyNotificationManager.enablePushNotifications(application);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(Config.USER_SHARED_PREFERENCE_PUSH_NOTIFICATIONS, true);
+        editor.apply();
+    }
+
+    public void disablePushNotifications(){
+        SuggestlyNotificationManager.disablePushNotifications();
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(Config.USER_SHARED_PREFERENCE_PUSH_NOTIFICATIONS, false);
+        editor.apply();
+    }
+
+/* ******************************************************************************
+    Location shared preferences
+ *******************************************************************************/
+
+    public Boolean isLocationServicesEnabled(){
+        return sharedPreferences.getBoolean(Config.USER_SHARED_PREFERENCE_LOCATION_UPDATES, false);
+    }
+
     public Boolean isLocationUpdatesActive() {
         return locationSource.isLocationUpdatesActive();
     }
 
+    public void enableLocationServicesSharedPreference(){
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(Config.USER_SHARED_PREFERENCE_LOCATION_UPDATES, true);
+        editor.apply();
+    }
+
+    public void disableLocationServicesSharedPreference(){
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(Config.USER_SHARED_PREFERENCE_LOCATION_UPDATES, false);
+        editor.apply();
+    }
+
+    /* ********************************************************************************************
+    Search
+*********************************************************************************************** */
+    public DataSource.Factory<Integer, SearchTuple> suggestlySearch(String search){
+        return searchSource.suggestlySearch(search);
+    }
+
+    public void removeSuggestlySearch(){
+        searchSource.removeSuggestlySearch();
+    }
+
+    public void initializeVenueSearch(double lat, double lng){
+        searchSource.initializeVenueSearch(lat, lng, new Observer<List<Venue>>() {
+            Disposable disposable;
+            @Override
+            public void onSubscribe(@NonNull Disposable d) {
+                disposable = d;
+            }
+
+            @Override
+            public void onNext(@NonNull List<Venue> venues) {
+                for(Venue venue: venues){
+                    venue.categoryId = venue.categories.get(0).id;
+                    venue.location.distance = DistanceCalculator.distanceMeter(venue.location.lat, lat, venue.location.lng, lng);
+                    createVenue(venue);
+                }
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onComplete() {
+                disposable.dispose();
+            }
+        });
+    }
+
+/* ********************************************************************************************
+    Location
+*********************************************************************************************** */
+
     public void enableLocationServices() {
+        enableLocationServicesSharedPreference();
         locationSource.requestLocationUpdates();
     }
 
     public void disableLocationServices() {
+        disableLocationServicesSharedPreference();
         locationSource.unsubscribeToLocationUpdates();
     }
 
@@ -320,121 +416,9 @@ public class Repository{
         return mutableLiveData;
     }
 
-    public LocationTuple readUserLocation(String id){
-        return userSource.readUserLocation(id);
-    }
-
-    public LiveData<Boolean> updateUser(User user){
-        MutableLiveData<Boolean> mutableLiveData = new MutableLiveData<>();
-        userSource.updateUser(user, new Observer<Boolean>() {
-            Disposable disposable;
-            @Override
-            public void onSubscribe(@NonNull Disposable d) {
-                disposable = d;
-            }
-
-            @Override
-            public void onNext(@NonNull Boolean aBoolean) {
-                mutableLiveData.postValue(aBoolean);
-            }
-
-            @Override
-            public void onError(@NonNull Throwable e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onComplete() {
-                disposable.dispose();
-            }
-        });
-        return mutableLiveData;
-    }
-
     public LiveData<Boolean> updateUserLocation(String id, double lat, double lng){
         MutableLiveData<Boolean> mutableLiveData = new MutableLiveData<>();
         userSource.updateUserLocation(id, lat, lng, new Observer<Boolean>() {
-            Disposable disposable;
-            @Override
-            public void onSubscribe(@NonNull Disposable d) {
-                disposable = d;
-            }
-
-            @Override
-            public void onNext(@NonNull Boolean aBoolean) {
-                mutableLiveData.postValue(aBoolean);
-            }
-
-            @Override
-            public void onError(@NonNull Throwable e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onComplete() {
-                disposable.dispose();
-            }
-        });
-        return mutableLiveData;
-    }
-
-    public LiveData<Boolean> updateUserLatestSignIn(String id, Date latestSignIn){
-        MutableLiveData<Boolean> mutableLiveData = new MutableLiveData<>();
-        userSource.updateUserLastSignedIn(id, latestSignIn, new Observer<Boolean>() {
-            Disposable disposable;
-            @Override
-            public void onSubscribe(@NonNull Disposable d) {
-                disposable = d;
-            }
-
-            @Override
-            public void onNext(@NonNull Boolean aBoolean) {
-                mutableLiveData.postValue(aBoolean);
-            }
-
-            @Override
-            public void onError(@NonNull Throwable e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onComplete() {
-                disposable.dispose();
-            }
-        });
-        return mutableLiveData;
-    }
-
-    public LiveData<Boolean> deleteUserSavedSuggestion(String id, List<Suggestion> suggestions){
-        MutableLiveData<Boolean> mutableLiveData = new MutableLiveData<>();
-        userSource.updateUserSavedSuggestions(id, suggestions, new Observer<Boolean>() {
-            Disposable disposable;
-            @Override
-            public void onSubscribe(@NonNull Disposable d) {
-                disposable = d;
-            }
-
-            @Override
-            public void onNext(@NonNull Boolean aBoolean) {
-                mutableLiveData.postValue(aBoolean);
-            }
-
-            @Override
-            public void onError(@NonNull Throwable e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onComplete() {
-                disposable.dispose();
-            }
-        });
-        return mutableLiveData;
-    }
-
-    public LiveData<Boolean> deleteUserFavoriteSuggestion(String id, List<Suggestion> suggestions){
-        MutableLiveData<Boolean> mutableLiveData = new MutableLiveData<>();
-        userSource.updateUserFavoriteSuggestions(id, suggestions, new Observer<Boolean>() {
             Disposable disposable;
             @Override
             public void onSubscribe(@NonNull Disposable d) {
@@ -484,6 +468,101 @@ public class Repository{
             }
         });
         return mutableLiveData;
+    }
+
+    public LiveData<List<Suggestion>> readSavedSuggestions(){
+        MutableLiveData<List<Suggestion>> mutableLiveData = new MutableLiveData<>();
+        userSource.readSavedSuggestions(new Observer<List<Suggestion>>() {
+            Disposable disposable;
+            @Override
+            public void onSubscribe(@NonNull Disposable d) {
+                disposable = d;
+            }
+
+            @Override
+            public void onNext(@NonNull List<Suggestion> list) {
+                mutableLiveData.postValue(list);
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onComplete() {
+                disposable.dispose();
+            }
+        });
+
+        return mutableLiveData;
+    }
+
+    public LiveData<List<Suggestion>> readFavoriteSuggestions(){
+        MutableLiveData<List<Suggestion>> mutableLiveData = new MutableLiveData<>();
+        userSource.readFavoriteSuggestions(new Observer<List<Suggestion>>() {
+            Disposable disposable;
+            @Override
+            public void onSubscribe(@NonNull Disposable d) {
+                disposable = d;
+            }
+
+            @Override
+            public void onNext(@NonNull List<Suggestion> list) {
+                mutableLiveData.postValue(list);
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onComplete() {
+                disposable.dispose();
+            }
+        });
+        return mutableLiveData;
+    }
+
+    public long saveBookmarkedVenue(Venue venue, Boolean isFavorite){
+        return userSource.upsertSavedVenue(venue, isFavorite);
+    }
+
+    public List<VenueAndCategory> readSavedVenues(){
+        return userSource.readSavedVenues();
+    }
+
+    public List<Book> readSavedBooks(){
+        return userSource.readSavedBooks();
+    }
+
+    public List<VenueAndCategory> readFavoriteVenues(){
+        return userSource.readFavoriteVenues();
+    }
+
+    public List<Book> readFavoriteBooks(){
+        return userSource.readFavoriteBooks();
+    }
+
+    public long saveFavoriteVenue(Venue venue, boolean isFavorite){
+        return userSource.upsertFavoriteVenue(venue, isFavorite);
+    }
+
+    public int deletedSavedVenue(Venue venue){
+        return userSource.deletedSavedVenue(venue);
+    }
+
+    public long saveBookmarkedBook(Book book, Boolean isFavorite){
+        return userSource.upsertSavedBook(book, isFavorite);
+    }
+
+    public long saveFavoriteBook(Book book, boolean isFavorite){
+        return userSource.upsertFavoriteBook(book, isFavorite);
+    }
+
+    public int deletedSavedBook(Book book){
+        return userSource.deletedSavedBook(book);
     }
 
 /* ********************************************************************************************
@@ -544,13 +623,10 @@ public class Repository{
         });
     }
 
-    public LiveData<Category> getFoursquareCategoryName(String id){
-        return foursquareSource.getFoursquareCategoryName(id);
-    }
-
-    public DataSource.Factory<Integer, Category>readRelatedCategoriesDataFactory(String categoryId){
+    public DataSource.Factory<Integer, CategoryTuple> readRelatedCategoriesDataFactory(String categoryId){
         return foursquareSource.readRelatedCategoriesDataFactory(categoryId);
     }
+
 /* ********************************************************************************************
     Foursquare Venues
 *********************************************************************************************** */
@@ -592,9 +668,10 @@ public class Repository{
 
             @Override
             public void onNext(@NonNull List<Venue> venues) {
-                for(Venue foursquareVenue: venues){
-                    foursquareVenue.categoryId = foursquareVenue.categories.get(0).id;
-                    createVenue(foursquareVenue);
+                for(Venue venue: venues){
+                    venue.categoryId = venue.categories.get(0).id;
+                    venue.location.distance = DistanceCalculator.distanceMeter(venue.location.lat, lat, venue.location.lng, lng);
+                    createVenue(venue);
                 }
                 mutableLiveData.postValue(venues.size() > 0);
             }
@@ -627,6 +704,7 @@ public class Repository{
                     String categoryId = result.venue.categories.get(0).id;
                     result.venue.isRecommended = true;
                     result.venue.categoryId = categoryId;
+                    result.venue.location.distance = DistanceCalculator.distanceMeter(result.venue.location.lat, lat, result.venue.location.lng, lng);
                     createRecommendedVenue(result.venue);
                 }
                 mutableLiveData.postValue(venues.size() > 0);
@@ -659,6 +737,8 @@ public class Repository{
             @Override
             public void onNext(@NonNull Venue venue) {
                 mutableLiveData.postValue(true);
+                LocationTuple location = getLastFetchedLocation(venue.location.lat, venue.location.lng);
+                venue.location.distance = DistanceCalculator.distanceMeter(venue.location.lat, location.lat, venue.location.lng, location.lng);
                 updateVenueWithDetails(venue);
             }
 
@@ -692,8 +772,9 @@ public class Repository{
                 for(Venue foursquareVenue: venues){
                     //todo create relationship to other venue;
                     foursquareVenue.categoryId = foursquareVenue.categories.get(0).id;
+                    LocationTuple location = getLastFetchedLocation(venue.location.lat, venue.location.lng);
+                    foursquareVenue.location.distance = DistanceCalculator.distanceMeter(foursquareVenue.location.lat, location.lat, foursquareVenue.location.lng, location.lng);
                     createVenue(foursquareVenue);
-
                     createSimilarVenue(venue, foursquareVenue);
                 }
             }
@@ -827,12 +908,12 @@ public class Repository{
         });
     }
 
-    public DataSource.Factory<Integer, VenueAndCategory> readRecommendedVenuesDataFactory(){
-        return foursquareSource.readRecommendedVenuesDataFactory();
+    public DataSource.Factory<Integer, VenueAndCategory> readRecommendedVenuesDataFactoryHomeFragment(){
+        return foursquareSource.readRecommendedVenuesDataFactoryHomeFragment();
     }
 
-    public DataSource.Factory<Integer, VenueAndCategory> readVenuesUsingCategoryId(String categoryId){
-        return foursquareSource.readVenuesUsingCategoryIdDataFactory(categoryId);
+    public DataSource.Factory<Integer, VenueAndCategory> readVenuesUsingCategoryDataFactoryHomeFragment(String categoryId){
+        return foursquareSource.readVenuesUsingCategoryIdDataFactoryHomeFragment(categoryId);
     }
 
     public LiveData<List<Suggestion>> readRecommendedVenuesLiveData(){
@@ -881,7 +962,7 @@ public class Repository{
     /* ********************************************************************************************
         Foursquare Venues
     *********************************************************************************************** */
-    public LiveData<Boolean> fetchNewYorkTimesBooksIfNotFresh(){
+    public LiveData<Boolean> isNewYorkTimesBooksTableFresh(){
         MutableLiveData<Boolean> mutableLiveData = new MutableLiveData<>();
         newYorkTimesSource.isNewYorkTimesTableFresh(new Observer<Boolean>() {
             Disposable disposable;
@@ -892,10 +973,7 @@ public class Repository{
 
             @Override
             public void onNext(@NonNull Boolean aBoolean) {
-                if(!aBoolean){
-                    fetchNewYorkTimesBestsellingByListName(Config.HARD_COVER_NON_FICTION);
-                    fetchNewYorkTimesBestsellingByListName(Config.HARD_COVER_FICTION);
-                }
+                mutableLiveData.postValue(aBoolean);
             }
 
             @Override
@@ -1020,8 +1098,8 @@ public class Repository{
         return mutableLiveData;
     }
 
-    public DataSource.Factory<Integer, Book> readNewYorkTimesBestsellingList(String listName){
-        return newYorkTimesSource.readNewYorkTimesBookListDataFactory(listName);
+    public DataSource.Factory<Integer, Book> readNewYorkTimesBestsellingListHomeFragment(String listName){
+        return newYorkTimesSource.readNewYorkTimesBookListDataFactoryHomeFragment(listName);
     }
 
     public LiveData<List<Suggestion>> readNewYorkTimesBestsellingListLiveData(String listName){

@@ -10,11 +10,9 @@
     </data>
     <androidx.cardview.widget.CardView
         android:id="@+id/card_view"
-        android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        card_view:cardCornerRadius="10dp">
+        style="@style/Suggest.Explore.CardView">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="160dp"
@@ -24,41 +22,39 @@
                 android:id="@+id/mainImage"
                 android:layout_width="match_parent"
                 android:layout_height="110dp"
+                style="@style/MainImage"
                 card_view:layout_constraintTop_toTopOf="parent"/>
-
 
             <TextView
                 android:id="@+id/name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:background="@color/vibrant_pink_transparent"
-                android:singleLine="true"
-                android:textAlignment="center"
-                android:textAllCaps="false"
-                android:textColor="@color/quantum_amber50"
-                android:textSize="15sp"
-                android:padding="5dp"
+                style="@style/CardViewTitleWhite"
                 card_view:layout_constraintBottom_toBottomOf="@id/mainImage"
                 card_view:layout_constraintEnd_toEndOf="parent"
                 card_view:layout_constraintStart_toStartOf="parent" />
 
-            <ImageView
+            <ToggleButton
                 android:id="@+id/saveImage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:tintMode="multiply"
-                android:src="@drawable/ic_baseline_bookmark_24"
-                android:padding="3dp"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:background="@drawable/selector_saved_venue"
+                android:checked="false"
+                android:text=""
+                android:textOff=""
+                android:textOn=""
+                android:backgroundTint="@color/navy_blue_lighter"
                 card_view:layout_constraintEnd_toStartOf="@+id/guideline_right"
-                card_view:layout_constraintTop_toBottomOf="@id/mainImage" />
+                card_view:layout_constraintTop_toBottomOf="@id/mainImage"
+                card_view:layout_constraintStart_toEndOf="@+id/categoryName"
+                card_view:layout_constraintBottom_toTopOf="@id/distance"/>
 
             <TextView
                 android:id="@+id/categoryName"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:textAllCaps="false"
-                android:maxLines="1"
-                android:textSize="12sp"
+                android:textStyle="bold"
+                style="@style/CardViewTextBlue"
                 card_view:layout_constraintEnd_toStartOf="@+id/saveImage"
                 card_view:layout_constraintTop_toBottomOf="@+id/mainImage"
                 card_view:layout_constraintBottom_toBottomOf="@+id/saveImage"
@@ -69,13 +65,21 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
-                android:maxLines="1"
-                android:textAllCaps="false"
-                android:textSize="12sp"
-                card_view:layout_constraintBottom_toTopOf="@+id/address"
+                style="@style/CardViewTextPink"
+                card_view:layout_constraintBottom_toTopOf="@+id/logoImage"
                 card_view:layout_constraintEnd_toStartOf="@+id/guideline_right"
                 card_view:layout_constraintStart_toStartOf="@+id/guideline_left"
                 card_view:layout_constraintTop_toBottomOf="@+id/categoryName" />
+
+            <ImageView
+                android:id="@+id/logoImage"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/suggest_logo"
+                android:layout_margin="5dp"
+                card_view:layout_constraintTop_toBottomOf="@id/distance"
+                card_view:layout_constraintEnd_toEndOf="@+id/guideline_right"
+                card_view:layout_constraintStart_toStartOf="@id/guideline_left" />
 
             <TextView
                 android:id="@+id/address"
@@ -83,13 +87,12 @@
                 android:layout_height="wrap_content"
                 android:maxLines="3"
                 android:paddingBottom="10dp"
-                android:textAllCaps="false"
-                android:textSize="12sp"
                 android:layout_marginBottom="5dp"
+                style="@style/CardViewTextBlue"
                 card_view:layout_constraintBottom_toTopOf="@+id/guideline_bottom"
                 card_view:layout_constraintEnd_toStartOf="@+id/guideline_right"
                 card_view:layout_constraintStart_toStartOf="@id/guideline_left"
-                card_view:layout_constraintTop_toBottomOf="@+id/distance" />
+                card_view:layout_constraintTop_toBottomOf="@+id/logoImage" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline_horizontal_65"

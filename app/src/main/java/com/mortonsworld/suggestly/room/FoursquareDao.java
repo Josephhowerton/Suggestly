@@ -1,7 +1,6 @@
 package com.mortonsworld.suggestly.room;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.paging.DataSource;
 import androidx.room.Dao;
 import androidx.room.Delete;
@@ -11,12 +10,11 @@ import androidx.room.Query;
 import androidx.room.Transaction;
 import androidx.room.Update;
 
-import com.mortonsworld.suggestly.model.foursquare.SimilarVenues;
 import com.mortonsworld.suggestly.model.foursquare.Venue;
-import com.mortonsworld.suggestly.model.foursquare.VenueAndCategory;
+import com.mortonsworld.suggestly.model.relations.SimilarVenues;
+import com.mortonsworld.suggestly.model.relations.VenueAndCategory;
 import com.mortonsworld.suggestly.utility.DistanceCalculator;
 
-import java.sql.Struct;
 import java.util.List;
 
 import io.reactivex.rxjava3.core.Observable;
@@ -35,6 +33,9 @@ public abstract class FoursquareDao {
     @Query("SELECT * from Venue")
     public abstract List<Venue> readVenues();
 
+    @Query("SELECT * FROM venue WHERE is_venue_recommended = 1 ORDER BY RANDOM() LIMIT 1")
+    public abstract Venue readRandomRecommendedVenue();
+
     @Transaction
     @Query("SELECT * FROM venue v JOIN category c ON(v.venue_category_id = c.category_id) WHERE is_venue_recommended = 1 ORDER BY distance")
     public abstract DataSource.Factory<Integer, VenueAndCategory> readRecommendedVenuesDataFactory();
@@ -44,14 +45,23 @@ public abstract class FoursquareDao {
     public abstract List<VenueAndCategory> readRecommendedVenuesLiveData();
 
     @Transaction
+    @Query("SELECT * FROM Venue v JOIN category c ON(v.venue_category_id = c.category_id) WHERE is_venue_recommended = 1 ORDER BY distance LIMIT 10")
+    public abstract DataSource.Factory<Integer, VenueAndCategory> readRecommendedVenuesDataFactoryHomeFragment();
+
+    @Transaction
     @Query("SELECT * FROM Venue v JOIN category c ON(v.venue_category_id = c.category_id)"
-            + "WHERE id=(SELECT siblingId FROM SimilarVenues where ownerId=:venueId)")
+            + "WHERE id IN (SELECT siblingId FROM SimilarVenues where ownerId=:venueId)")
     public abstract LiveData<List<VenueAndCategory>> readSimilarVenuesLiveData(String venueId);
 
     @Transaction
     @Query("select * from venue v JOIN category c ON(v.venue_category_id = c.category_id) where venue_category_id IN (select child from categoryclosure where parent =:categoryId)"
             + "ORDER BY distance")
     public abstract DataSource.Factory<Integer, VenueAndCategory> readVenueByCategoryId(String categoryId);
+
+    @Transaction
+    @Query("select * from venue v JOIN category c ON(v.venue_category_id = c.category_id) where venue_category_id IN (select child from categoryclosure where parent =:categoryId)"
+            + "ORDER BY distance LIMIT 10")
+    public abstract DataSource.Factory<Integer, VenueAndCategory> readVenueByCategoryIdHomeFragment(String categoryId);
 
     @Transaction
     @Query("select * from venue v JOIN category c ON(v.venue_category_id = c.category_id) where venue_category_id IN (select child from categoryclosure where parent =:categoryId)"
@@ -129,6 +139,6 @@ public abstract class FoursquareDao {
         }
         double distance = DistanceCalculator.distanceMile(lat, venue.getLocation().lat, lng, venue.getLocation().lng);
 
-        return distance <= 5.0;
+        return distance <= 15.0d;
     }
 }

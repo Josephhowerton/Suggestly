@@ -1,11 +1,5 @@
 package com.mortonsworld.suggestly.room;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-
 import androidx.paging.DataSource;
 import androidx.room.Dao;
 import androidx.room.Delete;
@@ -14,8 +8,16 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Transaction;
 import androidx.room.Update;
-import io.reactivex.rxjava3.core.Observable;
+
 import com.mortonsworld.suggestly.model.nyt.Book;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+
+import io.reactivex.rxjava3.core.Observable;
 
 @Dao
 public abstract class NewYorkTimesDAO {
@@ -37,6 +39,9 @@ public abstract class NewYorkTimesDAO {
 
     @Query("SELECT * FROM Book WHERE listNameEncoded =:name")
     public abstract DataSource.Factory<Integer, Book> readBooksByListNameDataFactory(String name);
+
+    @Query("SELECT * FROM Book WHERE listNameEncoded =:name LIMIT 10")
+    public abstract DataSource.Factory<Integer, Book> readBooksByListNameDataFactoryHomeFragment(String name);
 
     @Query("SELECT * FROM Book WHERE listNameEncoded =:name")
     public abstract List<Book> readBooksByListName(String name);

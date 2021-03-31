@@ -1,21 +1,13 @@
 package com.mortonsworld.suggestly.ui.main;
 
-import android.animation.ObjectAnimator;
-import android.animation.PropertyValuesHolder;
-import android.app.Fragment;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.mortonsworld.suggestly.R;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.mortonsworld.suggestly.ui.home.HomeFragment;
-import com.mortonsworld.suggestly.ui.home.HomeViewModel;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
@@ -23,12 +15,16 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.mortonsworld.suggestly.R;
+
 public class MainActivity extends AppCompatActivity implements NavController.OnDestinationChangedListener, View.OnClickListener{
     private BottomNavigationView navView;
     private OnReloadListener listener;
-    private FloatingActionButton FAB;
+    private MainViewModel mViewModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         navView = findViewById(R.id.nav_view);
@@ -41,16 +37,13 @@ public class MainActivity extends AppCompatActivity implements NavController.OnD
         navController.addOnDestinationChangedListener(this);
         NavigationUI.setupWithNavController(navView, navController);
 
-        FAB = findViewById(R.id.reload_floating_action_button);
-        FAB.setOnClickListener(view -> listener.onReloadClickListener());
-        HomeViewModel homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
-        homeViewModel.getLoad().observe(this, aBoolean -> {
-            if(aBoolean) {
-                FAB.setVisibility(View.VISIBLE);
-            }else{
-                FAB.setVisibility(View.GONE);
-            }
-        });
+        mViewModel = new ViewModelProvider(this).get(MainViewModel.class);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mViewModel.removeSuggestlySearch();
     }
 
     @Override
@@ -59,6 +52,11 @@ public class MainActivity extends AppCompatActivity implements NavController.OnD
             onBackPressed();
             return true;
         }
+        else if(item.getItemId() == R.id.back_home){
+            int id = getFragmentManager().getBackStackEntryAt(0).getId();
+            getFragmentManager().popBackStack(id, 0);
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -79,16 +77,6 @@ public class MainActivity extends AppCompatActivity implements NavController.OnD
 
     public void setOnReloadClickListener(OnReloadListener listener){
         this.listener = listener;
-    }
-
-    public void showReloadVenueOptionListener(){
-        ObjectAnimator scaleDown = ObjectAnimator.ofPropertyValuesHolder(FAB,
-                PropertyValuesHolder.ofFloat("scaleX", 1.2f),
-                PropertyValuesHolder.ofFloat("scaleY", 1.2f));
-        scaleDown.setDuration(310);
-        scaleDown.setRepeatCount(ObjectAnimator.INFINITE);
-        scaleDown.setRepeatMode(ObjectAnimator.REVERSE);
-        scaleDown.start();
     }
 
     public interface OnReloadListener {

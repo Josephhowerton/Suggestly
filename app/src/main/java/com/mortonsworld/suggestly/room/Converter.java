@@ -2,10 +2,11 @@ package com.mortonsworld.suggestly.room;
 
 import androidx.room.TypeConverter;
 
-import com.mortonsworld.suggestly.model.nyt.Book;
-import com.mortonsworld.suggestly.model.nyt.BuyLink;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.mortonsworld.suggestly.model.nyt.Book;
+import com.mortonsworld.suggestly.model.nyt.BuyLink;
+
 import java.sql.Date;
 import java.util.List;
 

@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
-    <data>
-        <import type="android.view.View"/>
-        <variable
-            name="user"
-            type="com.mortonsworld.suggestly.model.user.User" />
-    </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -19,38 +13,38 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
-        <ImageView
-            android:id="@+id/addToFavoritesImage"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:visibility="@{user.isSavedSuggestionsEmpty() ? View.VISIBLE : View.GONE}"
-            app:layout_constraintTop_toTopOf="@id/topImageGuideline"
-            app:layout_constraintBottom_toBottomOf="@id/bottomImageGuideline"
-            app:layout_constraintStart_toStartOf="@id/leftImageGuideline"
-            app:layout_constraintEnd_toEndOf="@id/rightImageGuideline"
-            android:contentDescription="@string/add_to_favorites_message"/>
+        <pl.droidsonroids.gif.GifImageView
+            android:id="@+id/add_saved_image"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="50dp"
+            android:src="@drawable/add_saved"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/title_add_to_save"/>
+
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/addToFavoritesMessage"
+            android:id="@+id/title_add_to_save"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textAlignment="center"
-            android:visibility="@{user.isSavedSuggestionsEmpty() ? View.VISIBLE : View.GONE}"
+            android:visibility="gone"
             android:text="@string/add_to_saved_message"
             app:layout_constraintTop_toBottomOf="@id/bottomImageGuideline"
             app:layout_constraintStart_toStartOf="@id/leftTextGuideline"
             app:layout_constraintEnd_toEndOf="@id/rightTextGuideline"/>
 
+
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/addToFavoritesButton"
+            android:id="@+id/add_saved_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:visibility="@{user.isSavedSuggestionsEmpty() ? View.VISIBLE : View.GONE}"
+            android:visibility="gone"
             android:text="@string/add_to_saved_button"
             app:layout_constraintStart_toStartOf="@id/leftTextGuideline"
             app:layout_constraintEnd_toEndOf="@id/rightTextGuideline"
-            app:layout_constraintTop_toBottomOf="@id/addToFavoritesMessage"/>
+            app:layout_constraintTop_toBottomOf="@id/title_add_to_save"/>
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/topImageGuideline"
@@ -93,6 +87,10 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintGuide_percent=".8"/>
+
+        <include
+            android:id="@+id/loading_layout"
+            layout="@layout/layout_loading"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

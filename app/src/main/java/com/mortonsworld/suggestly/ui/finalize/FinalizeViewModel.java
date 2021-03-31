@@ -18,6 +18,10 @@ public class FinalizeViewModel extends AndroidViewModel {
         repository = Repository.getInstance(application);
     }
 
+    public Boolean hasAskForPushNotificationsPreviously(){
+        return repository.checkHasAskedForPushNotificationsPreviously();
+    }
+
     public LiveData<User> getUserLocationLiveData(){
         return repository.readUser(FirebaseAuth.getInstance().getCurrentUser().getUid());
     }

@@ -9,14 +9,14 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
+import androidx.preference.SwitchPreference;
+
 import com.mortonsworld.suggestly.R;
 import com.mortonsworld.suggestly.ui.splash.SplashActivity;
 import com.mortonsworld.suggestly.utility.Config;
@@ -27,19 +27,19 @@ import java.util.Arrays;
 import java.util.List;
 
 public class PreferencesFragment extends PreferenceFragmentCompat implements PreferenceManager.OnPreferenceTreeClickListener, SharedPreferences.OnSharedPreferenceChangeListener {
-    private static final String TAG = "PreferencesFragment";
     private SettingsViewModel settingsViewModel;
     private final int RC_RE_AUTH_BEFORE_DELETE = 0;
     private boolean navigatedToSettings = false;
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-        setPreferencesFromResource(R.xml.root_preferences, rootKey);
+
         getPreferenceManager().setSharedPreferencesName(Config.USER_SHARED_PREFERENCE_NAME);
         getPreferenceManager().setSharedPreferencesMode(Context.MODE_PRIVATE);
         getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
         getPreferenceManager().setOnPreferenceTreeClickListener(this);
         settingsViewModel = new ViewModelProvider(requireActivity()).get(SettingsViewModel.class);
+        setPreferencesFromResource(R.xml.root_preferences, rootKey);
     }
 
     @Override
@@ -85,27 +85,36 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Pre
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
-        if (Config.USER_SHARED_PREFERENCE_LOCATION_UPDATES.equals(s)) {
-            configureLocationUpdates(sharedPreferences.getBoolean(s, true));
+        switch (s){
+            case Config.USER_SHARED_PREFERENCE_PUSH_NOTIFICATIONS:
+                configurePushNotifications(sharedPreferences.getBoolean(s, true));
+                break;
+
+            case Config.USER_SHARED_PREFERENCE_LOCATION_UPDATES:
+                configureLocationUpdates(sharedPreferences.getBoolean(s, true));
+                break;
         }
     }
 
+    private void configurePushNotifications(boolean target){
+        settingsViewModel.updatePushNotificationsPreference(requireActivity().getApplication(), target);
+    }
+
     private void configureLocationUpdates(boolean target){
-        Log.println(Log.ASSERT, TAG, "configureLocationUpdates");
         if(target){
             checkLocationPermissions();
         }else{
-
+            settingsViewModel.disableLocationServices();
         }
     }
 
     private void checkLocationPermissions(){
-        Log.println(Log.ASSERT, TAG, "checkLocationPermissions");
         settingsViewModel.checkLocationPermissionStatus(new PermissionManager.LocationPermissionListener() {
             @Override
             public void onLocationPermissionGranted() {
-                Log.println(Log.ASSERT, TAG, "checkLocationPermissions");
-                if(settingsViewModel.isLocationUpdatesEnabled() && !settingsViewModel.isLocationUpdatesActive()){
+                boolean enabled = settingsViewModel.isLocationUpdatesEnabled();
+                boolean active = settingsViewModel.isLocationUpdatesActive();
+                if(enabled && !active){
                     settingsViewModel.enableLocationServices();
                 }
             }
@@ -189,7 +198,7 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Pre
         Intent intent = AuthUI.getInstance()
                 .createSignInIntentBuilder()
                 .setAvailableProviders(providers)
-                .setTheme(R.style.Theme_Suggest_NoActionBar)
+                .setTheme(R.style.Theme_Suggest_ActionBar)
                 .setLogo(R.drawable.suggest_logo)
                 .setIsSmartLockEnabled(false)
                 .build();
@@ -226,5 +235,6 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Pre
             }
         });
     }
+
 
 }

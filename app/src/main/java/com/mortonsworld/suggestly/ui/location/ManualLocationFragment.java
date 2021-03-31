@@ -7,6 +7,9 @@ import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.app.AlertDialog;
+import android.graphics.SurfaceTexture;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -17,26 +20,39 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.view.LayoutInflater;
+import android.view.Surface;
+import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 
 import com.mortonsworld.suggestly.R;
 import com.mortonsworld.suggestly.adapter.LocationAutoCompleteAdapter;
 import com.mortonsworld.suggestly.databinding.FragmentManualLocationBinding;
+import com.mortonsworld.suggestly.utility.NetworkHandler;
 
-public class ManualLocationFragment extends Fragment implements SearchView.OnQueryTextListener, LocationAutoCompleteAdapter.LocationSearchAdapterListener {
+import java.io.IOException;
+
+public class ManualLocationFragment extends Fragment implements SearchView.OnQueryTextListener, LocationAutoCompleteAdapter.LocationSearchAdapterListener,
+        TextureView.SurfaceTextureListener, MediaPlayer.OnPreparedListener {
+
     private FragmentManualLocationBinding binding;
     private ManualLocationViewModel mViewModel;
     private LocationAutoCompleteAdapter adapter;
 
-    public static ManualLocationFragment newInstance() {
-        return new ManualLocationFragment();
-    }
+    private MediaPlayer mediaPlayer;
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_manual_location, container, false);
+
+        binding.backgroundVideo.setSurfaceTextureListener(this);
+        crossFadeInAnimation();
+
         ((AppCompatActivity) requireActivity()).setSupportActionBar(binding.toolbar);
         ActionBar actionBar = ((AppCompatActivity) requireActivity()).getSupportActionBar();
         if(actionBar != null){
@@ -63,6 +79,25 @@ public class ManualLocationFragment extends Fragment implements SearchView.OnQue
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        if(!NetworkHandler.isNetworkConnectionActive(requireActivity())){
+            String MESSAGE = "Manual location uses the cloud to find your location. Please check internet connection and try again.";
+            NetworkHandler.notifyBadConnectionAndGoBack(requireActivity(), MESSAGE);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if(mediaPlayer != null){
+            mediaPlayer.start();
+        }
+
+    }
+
+    @Override
     public boolean onQueryTextSubmit(String query) {
         return false;
     }
@@ -84,7 +119,7 @@ public class ManualLocationFragment extends Fragment implements SearchView.OnQue
     public void onRowItemSelected(String address) {
         mViewModel.convertAddressToCoordinates(address).observe(requireActivity(), isSuccess -> {
             if(isSuccess){
-                navigateToFinalizeFragment();
+                crossFadeOutAnimation();
             }else{
                 showAddressConversionFailure();
             }
@@ -107,5 +142,75 @@ public class ManualLocationFragment extends Fragment implements SearchView.OnQue
 
     public void navigateToFinalizeFragment(){
         Navigation.findNavController(requireActivity(), R.id.nav_host_fragment).navigate(R.id.navigation_finalize);
+    }
+
+    @Override
+    public void onSurfaceTextureAvailable(@NonNull SurfaceTexture surfaceTexture, int i, int i1) {
+        try {
+
+            Uri uri = Uri.parse("android.resource://"+requireActivity().getPackageName()+"/"+R.raw.manual_location_video);
+            Surface surface = new Surface(surfaceTexture);
+            mediaPlayer = new MediaPlayer();
+            mediaPlayer.setSurface(surface);
+            mediaPlayer.setDataSource(requireContext(), uri);
+            mediaPlayer.setOnPreparedListener(this);
+            mediaPlayer.prepare();
+        } catch (IOException e) {
+            binding.backgroundVideo.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onSurfaceTextureSizeChanged(@NonNull SurfaceTexture surfaceTexture, int i, int i1) {
+
+    }
+
+    @Override
+    public boolean onSurfaceTextureDestroyed(@NonNull SurfaceTexture surfaceTexture) {
+        return false;
+    }
+
+    @Override
+    public void onSurfaceTextureUpdated(@NonNull SurfaceTexture surfaceTexture) {
+
+    }
+
+    @Override
+    public void onPrepared(MediaPlayer mediaPlayer) {
+        mediaPlayer.start();
+    }
+
+    private void crossFadeInAnimation(){
+        AlphaAnimation animation = new AlphaAnimation(0.f, 1.f);
+        animation.setInterpolator(new AccelerateInterpolator());
+        animation.setDuration(1500);
+        binding.backgroundVideo.setAnimation(animation);
+    }
+
+    private void crossFadeOutAnimation(){
+        binding.backgroundVideo.clearAnimation();
+        AlphaAnimation animation = new AlphaAnimation(1.f, 0.f);
+        animation.setInterpolator(new AccelerateInterpolator());
+        animation.setDuration(500);
+        animation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                if(binding.backgroundVideo != null){
+                    binding.backgroundVideo.setSurfaceTextureListener(null);
+                }
+                navigateToFinalizeFragment();
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        binding.backgroundVideo.setAnimation(animation);
     }
 }

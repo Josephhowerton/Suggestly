@@ -1,16 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <layout xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     tools:context=".ui.details.DetailsFragment">
-
-    <data>
-        <import type="android.view.View"/>
-        <import type="com.mortonsworld.suggestly.utility.SuggestionType"/>
-        <variable
-            name="suggestion"
-            type="com.mortonsworld.suggestly.model.Suggestion" />
-    </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -39,7 +32,15 @@
                     android:layout_height="300dp"
                     android:scaleType="fitCenter"
                     android:fitsSystemWindows="true"
-                    tools:src="@drawable/authentication_screen"/>
+                    android:contentDescription="@string/title_suggestion_image" />
+
+                <TextView
+                    android:id="@+id/suggestion_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/DetailsToolbarTitle"
+                    android:fitsSystemWindows="true"
+                    tools:ignore="RtlCompat" />
 
                 <androidx.appcompat.widget.Toolbar
                     android:id="@+id/toolbar"
@@ -47,244 +48,29 @@
                     android:layout_height="?actionBarSize"
                     app:layout_collapseMode="pin"
                     app:titleTextColor="@color/white"
+                    android:fitsSystemWindows="true"
+                    app:menu="@menu/back_home_menu"
                     android:theme = "@android:style/ThemeOverlay.Material.Dark.ActionBar"
                     app:popupTheme="@style/Widget.AppCompat.PopupMenu.Overflow"/>
 
             </com.google.android.material.appbar.CollapsingToolbarLayout>
+
         </com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.core.widget.NestedScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            <include
+                android:id="@+id/venue_details"
+                android:visibility="invisible"
+                layout="@layout/layout_details_venue"/>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/container"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+            <include
+                android:id="@+id/book_details"
+                android:visibility="invisible"
+                layout="@layout/layout_details_book" />
 
-                <ImageView
-                    android:id="@+id/bookmarkImage"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:padding="1dp"
-                    android:layout_margin="5dp"
-                    android:src="@drawable/ic_baseline_bookmark_24"
-                    app:tint="@color/navy_blue"
-                    app:layout_constraintBottom_toBottomOf="@+id/takeActionButton"
-                    app:layout_constraintStart_toStartOf="@id/leftGuideline"
-                    app:layout_constraintTop_toTopOf="parent" />
+            <include
+                android:id="@+id/loading"
+                android:visibility="invisible"
+                layout="@layout/layout_loading"/>
 
-                <ImageView
-                    android:id="@+id/favoritesImage"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:padding="1dp"
-                    android:layout_margin="5dp"
-                    android:src="@drawable/ic_favorites_outline_24dp"
-                    app:tint="@color/vibrant_pink"
-                    app:layout_constraintBottom_toBottomOf="@+id/takeActionButton"
-                    app:layout_constraintStart_toEndOf="@id/bookmarkImage"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <Button
-                    android:id="@+id/takeActionButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/quantum_white_100"
-                    android:padding="12dp"
-                    android:text="@{suggestion.suggestionType == SuggestionType.FOURSQUARE_VENUE ? @string/title_go : @string/title_buy}"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/rightGuideline" />
-
-                <TextView
-                    android:id="@+id/categoryTitle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:textSize="22sp"
-                    android:text="@string/title_similar_categories"
-                    android:visibility="@{suggestion.suggestionType == SuggestionType.FOURSQUARE_VENUE ? View.VISIBLE : View.GONE}"
-                    app:layout_constraintEnd_toEndOf="@id/rightGuideline"
-                    app:layout_constraintStart_toStartOf="@id/leftGuideline"
-                    app:layout_constraintTop_toBottomOf="@id/takeActionButton" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/categories_recycler_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="@{suggestion.suggestionType == SuggestionType.FOURSQUARE_VENUE ? View.VISIBLE : View.GONE}"
-                    app:layout_constraintTop_toBottomOf="@id/categoryTitle"/>
-
-                <TextView
-                    android:id="@+id/genreTitle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:textSize="22sp"
-                    android:text="@string/title_genre"
-                    android:visibility="@{suggestion.suggestionType == SuggestionType.BOOK ? View.VISIBLE : View.GONE}"
-                    app:layout_constraintEnd_toEndOf="@id/rightGuideline"
-                    app:layout_constraintStart_toStartOf="@id/leftGuideline"
-                    app:layout_constraintTop_toBottomOf="@id/categories_recycler_view" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/genre_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:padding="15dp"
-                    app:cornerRadius="100dp"
-                    android:textColor="@color/navy_blue"
-                    android:visibility="@{suggestion.suggestionType == SuggestionType.BOOK ? View.VISIBLE : View.GONE}"
-                    android:backgroundTint="@color/quantum_grey100"
-                    app:layout_constraintTop_toBottomOf="@id/genreTitle"
-                    app:layout_constraintStart_toStartOf="@id/leftGuideline"/>
-
-                <TextView
-                    android:id="@+id/descriptionTitle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="40dp"
-                    android:textSize="22sp"
-                    android:text="@string/title_description"
-                    app:layout_constraintTop_toBottomOf="@+id/genre_button"
-                    app:layout_constraintStart_toStartOf="@id/leftGuideline"
-                    app:layout_constraintEnd_toEndOf="@id/rightGuideline"/>
-
-                <TextView
-                    android:id="@+id/shortDescription"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    app:layout_constraintTop_toBottomOf="@id/descriptionTitle"
-                    app:layout_constraintStart_toStartOf="@id/leftGuideline"
-                    app:layout_constraintEnd_toEndOf="@id/rightGuideline"/>
-
-
-                <TextView
-                    android:id="@+id/addressTitle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="40dp"
-                    android:textSize="22sp"
-                    android:text="@string/title_location"
-                    android:visibility="@{suggestion.suggestionType == SuggestionType.FOURSQUARE_VENUE ? View.VISIBLE : View.GONE}"
-                    app:layout_constraintTop_toBottomOf="@+id/shortDescription"
-                    app:layout_constraintStart_toStartOf="@id/leftGuideline"
-                    app:layout_constraintEnd_toEndOf="@id/rightGuideline"/>
-
-                <TextView
-                    android:id="@+id/address"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:visibility="@{suggestion.suggestionType == SuggestionType.FOURSQUARE_VENUE ? View.VISIBLE : View.GONE}"
-                    app:layout_constraintEnd_toStartOf="@id/distance"
-                    app:layout_constraintStart_toStartOf="@id/leftGuideline"
-                    app:layout_constraintTop_toBottomOf="@id/addressTitle" />
-
-                <TextView
-                    android:id="@+id/distance"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:textAlignment="center"
-                    android:visibility="@{suggestion.suggestionType == SuggestionType.FOURSQUARE_VENUE ? View.VISIBLE : View.GONE}"
-                    app:layout_constraintEnd_toEndOf="@id/rightGuideline"
-                    app:layout_constraintStart_toEndOf="@id/address"
-                    app:layout_constraintTop_toTopOf="@+id/address"
-                    app:layout_constraintBottom_toBottomOf="@+id/address"/>
-
-
-                <TextView
-                    android:id="@+id/infoTitle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/title_info"
-                    android:layout_marginTop="40dp"
-                    android:textSize="22sp"
-                    android:visibility="@{suggestion.suggestionType == SuggestionType.BOOK ? View.VISIBLE : View.GONE}"
-                    app:layout_constraintTop_toBottomOf="@+id/distance"
-                    app:layout_constraintStart_toStartOf="@id/leftGuideline"
-                    app:layout_constraintEnd_toEndOf="@id/rightGuideline"/>
-
-                <TextView
-                    android:id="@+id/authorDescription"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:visibility="@{suggestion.suggestionType == SuggestionType.BOOK ? View.VISIBLE : View.GONE}"
-                    app:layout_constraintTop_toBottomOf="@id/infoTitle"
-                    app:layout_constraintStart_toStartOf="@id/leftGuideline"
-                    app:layout_constraintEnd_toEndOf="@id/rightGuideline"/>
-
-                <TextView
-                    android:id="@+id/publisherDescription"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:visibility="@{suggestion.suggestionType == SuggestionType.BOOK ? View.VISIBLE : View.GONE}"
-                    app:layout_constraintTop_toBottomOf="@id/authorDescription"
-                    app:layout_constraintStart_toStartOf="@id/leftGuideline"
-                    app:layout_constraintEnd_toEndOf="@id/rightGuideline"/>
-
-                <TextView
-                    android:id="@+id/rank_weeks_description"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:visibility="@{suggestion.suggestionType == SuggestionType.BOOK ? View.VISIBLE : View.GONE}"
-                    app:layout_constraintTop_toBottomOf="@id/publisherDescription"
-                    app:layout_constraintStart_toStartOf="@id/leftGuideline"
-                    app:layout_constraintEnd_toEndOf="@id/rightGuideline"/>
-
-
-                <TextView
-                    android:id="@+id/similarTitle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/title_similar_venues"
-                    android:layout_marginTop="40dp"
-                    android:textSize="22sp"
-                    app:layout_constraintTop_toBottomOf="@+id/rank_weeks_description"
-                    app:layout_constraintStart_toStartOf="@id/leftGuideline"
-                    app:layout_constraintEnd_toEndOf="@id/rightGuideline"/>
-
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/similarRecycler"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="?actionBarSize"
-                    app:layout_constraintTop_toBottomOf="@id/similarTitle"
-                    app:layout_constraintStart_toStartOf="@id/leftGuideline"
-                    app:layout_constraintEnd_toEndOf="@id/rightGuideline"/>
-
-
-                <!-- - - - - - - - - - - - - - Layout Guidelines - - - - - - - - - - - - - - - - - - - - - - - - -->
-                <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/leftGuideline"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    app:layout_constraintGuide_percent="0.05" />
-
-                <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/rightGuideline"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    app:layout_constraintGuide_percent="0.95" />
-
-
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </androidx.core.widget.NestedScrollView>
-
-        <include
-            android:id="@+id/loading"
-            android:visibility="gone"
-            layout="@layout/loading_layout"/>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
 </layout>

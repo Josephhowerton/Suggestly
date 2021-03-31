@@ -3,6 +3,10 @@ package com.mortonsworld.suggestly.adapter;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.BounceInterpolator;
+import android.view.animation.ScaleAnimation;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,24 +17,26 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.mortonsworld.suggestly.R;
-import com.mortonsworld.suggestly.databinding.CardViewHomeBinding;
 import com.mortonsworld.suggestly.callbacks.SaveCallback;
+import com.mortonsworld.suggestly.databinding.CardViewHomeBinding;
 import com.mortonsworld.suggestly.model.foursquare.Category;
+import com.mortonsworld.suggestly.model.foursquare.Location;
 import com.mortonsworld.suggestly.model.foursquare.Venue;
-import com.mortonsworld.suggestly.model.foursquare.VenueAndCategory;
-import com.mortonsworld.suggestly.model.user.LocationTuple;
+import com.mortonsworld.suggestly.model.relations.VenueAndCategory;
 import com.mortonsworld.suggestly.utility.DistanceCalculator;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public class HomeVenueAdapter extends PagedListAdapter<VenueAndCategory, HomeVenueAdapter.HomeViewHolder> {
-
     private final VenueSelectedListener listener;
     private final SaveCallback saveVenueListener;
-    private LocationTuple locationTuple;
+    private final List<VenueAndCategory> saved = new ArrayList<>();
 
     public HomeVenueAdapter(VenueSelectedListener listener, SaveCallback saveVenueListener) {
         super(VENUE_CALLBACK);
@@ -48,26 +54,26 @@ public class HomeVenueAdapter extends PagedListAdapter<VenueAndCategory, HomeVen
     @Override
     public void onBindViewHolder(@NonNull HomeViewHolder holder, int position) {
         final VenueAndCategory venue = getItem(position);
-        if(venue == null){
-            return;
-        }
-
-        if(venue.venue != null && venue.category != null){
-            holder.bindVenue(venue.venue);
-            holder.bindCategory(venue.category);
-            holder.bindImage(venue);
+        if(venue != null){
+            if(venue.venue != null && venue.category != null){
+                holder.bindSavedImage(venue);
+                holder.bindVenue(venue.venue);
+                holder.bindCategory(venue.category);
+                holder.bindImage(venue);
+                holder.bindSavedAnimation(venue.venue);
+            }
         }
     }
 
-    public void setDistance(LocationTuple locationTuple){
-        this.locationTuple = locationTuple;
+    public void setSavedList(List<VenueAndCategory> saved){
+        this.saved.clear();
+        this.saved.addAll(saved);
         notifyDataSetChanged();
     }
 
     @Override
     public void submitList(@Nullable PagedList<VenueAndCategory> pagedList) {
         super.submitList(pagedList);
-        notifyDataSetChanged();
     }
 
     public class HomeViewHolder extends RecyclerView.ViewHolder {
@@ -80,12 +86,11 @@ public class HomeVenueAdapter extends PagedListAdapter<VenueAndCategory, HomeVen
 
         public void bindVenue(@NotNull Venue venue){
             binding.name.setText(venue.getName());
-            binding.distance.setText(formatDistance(venue.location.distance));
+            binding.distance.setText(formatDistance(venue.location));
             binding.distance.setTypeface(Typeface.DEFAULT_BOLD);
             binding.address.setMaxLines(2);
             binding.address.setText(venue.getFormattedAddress());
             binding.cardView.setOnClickListener(view -> listener.onVenueSelected(venue));
-            binding.saveImage.setOnClickListener(view -> saveVenueListener.onSuggestionSaved(venue, getAdapterPosition()));
         }
 
         public void bindCategory(@NotNull Category category){
@@ -94,19 +99,40 @@ public class HomeVenueAdapter extends PagedListAdapter<VenueAndCategory, HomeVen
 
         public void bindImage(@NotNull VenueAndCategory venue){
             String url = "";
-            if(venue.venue.url != null){
+            if(venue.venue.url != null && !venue.venue.url.equals("") && !venue.venue.url.isEmpty()){
                 url = venue.venue.getBestPhotoUrl();
+                binding.mainImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
             }else{
-                url = venue.category.getIconWithBGUrl(100);
+                url = venue.category.getIconUrl(100);
             }
 
             Glide.with(binding.getRoot()).load(url)
-                    .placeholder(R.drawable.progress_bar)
+                    .placeholder(R.drawable.glide_progress_bar)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(binding.mainImage);
         }
 
-        public String formatDistance(double distance) {
-            return String.format(Locale.ENGLISH, "%.1f", DistanceCalculator.meterToMiles(distance)) + " miles";
+        public void bindSavedImage(@NotNull VenueAndCategory venueAndCategory){
+            for(VenueAndCategory temp: saved){
+                if(temp.getId().equals(venueAndCategory.getId())){
+                    binding.saveImage.setChecked(true);
+                }
+            }
+        }
+
+        public void bindSavedAnimation(Venue venue) {
+            ScaleAnimation scaleAnimation = new ScaleAnimation(0.7f, 1.0f, 0.7f, 1.0f, Animation.RELATIVE_TO_SELF, 0.7f, Animation.RELATIVE_TO_SELF, 0.7f);
+            scaleAnimation.setDuration(500);
+            BounceInterpolator bounceInterpolator = new BounceInterpolator();
+            scaleAnimation.setInterpolator(bounceInterpolator);
+            binding.saveImage.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+                compoundButton.startAnimation(scaleAnimation);
+                saveVenueListener.onSuggestionSaved(venue, isChecked);
+            });
+        }
+
+        public String formatDistance(Location location) {
+            return location.distance == null ? "unknown distance" : String.format(Locale.ENGLISH, "%.1f", DistanceCalculator.meterToMiles(location.distance)) + " miles";
         }
 
     }

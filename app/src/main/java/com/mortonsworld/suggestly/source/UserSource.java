@@ -4,17 +4,21 @@ import android.app.Application;
 
 import androidx.room.Insert;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.mortonsworld.suggestly.model.Suggestion;
+import com.mortonsworld.suggestly.model.foursquare.Venue;
+import com.mortonsworld.suggestly.model.nyt.Book;
+import com.mortonsworld.suggestly.model.relations.VenueAndCategory;
 import com.mortonsworld.suggestly.model.user.LocationTuple;
 import com.mortonsworld.suggestly.model.user.User;
 import com.mortonsworld.suggestly.room.RoomDB;
 import com.mortonsworld.suggestly.room.UserDao;
-import com.google.firebase.auth.FirebaseAuth;
 
-import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Observer;
@@ -23,9 +27,10 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 public class UserSource {
     private final UserDao userDao;
     private final ExecutorService executorService;
-    public UserSource(Application application, ExecutorService service){
+
+    public UserSource(Application application){
         userDao = RoomDB.getInstance(application).getUserDao();
-        executorService = service;
+        executorService = Executors.newFixedThreadPool(5);
     }
 
     public void checkIfUserInRoom(String id, Observer<Boolean> observer){
@@ -71,31 +76,6 @@ public class UserSource {
                 .subscribe(observer);
     }
 
-    public LocationTuple readUserLocation(String id){
-        try {
-            executorService.submit(() -> userDao.readUserLocation(id)).get();
-        }catch (InterruptedException | ExecutionException e){
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-    public void updateUserLastSignedIn(String id, Date latestSignIn, Observer<Boolean> observer){
-        Observable<Boolean> observable = Observable.create(source -> {
-            int result = userDao.updateUserLastSignedIn(id, latestSignIn);
-            if(result >= 0){
-                source.onNext(true);
-            }else{
-                source.onNext(false);
-            }
-            source.onComplete();
-        });
-
-        observable.subscribeOn(Schedulers.io())
-                .subscribe(observer);
-    }
-
     public void updateUserLocation(String id, double lat, double lng, Observer<Boolean> observer){
         Observable<Boolean> observable = Observable.create(source -> {
             int result = userDao.updateUserLocation(id, lat, lng);
@@ -111,46 +91,26 @@ public class UserSource {
                 .subscribe(observer);
     }
 
-    public void updateUser(User user, Observer<Boolean> observer){
-        Observable<Boolean> observable = Observable.create(source -> {
-            int result = userDao.updateUser(user);
-            if(result >= 0){
-                source.onNext(true);
-            }else{
-                source.onNext(false);
-            }
-            source.onComplete();
-        });
-
-        observable.subscribeOn(Schedulers.io())
-                .subscribe(observer);
-    }
-
-    public void updateUserSavedSuggestions(String id, List<Suggestion> suggestions, Observer<Boolean> observer){
-        Observable<Boolean> observable = Observable.create(source -> {
-        });
-
-        observable.subscribeOn(Schedulers.io())
-                .subscribe(observer);
-    }
-
-    public void updateUserFavoriteSuggestions(String id, List<Suggestion> suggestions, Observer<Boolean> observer){
-        Observable<Boolean> observable = Observable.create(source -> {
-        });
-
-        observable.subscribeOn(Schedulers.io())
-                .subscribe(observer);
-    }
-
     public void deleteUser(Observer<Boolean> observer){
         Observable<Boolean> observable = Observable.create(source -> {
+            if(FirebaseAuth.getInstance().getCurrentUser() == null){
+                source.onNext(false);
+            }
+
             User user = userDao.readCurrentUser(FirebaseAuth.getInstance().getCurrentUser().getUid());
             int result = userDao.deleteUser(user);
             if(result >= 0) {
                 FirebaseAuth.getInstance().getCurrentUser().delete().addOnSuccessListener(onSuccess -> {
+                    if(FirebaseAuth.getInstance().getCurrentUser() != null){
+                        FirebaseAuth.getInstance().signOut();
+                    }
                     source.onNext(true);
                     source.onComplete();
                 }).addOnFailureListener(onFailure -> {
+                    if(FirebaseAuth.getInstance().getCurrentUser() != null){
+                        FirebaseAuth.getInstance().signOut();
+                    }
+
                     source.onNext(false);
                     source.onComplete();
                 });
@@ -162,5 +122,178 @@ public class UserSource {
 
         observable.subscribeOn(Schedulers.io())
                 .subscribe(observer);
+    }
+
+    public void readSavedSuggestions(Observer<List<Suggestion>> observer){
+        Observable<List<Suggestion>> observable = Observable.create(source -> {
+            List<Suggestion> suggestions = new ArrayList<>(readSavedVenueSuggestion());
+            suggestions.addAll(readSavedBooksSuggestion());
+            source.onNext(suggestions);
+            source.onComplete();
+        });
+
+
+        observable.subscribeOn(Schedulers.io())
+                .subscribe(observer);
+    }
+
+    public void readFavoriteSuggestions(Observer<List<Suggestion>> observer){
+        Observable<List<Suggestion>> observable = Observable.create(source -> {
+            List<Suggestion> suggestions = new ArrayList<>(readFavoriteVenueSuggestion());
+            suggestions.addAll(readFavoriteBooksSuggestion());
+            source.onNext(suggestions);
+            source.onComplete();
+        });
+
+
+        observable.subscribeOn(Schedulers.io())
+                .subscribe(observer);
+    }
+
+    public long upsertSavedVenue(Venue venue, boolean isSaved){
+        if(FirebaseAuth.getInstance().getCurrentUser() == null || venue ==null){
+            return -1;
+        }
+        try{
+            return executorService.submit(() -> userDao.upsertSavedVenue(FirebaseAuth.getInstance().getCurrentUser().getUid(), venue.venueId, isSaved)).get();
+        }catch (InterruptedException|ExecutionException e){
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
+    private List<VenueAndCategory> readSavedVenueSuggestion(){
+        if(FirebaseAuth.getInstance().getCurrentUser() != null) {
+            return userDao.readSavedVenues(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        }
+        return new ArrayList<>();
+    }
+
+    private List<VenueAndCategory> readFavoriteVenueSuggestion(){
+        if(FirebaseAuth.getInstance().getCurrentUser() != null) {
+            return userDao.readFavoriteVenues(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        }
+        return new ArrayList<>();
+    }
+
+    public List<VenueAndCategory> readSavedVenues(){
+        if(FirebaseAuth.getInstance().getCurrentUser() != null){
+            try{
+                return executorService.submit(() -> userDao.readSavedVenues(FirebaseAuth.getInstance().getCurrentUser().getUid())).get();
+            }catch (InterruptedException|ExecutionException e){
+                e.printStackTrace();
+            }
+        }
+        return new ArrayList<>();
+    }
+
+    public List<VenueAndCategory> readFavoriteVenues(){
+        if(FirebaseAuth.getInstance().getCurrentUser() != null){
+            try{
+                return executorService.submit(() -> userDao.readFavoriteVenues(FirebaseAuth.getInstance().getCurrentUser().getUid())).get();
+            }catch (InterruptedException|ExecutionException e){
+                e.printStackTrace();
+            }
+        }
+        return new ArrayList<>();
+    }
+
+    public long upsertFavoriteVenue(Venue venue, boolean isFavorite){
+        if(FirebaseAuth.getInstance().getCurrentUser() == null){
+            return -1;
+        }
+
+        try{
+            return executorService.submit(() -> userDao.upsertFavoriteVenue(FirebaseAuth.getInstance().getCurrentUser().getUid(), venue.venueId, isFavorite)).get();
+        }catch (InterruptedException|ExecutionException e){
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
+    public int deletedSavedVenue(Venue venue){
+        if(FirebaseAuth.getInstance().getCurrentUser() == null || venue == null){
+            return -1;
+        }
+        try{
+            return executorService.submit(() -> userDao.deletedSavedVenue(FirebaseAuth.getInstance().getCurrentUser().getUid(), venue.venueId)).get();
+        }catch (InterruptedException|ExecutionException e){
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
+    private List<Book> readSavedBooksSuggestion(){
+        if(FirebaseAuth.getInstance().getCurrentUser() != null){
+            return userDao.readSavedBook(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        }
+        return new ArrayList<>();
+    }
+
+    public List<Book> readSavedBooks(){
+        if(FirebaseAuth.getInstance().getCurrentUser() != null) {
+            try {
+                return executorService.submit(() -> userDao.readSavedBook(FirebaseAuth.getInstance().getCurrentUser().getUid())).get();
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
+        return new ArrayList<>();
+    }
+
+    public long upsertSavedBook(Book book, boolean isSaved){
+        if(FirebaseAuth.getInstance().getCurrentUser() == null){
+            return -1;
+        }
+
+        try{
+            return executorService.submit(() -> userDao.upsertSavedBook(FirebaseAuth.getInstance().getCurrentUser().getUid(), book.getPrimaryIsbn13(), isSaved)).get();
+        }catch (InterruptedException|ExecutionException e){
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
+    public List<Book> readFavoriteBooks(){
+        if(FirebaseAuth.getInstance().getCurrentUser() != null) {
+            try {
+                return executorService.submit(() -> userDao.readFavoriteBook(FirebaseAuth.getInstance().getCurrentUser().getUid())).get();
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
+        return new ArrayList<>();
+    }
+
+    public List<Book> readFavoriteBooksSuggestion(){
+        if(FirebaseAuth.getInstance().getCurrentUser() != null){
+            return userDao.readFavoriteBook(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        }
+        return new ArrayList<>();
+    }
+
+    public long upsertFavoriteBook(Book book, boolean isFavorite){
+        if(FirebaseAuth.getInstance().getCurrentUser() == null){
+            return -1;
+        }
+
+        try{
+            return executorService.submit(() -> userDao.upsertFavoriteBook(FirebaseAuth.getInstance().getCurrentUser().getUid(), book.getPrimaryIsbn13(), isFavorite)).get();
+        }catch (InterruptedException|ExecutionException e){
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
+    public int deletedSavedBook(Book book){
+        if(FirebaseAuth.getInstance().getCurrentUser() == null || book == null){
+            return -1;
+        }
+        try{
+            return executorService.submit(() -> userDao.deletedSavedBook(FirebaseAuth.getInstance().getCurrentUser().getUid(), book.getPrimaryIsbn13())).get();
+        }catch (InterruptedException|ExecutionException e){
+            e.printStackTrace();
+        }
+        return -1;
     }
 }

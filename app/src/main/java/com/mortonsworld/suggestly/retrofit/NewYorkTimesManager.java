@@ -7,9 +7,7 @@ import java.util.HashMap;
 public class NewYorkTimesManager {
 
     public static final String CLIENT_KEY_PARAM = "api-key";
-
     private static final String LIST_PARAM = "list";
-    private static final String VERSION = "20201001";
 
 
     private NewYorkTimesManager(){}

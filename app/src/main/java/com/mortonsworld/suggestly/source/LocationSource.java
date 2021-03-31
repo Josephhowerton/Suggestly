@@ -27,15 +27,11 @@ public class LocationSource extends FusedLocationProviderClient {
     private final HandlerThread locationSourceThread;
     private final LocationCallback locationCallback;
     private final LocationRequest locationRequest;
-    private final SharedPreferences sharedPreferences;
-    private final SharedPreferences.Editor editor;
     private Boolean isLocationRequestActive = false;
 
     @SuppressLint({"CommitPrefEdits", "VisibleForTests"})
     public LocationSource(@NonNull Application application) {
         super(application);
-        sharedPreferences = application.getSharedPreferences("", Context.MODE_PRIVATE);
-        editor = sharedPreferences.edit();
 
         locationUpdatesBehaviorSubject = BehaviorSubject.create();
         locationSourceThread = new HandlerThread("LocationSource");
@@ -47,10 +43,11 @@ public class LocationSource extends FusedLocationProviderClient {
             }
         };
 
-        locationRequest = new LocationRequest();
+        locationRequest = LocationRequest.create();
 
         int TEN_SECONDS = 10000;
         int ONE_MILE = 100;
+
         locationRequest.setSmallestDisplacement(ONE_MILE)
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                 .setInterval(TEN_SECONDS)
@@ -80,38 +77,11 @@ public class LocationSource extends FusedLocationProviderClient {
     public void requestLocationUpdates() {
         isLocationRequestActive = true;
         requestLocationUpdates(locationRequest, locationCallback, locationSourceThread.getLooper());
-        enableLocationUpdates();
     }
 
     private void removeLocationUpdates() {
         isLocationRequestActive = false;
         removeLocationUpdates(locationCallback);
-        disableLocationUpdates();
-    }
-
-    public Boolean isLocationEnabled(){
-        return getValueFromSharedPreferences(Config.USER_SHARED_PREFERENCE_LOCATION_UPDATES, false);
-    }
-
-    public Boolean isLocationValid(){
-        return getValueFromSharedPreferences(Config.USER_SHARED_PREFERENCE_VALID_LOCATION, false);
-    }
-
-    public void enableLocationUpdates(){
-        updateSharedPreferences(Config.USER_SHARED_PREFERENCE_LOCATION_UPDATES, true);
-    }
-
-    public void disableLocationUpdates(){
-        updateSharedPreferences(Config.USER_SHARED_PREFERENCE_LOCATION_UPDATES, false);
-    }
-
-    private void updateSharedPreferences(String key, Boolean target){
-        editor.putBoolean(key, target);
-        editor.apply();
-    }
-
-    private Boolean getValueFromSharedPreferences(String key, Boolean defaultValue){
-        return sharedPreferences.getBoolean(key, defaultValue);
     }
 }
 

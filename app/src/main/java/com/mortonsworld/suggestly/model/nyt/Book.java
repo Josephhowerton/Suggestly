@@ -1,5 +1,6 @@
 package com.mortonsworld.suggestly.model.nyt;
 import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -8,6 +9,7 @@ import com.mortonsworld.suggestly.utility.SuggestionType;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.sql.Date;
 import java.util.List;
 
 @Entity
@@ -119,6 +121,9 @@ public class Book extends Suggestion {
     @SerializedName("updated")
     @Expose
     public String updated;
+
+    @ColumnInfo(defaultValue = "CURRENT_TIMESTAMP")
+    public Date createdAt;
 
     public void addExtra(Result result){
         this.listName = result.listName;
@@ -426,5 +431,13 @@ public class Book extends Suggestion {
     @NonNull
     public SuggestionType getSuggestionType() {
         return SuggestionType.BOOK;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 }

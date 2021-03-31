@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
@@ -11,28 +12,45 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.mortonsworld.suggestly.R;
+import com.mortonsworld.suggestly.adapter.SuggestlySearchAdapter;
 import com.mortonsworld.suggestly.databinding.FragmentExploreBinding;
 import com.mortonsworld.suggestly.callbacks.CategoryCallback;
-import com.mortonsworld.suggestly.model.Suggestion;
-import com.mortonsworld.suggestly.callbacks.SuggestionCallback;
+import com.mortonsworld.suggestly.model.relations.SearchTuple;
 import com.mortonsworld.suggestly.utility.Config;
+import com.mortonsworld.suggestly.utility.NetworkHandler;
 import com.mortonsworld.suggestly.utility.SuggestionType;
 
-public class ExploreFragment extends Fragment implements CategoryCallback, SearchView.OnQueryTextListener, SuggestionCallback {
+public class ExploreFragment extends Fragment implements CategoryCallback, SearchView.OnQueryTextListener, SuggestlySearchAdapter.SearchResultListener {
     private FragmentExploreBinding binding;
     private ExploreViewModel exploreViewModel;
+    private final SuggestlySearchAdapter searchAdapter = new SuggestlySearchAdapter(this);
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        exploreViewModel =
-                new ViewModelProvider(this).get(ExploreViewModel.class);
+        exploreViewModel = new ViewModelProvider(this).get(ExploreViewModel.class);
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_explore, container, false);
+
+        binding.searchLayout.recyclerView.setAdapter(searchAdapter);
+        binding.searchLayout.recyclerView.setLayoutManager(new LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false));
         binding.setCategoryCallback(this);
         binding.searchBar.setOnQueryTextListener(this);
+
+        initializeSuggestlySearch();
+
         return binding.getRoot();
+    }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if(!NetworkHandler.isNetworkConnectionActive(requireActivity())){
+            Toast.makeText(requireContext(), R.string.message_network_error_search, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -42,18 +60,34 @@ public class ExploreFragment extends Fragment implements CategoryCallback, Searc
 
     @Override
     public boolean onQueryTextChange(String query) {
-        exploreViewModel.search(query);
+
         if(query.isEmpty()){
-            binding.recyclerView.setVisibility(View.GONE);
+            binding.searchLayout.getRoot().setVisibility(View.GONE);
+            binding.searchLayout.recyclerView.setVisibility(View.GONE);
         }else{
-            binding.recyclerView.setVisibility(View.VISIBLE);
+            suggestlySearch(query);
+            binding.searchLayout.getRoot().setVisibility(View.VISIBLE);
+            binding.searchLayout.recyclerView.setVisibility(View.VISIBLE);
         }
+        binding.searchLayout.message.setVisibility(View.GONE);
         return true;
     }
 
+    public void suggestlySearch(String search){
+        exploreViewModel.suggestlySearch(search).observe(getViewLifecycleOwner(), data ->{
+
+            if(data.size() == 0){
+                binding.searchLayout.recyclerView.setVisibility(View.GONE);
+                binding.searchLayout.message.setVisibility(View.VISIBLE);
+            }
+
+            searchAdapter.submitList(data);
+        });
+    }
+
     @Override
-    public void onSuggestionSelected(Suggestion suggestion) {
-        navigateToDetails(suggestion);
+    public void onResultSelected(SearchTuple searchResult) {
+        navigateToDetails(searchResult);
     }
 
     @Override
@@ -74,22 +108,16 @@ public class ExploreFragment extends Fragment implements CategoryCallback, Searc
         Navigation.findNavController(requireActivity(), R.id.nav_host_fragment).navigate(R.id.navigation_more, bundle);
     }
 
-    private void navigateToDetails(Suggestion suggestion){
+    private void navigateToDetails(SearchTuple searchResult){
         Bundle bundle = new Bundle();
-        bundle.putString(Config.DETAILS_SUGGESTION_ID_KEY, suggestion.getId());
-        bundle.putSerializable(Config.DETAILS_SUGGESTION_TYPE_KEY, suggestion.getSuggestionType());
+        bundle.putString(Config.DETAILS_SUGGESTION_ID_KEY, searchResult.venueId);
+        bundle.putString(Config.LIST_SUGGESTION_TITLE_KEY, searchResult.name);
+        bundle.putSerializable(Config.DETAILS_SUGGESTION_TYPE_KEY, SuggestionType.FOURSQUARE_VENUE);
         Navigation.findNavController(requireActivity(), R.id.nav_host_fragment).navigate(R.id.navigation_details, bundle);
     }
 
-    private static final DiffUtil.ItemCallback<Suggestion> VENUE_CALLBACK = new DiffUtil.ItemCallback<Suggestion>() {
-        @Override
-        public boolean areItemsTheSame(@NonNull Suggestion oldItem, @NonNull Suggestion newItem) {
-            return oldItem.getId().equals(newItem.getId());
-        }
+    private void initializeSuggestlySearch(){
+        exploreViewModel.initializeVenueSearch();
+    }
 
-        @Override
-        public boolean areContentsTheSame(@NonNull Suggestion oldItem, @NonNull Suggestion newItem) {
-            return oldItem.equals(newItem);
-        }
-    };
 }

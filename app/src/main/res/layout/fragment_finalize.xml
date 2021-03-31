@@ -1,123 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
     <androidx.constraintlayout.widget.ConstraintLayout
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/suggestLogo"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:srcCompat="@drawable/suggest_logo"
-            app:layout_constraintStart_toEndOf="@id/leftLogoGuideline"
-            app:layout_constraintEnd_toStartOf="@id/rightLogoGuideline"
-            app:layout_constraintTop_toBottomOf="@id/topLogoGuideline"
-            app:layout_constraintBottom_toTopOf="@id/bottomLogoGuideline"
-            android:contentDescription="@string/suggest_logo_description" />
+        <TextureView
+            android:id="@+id/background_video"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
-        <ProgressBar
-            android:id="@+id/progressBar"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintStart_toEndOf="@id/leftProgressBarGuideline"
-            app:layout_constraintEnd_toStartOf="@id/rightProgressBarGuideline"
-            app:layout_constraintTop_toBottomOf="@id/topProgressBarGuideline"
-            app:layout_constraintBottom_toTopOf="@id/bottomProgressBarGuideline"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/black_transparent_lighter"/>
 
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/finalizeMessage"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toEndOf="@id/leftGuideline"
-            app:layout_constraintEnd_toStartOf="@id/rightGuideline"
-            app:layout_constraintTop_toBottomOf="@id/bottomProgressBarGuideline"/>
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/topGuideline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent=".05"/>
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/leftGuideline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent=".1"/>
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/rightGuideline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent=".9"/>
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/bottomGuideline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent=".95"/>
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/topLogoGuideline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent=".3"/>
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/leftLogoGuideline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent=".4"/>
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/rightLogoGuideline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent=".6"/>
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/bottomLogoGuideline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent=".4"/>
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/topProgressBarGuideline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent=".25"/>
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/leftProgressBarGuideline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent=".32"/>
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/rightProgressBarGuideline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent=".67"/>
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/bottomProgressBarGuideline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent=".45"/>
+        <include
+            android:id="@+id/loading_layout"
+            layout="@layout/layout_loading"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

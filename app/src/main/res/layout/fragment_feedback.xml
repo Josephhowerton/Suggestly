@@ -25,13 +25,15 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/feedback_button"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:enabled="false"
         android:layout_margin="20dp"
+        android:paddingStart="100dp"
+        android:paddingEnd="100dp"
         style="@style/Suggest.Button"
         android:text="@string/fui_button_text_send"
-        app:iconGravity="top"
+        app:iconGravity="start"
         app:icon="@drawable/ic_baseline_mail_outline_24"
         app:layout_constraintEnd_toEndOf="@id/right_guideline"
         app:layout_constraintStart_toStartOf="@id/left_guideline"

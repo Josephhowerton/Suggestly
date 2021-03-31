@@ -7,24 +7,27 @@ import androidx.lifecycle.LiveData;
 import androidx.paging.DataSource;
 
 import com.mortonsworld.suggestly.model.foursquare.Category;
-import com.mortonsworld.suggestly.model.foursquare.CategoryClosure;
+import com.mortonsworld.suggestly.model.foursquare.Contact;
 import com.mortonsworld.suggestly.model.foursquare.FoursquareResult;
-import com.mortonsworld.suggestly.model.foursquare.SimilarVenues;
 import com.mortonsworld.suggestly.model.foursquare.Venue;
-import com.mortonsworld.suggestly.model.foursquare.VenueAndCategory;
-import com.mortonsworld.suggestly.room.FoursquareCategoryDao;
-import com.mortonsworld.suggestly.utility.Config;
+import com.mortonsworld.suggestly.model.relations.CategoryClosure;
+import com.mortonsworld.suggestly.model.relations.CategoryTuple;
+import com.mortonsworld.suggestly.model.relations.SimilarVenues;
+import com.mortonsworld.suggestly.model.relations.VenueAndCategory;
 import com.mortonsworld.suggestly.retrofit.FoursquareManager;
 import com.mortonsworld.suggestly.retrofit.FoursquareService;
 import com.mortonsworld.suggestly.retrofit.ServiceFactory;
+import com.mortonsworld.suggestly.room.FoursquareCategoryDao;
 import com.mortonsworld.suggestly.room.FoursquareDao;
 import com.mortonsworld.suggestly.room.RoomDB;
+import com.mortonsworld.suggestly.utility.Config;
 
 import java.sql.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Observer;
@@ -35,11 +38,12 @@ public class FoursquareSource {
     private final FoursquareCategoryDao foursquareCategoryDao;
     private final FoursquareService foursquareService;
     private final ExecutorService executorService;
-    public FoursquareSource(Application application, ExecutorService service) {
+
+    public FoursquareSource(Application application) {
         this.foursquareDao = RoomDB.getInstance(application).getFoursquareDao();
         this.foursquareCategoryDao = RoomDB.getInstance(application).getFoursquareCategoryDao();
         this.foursquareService = ServiceFactory.getFoursquareClient(Config.FOURSQUARE_BASE_URL, FoursquareService.class);
-        executorService = service;
+        executorService = Executors.newFixedThreadPool(10);
     }
 
 /* *****************************************************************************************
@@ -93,20 +97,6 @@ public class FoursquareSource {
         foursquareCategoryDao.createClosureTable(categoryClosure);
     }
 
-    public void readAllCategoriesWithParentId(String Id){
-        foursquareCategoryDao.readAllCategoriesWithParentId(Id);
-    }
-
-    public LiveData<Category> getFoursquareCategoryName(String categoryId){
-        try{
-            return executorService.submit(() -> foursquareCategoryDao.readFoursquareCategory(categoryId)).get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-
     /* *****************************************************************************************
     FOURSQUARE VENUES
 ******************************************************************************************** */
@@ -123,14 +113,6 @@ public class FoursquareSource {
 
         observable.subscribeOn(Schedulers.io())
                 .subscribe(observer);
-    }
-
-    public void getGeneralFoursquareVenuesNearUserByQuery(@NonNull Double latitude, @NonNull Double longitude, @NonNull String search, @NonNull Observer<List<Venue>> placeObserver){
-        HashMap<String, String> searchParameters = FoursquareManager.buildSearchQueryMap(latitude, longitude, search);
-        foursquareService.getFoursquareVenuesNearby(searchParameters)
-                .map(foursquareSearchResponse -> foursquareSearchResponse.response.venues)
-                .subscribeOn(Schedulers.io())
-                .subscribe(placeObserver);
     }
 
     public void getGeneralFoursquareVenuesNearUserById(@NonNull Double latitude, @NonNull Double longitude, @NonNull String id, @NonNull Observer<List<Venue>> placeObserver){
@@ -167,6 +149,7 @@ public class FoursquareSource {
 
     public void createVenue(Venue venue, Observer<Boolean> observer){
         Observable<Boolean> observable = Observable.create(source -> {
+            venue.venueCreatedDate = new Date(System.currentTimeMillis());
             long result = foursquareDao.create(venue);
             if(result >= 0){
                 source.onNext(true);
@@ -187,6 +170,7 @@ public class FoursquareSource {
     public void createRecommendedVenue(Venue venue, Observer<Boolean> observer){
         Observable<Boolean> observable = Observable.create(source -> {
             long result = foursquareDao.create(venue);
+            venue.venueCreatedDate = new Date(System.currentTimeMillis());
             if(result >= 0){
                 source.onNext(true);
             }else{
@@ -199,26 +183,25 @@ public class FoursquareSource {
                 .subscribe(observer);
     }
 
-    public DataSource.Factory<Integer, VenueAndCategory> readRecommendedVenuesDataFactory(){
+    public DataSource.Factory<Integer, VenueAndCategory> readRecommendedVenuesDataFactoryHomeFragment(){
         try{
-            return executorService.submit(foursquareDao::readRecommendedVenuesDataFactory).get();
+            return executorService.submit(foursquareDao::readRecommendedVenuesDataFactoryHomeFragment).get();
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public DataSource.Factory<Integer, VenueAndCategory> readVenuesUsingCategoryIdDataFactory(String categoryId){
+    public DataSource.Factory<Integer, VenueAndCategory> readVenuesUsingCategoryIdDataFactoryHomeFragment(String categoryId){
         try{
-            return executorService.submit(() -> foursquareDao.readVenueByCategoryId(categoryId)).get();
+            return executorService.submit(() -> foursquareDao.readVenueByCategoryIdHomeFragment(categoryId)).get();
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-
-    public DataSource.Factory<Integer, Category> readRelatedCategoriesDataFactory(String categoryId){
+    public DataSource.Factory<Integer, CategoryTuple> readRelatedCategoriesDataFactory(String categoryId){
         try{
             return executorService.submit(() -> foursquareCategoryDao.readRelatedCategories(categoryId)).get();
         } catch (InterruptedException | ExecutionException e) {
@@ -300,11 +283,40 @@ public class FoursquareSource {
     }
 
     public int updateVenueContact(Venue venue){
-        return foursquareDao.updateVenueContact(venue.venueId,
-                venue.contact.phone, venue.contact.formattedPhone,
-                venue.contact.twitter, venue.contact.instagram,
-                venue.contact.facebook, venue.contact.facebookName,
-                venue.contact.facebookUsername);
+        if(venue.contact != null){
+            venue.contact = checkContactInformation(venue.contact);
+            return foursquareDao.updateVenueContact(venue.venueId,
+                    venue.contact.phone, venue.contact.formattedPhone,
+                    venue.contact.twitter, venue.contact.instagram,
+                    venue.contact.facebook, venue.contact.facebookName,
+                    venue.contact.facebookUsername);
+        }
+        return -1;
+    }
+
+    public Contact checkContactInformation(Contact contact){
+        if(contact.phone == null){
+            contact.phone = "";
+        }
+        if(contact.formattedPhone == null){
+            contact.formattedPhone = "";
+        }
+        if(contact.twitter == null){
+            contact.twitter = "";
+        }
+        if(contact.instagram == null){
+            contact.instagram = "";
+        }
+        if(contact.facebook == null){
+            contact.phone = "";
+        }
+        if(contact.facebookName == null){
+            contact.phone = "";
+        }
+        if(contact.facebookUsername == null){
+            contact.phone = "";
+        }
+        return contact;
     }
 
     public int updateVenueStats(Venue venue){
@@ -313,21 +325,72 @@ public class FoursquareSource {
     }
 
     public int updateVenueDescription(Venue venue){
-        return foursquareDao.updateVenueDescription(venue.venueId, venue.url,
-                venue.rating, venue.ratingColor, venue.ratingSignals, venue.description);
+        if(venue != null){
+            venue = checkDescriptionInformation(venue);
+            return foursquareDao.updateVenueDescription(venue.venueId, venue.url,
+                    venue.rating, venue.ratingColor, venue.ratingSignals, venue.description);
+        }
+        return -1;
+    }
+
+    public Venue checkDescriptionInformation(Venue venue){
+        if(venue.url == null){
+            venue.url = "";
+        }
+        if(venue.rating == null){
+            venue.rating = -1f;
+        }
+        if(venue.ratingColor == null){
+            venue.ratingColor = "";
+        }
+        if(venue.ratingSignals == null){
+            venue.ratingSignals = -1l;
+        }
+        if(venue.description == null){
+            venue.description = "";
+        }
+
+        return venue;
     }
 
     public int updateVenueImage(Venue venue){
-        return foursquareDao.updateVenueImage(venue.venueId, venue.bestPhoto.prefix,
-                venue.bestPhoto.suffix, venue.bestPhoto.width, venue.bestPhoto.height,
-                venue.bestPhoto.visibility);
+        if(venue.bestPhoto != null){
+            venue.bestPhoto = checkImageInformation(venue.bestPhoto);
+            return foursquareDao.updateVenueImage(venue.venueId, venue.bestPhoto.prefix,
+                    venue.bestPhoto.suffix, venue.bestPhoto.width, venue.bestPhoto.height,
+                    venue.bestPhoto.visibility);
+        }
+        return -1;
     }
 
+    public Venue.BestPhoto checkImageInformation(Venue.BestPhoto bestPhoto){
+        if(bestPhoto.prefix == null){
+            bestPhoto.prefix = "";
+        }
+        if(bestPhoto.suffix == null){
+            bestPhoto.suffix = "";
+        }
+        if(bestPhoto.visibility == null){
+            bestPhoto.visibility = "";
+        }
+        return bestPhoto;
+    }
 
     public int updateVenueHours(Venue venue){
-        return foursquareDao.updateVenueHours(venue.venueId,
-                venue.hours.status, venue.hours.isOpen,
-                venue.hours.isLocalHoliday);
+        if(venue.hours != null){
+            venue.hours = checkHoursInformation(venue.hours);
+            return foursquareDao.updateVenueHours(venue.venueId,
+                    venue.hours.status, venue.hours.isOpen,
+                    venue.hours.isLocalHoliday);
+        }
+        return -1;
+    }
+
+    public Venue.Hours checkHoursInformation(Venue.Hours hours){
+        if(hours.status == null){
+            hours.status = "";
+        }
+        return hours;
     }
 
     public int updateVenueRecommended(Venue venue, boolean isRecommended){
@@ -336,19 +399,5 @@ public class FoursquareSource {
 
     public int updateVenueHasDetails(Venue venue, boolean hasDetails){
         return foursquareDao.updateVenueHasDetails(venue.venueId, hasDetails);
-    }
-
-    public void deleteVenue(Venue venue, Observer<Boolean> observer){
-        Observable<Boolean> observable = Observable.create(source -> {
-            int result = foursquareDao.delete(venue);
-            if(result >= 0){
-                source.onNext(true);
-            }else{
-                source.onNext(false);
-            }
-            source.onComplete();
-        });
-        observable.subscribeOn(Schedulers.io())
-                .subscribe(observer);
     }
 }

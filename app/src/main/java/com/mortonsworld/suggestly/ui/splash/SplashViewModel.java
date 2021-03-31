@@ -9,6 +9,7 @@ import com.mortonsworld.suggestly.Repository;
 import com.mortonsworld.suggestly.model.user.LocationTuple;
 import com.mortonsworld.suggestly.model.user.User;
 import com.firebase.ui.auth.IdpResponse;
+import com.mortonsworld.suggestly.utility.Config;
 
 public class SplashViewModel extends AndroidViewModel {
     private final Repository repository;
@@ -16,6 +17,18 @@ public class SplashViewModel extends AndroidViewModel {
     public SplashViewModel(Application application){
         super(application);
         repository = Repository.getInstance(application);
+    }
+
+    public LiveData<Boolean> isNewYorkTimesTableFresh(){
+        return repository.isNewYorkTimesBooksTableFresh();
+    }
+
+    public void fetchNewYorkTimesBestsellingByListName(String list){
+        repository.fetchNewYorkTimesBestsellingByListName(list);
+    }
+
+    public void updateDistance(double lat, double lng){
+        repository.updateVenueDistance(lat, lng);
     }
 
     public LiveData<Boolean> authenticateUser(IdpResponse response){
@@ -36,5 +49,21 @@ public class SplashViewModel extends AndroidViewModel {
 
     public LiveData<Boolean> isFoursquareTableFresh(double lat, double lng){
         return repository.isVenueTableFresh(lat, lng);
+    }
+
+    public Boolean isLocationServicesEnabled(){
+        return repository.isLocationServicesEnabled();
+    }
+
+    public Boolean isLocationUpdatesActive(){
+        return repository.isLocationUpdatesActive();
+    }
+
+    public void enableLocationServices(){
+        repository.enableLocationServices();
+    }
+
+    public void disableLocationServices(){
+        repository.disableLocationServices();
     }
 }

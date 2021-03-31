@@ -33,5 +33,5 @@
         android:id="@+id/navigation_details"
         android:name="com.mortonsworld.suggestly.ui.details.DetailsFragment"
         android:label="details_fragment"
-        tools:layout="@layout/fragment_details" />
+        tools:layout="@layout/layout_details_venue" />
 </navigation>

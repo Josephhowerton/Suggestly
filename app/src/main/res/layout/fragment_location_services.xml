@@ -8,6 +8,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <TextureView
+            android:id="@+id/background_video"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/black_transparent_lighter"/>
+
         <ImageView
             android:id="@+id/locationServicesImage"
             android:layout_width="0dp"
@@ -23,6 +33,7 @@
             android:id="@+id/locationTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            style="@style/InitializeTitle.Style"
             app:layout_constraintTop_toBottomOf="@id/locationServicesImage"
             app:layout_constraintStart_toStartOf="@id/leftGuideline"
             app:layout_constraintEnd_toEndOf="@id/rightGuideline"
@@ -32,6 +43,7 @@
             android:id="@+id/locationMessage"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            style="@style/InitializeMessage.Style"
             app:layout_constraintTop_toBottomOf="@id/locationTitle"
             app:layout_constraintStart_toStartOf="@id/leftGuideline"
             app:layout_constraintEnd_toEndOf="@id/rightGuideline"
@@ -42,6 +54,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/enable_button"
+            style="@style/Initialize.Button"
             app:layout_constraintBottom_toTopOf="@id/bottomGuideline"
             app:layout_constraintEnd_toEndOf="@id/rightGuideline"
             app:layout_constraintStart_toStartOf="@id/leftGuideline"/>
@@ -51,6 +64,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/enter_location_manually"
+            android:textAlignment="center"
+            android:textColor="@color/vibrant_pink"
+            android:textSize="16sp"
             app:layout_constraintBottom_toTopOf="@+id/enableButton"
             app:layout_constraintEnd_toEndOf="@id/enableButton"
             app:layout_constraintStart_toStartOf="@id/enableButton"

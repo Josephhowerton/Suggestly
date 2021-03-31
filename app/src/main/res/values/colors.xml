@@ -2,10 +2,17 @@
 <resources>
     <color name="navy_blue_lighter">#1E304E</color>
     <color name="navy_blue">#192841</color>
+    <color name="navy_blue_transparent">#BF192841</color>
+    <color name="black_transparent">#80000000</color>
+    <color name="black_transparent_lighter">#40000000</color>
+    <color name="black_transparent_darker">#90000000</color>
     <color name="vibrant_pink_transparent">#BFA60B3F</color>
     <color name="vibrant_pink_light">#BC2256</color>
     <color name="vibrant_pink">#A60B3F</color>
     <color name="wolf_grey">#808080</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="facebook_blue">#4267B2</color>
+    <color name="twitter_blue">#1DA1F2</color>
+    <color name="instagram_maroon">#cd486b</color>
 </resources>

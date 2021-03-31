@@ -2,7 +2,6 @@ package com.mortonsworld.suggestly.adapter;
 
 import android.graphics.Typeface;
 import android.text.style.StyleSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,8 +10,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.mortonsworld.suggestly.R;
 import com.google.android.libraries.places.api.model.AutocompletePrediction;
+import com.mortonsworld.suggestly.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +36,6 @@ public class LocationAutoCompleteAdapter extends RecyclerView.Adapter<LocationAu
     @Override
     public void onBindViewHolder(@NonNull LocationAutoCompleteViewHolder holder, int position) {
         String address = predictions.get(position).getFullText(new StyleSpan(Typeface.BOLD)).toString();
-        Log.println(Log.ASSERT, "onBindViewHolder", address);
         holder.address.setText(address);
     }
 

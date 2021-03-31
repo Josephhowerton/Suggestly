@@ -8,9 +8,8 @@ import androidx.room.Query;
 import androidx.room.Transaction;
 
 import com.mortonsworld.suggestly.model.foursquare.Category;
-import com.mortonsworld.suggestly.model.foursquare.CategoryClosure;
-
-import java.util.List;
+import com.mortonsworld.suggestly.model.relations.CategoryClosure;
+import com.mortonsworld.suggestly.model.relations.CategoryTuple;
 
 @Dao
 public abstract class FoursquareCategoryDao {
@@ -29,11 +28,10 @@ public abstract class FoursquareCategoryDao {
     @Insert
     public abstract void createClosureTable(CategoryClosure categoryClosure);
 
-    @Query("SELECT * FROM CategoryClosure WHERE parent = :id")
-    public abstract List<CategoryClosure> readAllCategoriesWithParentId(String id);
-
-    @Query("SELECT * FROM CategoryClosure JOIN category c on(child == category_id) WHERE parent = (select parent from categoryclosure where child=:id AND depth=1)")
-    public abstract DataSource.Factory<Integer, Category> readRelatedCategories(String id);
+    @Query("SELECT DISTINCT category_id, category_name, category_icon_prefix, category_icon_suffix FROM " +
+            "CategoryClosure JOIN category c on(child == category_id) WHERE parent IN (select parent " +
+            "FROM categoryclosure WHERE child=:id) LIMIT 5 ")
+    public abstract DataSource.Factory<Integer, CategoryTuple> readRelatedCategories(String id);
 
     @Query("SELECT * FROM Category WHERE category_id = :id")
     public abstract LiveData<Category> readFoursquareCategory(String id);

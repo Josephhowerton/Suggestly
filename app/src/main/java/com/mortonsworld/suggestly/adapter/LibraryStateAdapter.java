@@ -20,19 +20,16 @@ public class LibraryStateAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         Fragment fragment = null;
         Bundle args;
-        switch (position){
-            case 0:
-                fragment = new SavedListFragment();
-                args = new Bundle();
-                args.putInt(SavedListFragment.ARG_OBJECT, position + 1);
-                fragment.setArguments(args);
-                break;
-            case 1:
-                fragment = new FavoriteListFragment();
-                args = new Bundle();
-                args.putInt(FavoriteListFragment.ARG_OBJECT, position + 1);
-                fragment.setArguments(args);
-                break;
+        if (position == 1) {
+            fragment = new FavoriteListFragment();
+            args = new Bundle();
+            args.putInt(FavoriteListFragment.ARG_OBJECT, position + 1);
+            fragment.setArguments(args);
+        } else {
+            fragment = new SavedListFragment();
+            args = new Bundle();
+            args.putInt(SavedListFragment.ARG_OBJECT, position + 1);
+            fragment.setArguments(args);
         }
         return fragment;
     }

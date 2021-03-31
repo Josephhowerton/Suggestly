@@ -10,17 +10,17 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.mortonsworld.suggestly.R;
 import com.mortonsworld.suggestly.databinding.CardViewCategoryBinding;
-import com.mortonsworld.suggestly.model.foursquare.Category;
+import com.mortonsworld.suggestly.model.relations.CategoryTuple;
 
-public class SimilarCategoryAdapter extends PagedListAdapter<Category, SimilarCategoryAdapter.SimilarViewHolder> {
+public class SimilarCategoryAdapter extends PagedListAdapter<CategoryTuple, SimilarCategoryAdapter.SimilarViewHolder> {
 
     private final CategorySelectedListener selectedListener;
 
-    public SimilarCategoryAdapter(@NonNull DiffUtil.ItemCallback<Category> diffCallback, CategorySelectedListener selectedListener) {
+    public SimilarCategoryAdapter(@NonNull DiffUtil.ItemCallback<CategoryTuple> diffCallback, CategorySelectedListener selectedListener) {
         super(diffCallback);
-
         this.selectedListener = selectedListener;
     }
 
@@ -33,7 +33,7 @@ public class SimilarCategoryAdapter extends PagedListAdapter<Category, SimilarCa
 
     @Override
     public void onBindViewHolder(@NonNull SimilarViewHolder holder, int position) {
-        Category category = getItem(position);
+        CategoryTuple category = getItem(position);
         if(category != null){
             holder.bind(category);
         }else{
@@ -48,16 +48,21 @@ public class SimilarCategoryAdapter extends PagedListAdapter<Category, SimilarCa
             this.binding = binding;
         }
 
-        public void bind(Category category){
-            binding.name.setText(category.name);
+        public void bind(CategoryTuple category){
+            binding.name.setText(category.category_name);
             binding.cardView.setOnClickListener(view -> selectedListener.onCategorySelected(category));
-            Glide.with(binding.getRoot()).load(category.icon.prefix + "48X48" + category.icon.suffix).into(binding.icon);
+            Glide.with(binding.getRoot())
+                    .load(category.getIconUrl())
+                    .placeholder(R.drawable.glide_progress_bar)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(binding.icon);
+
         }
 
         public void clear(){}
     }
 
     public interface CategorySelectedListener{
-        void onCategorySelected(Category category);
+        void onCategorySelected(CategoryTuple category);
     }
 }

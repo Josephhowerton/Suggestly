@@ -6,6 +6,7 @@ import androidx.room.Embedded;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
+
 import com.google.gson.annotations.SerializedName;
 import com.mortonsworld.suggestly.model.Suggestion;
 import com.mortonsworld.suggestly.utility.SuggestionType;
@@ -64,10 +65,10 @@ public class Venue extends Suggestion {
     @ColumnInfo(name = "venue_has_details")
     public Boolean hasDetails = false;
 
-    @ColumnInfo(name = "venue_created_at")
+    @ColumnInfo(name = "venue_created_at", defaultValue = "CURRENT_TIMESTAMP")
     public Date venueCreatedDate;
 
-    @ColumnInfo(name = "venue_updated_at")
+    @ColumnInfo(name = "venue_updated_at", defaultValue = "CURRENT_TIMESTAMP")
     public Date venueUpdatedDate;
 
     @ColumnInfo(name = "venue_icon_prefix")
@@ -75,6 +76,7 @@ public class Venue extends Suggestion {
 
     @ColumnInfo(name = "venue_icon_suffix")
     public String suffix;
+
 
     public Venue() {
         venueId = "venueId";
@@ -329,11 +331,11 @@ public class Venue extends Suggestion {
         String formattedAddress = "";
         if(location != null){
             if(location.address != null){
-                formattedAddress += location.address + "\n";
+                formattedAddress += location.address;
             }
 
             if(location.city != null){
-                formattedAddress += location.city;
+                formattedAddress += "\n" + location.city;
             }
 
             if(location.country != null){
@@ -429,7 +431,7 @@ public class Venue extends Suggestion {
 
     public String getBestPhotoUrl(){
         if(bestPhoto != null){
-            return bestPhoto.prefix + bestPhoto.height + "x" + bestPhoto.width + bestPhoto.suffix;
+            return bestPhoto.prefix + bestPhoto.width + "x" + bestPhoto.height + bestPhoto.suffix;
         }
         return "";
     }
@@ -464,16 +466,15 @@ public class Venue extends Suggestion {
         }
     }
 
+    public boolean isBestPhotoSame(Venue oldVenue){
+        if(bestPhoto != null && oldVenue.bestPhoto != null){
+            return !bestPhoto.id.equals(oldVenue.bestPhoto.id);
+        }
+        return false;
+    }
+
     public boolean compareDistance(double lat, double lng){
         double epsilon = 0.000001d;
         return (Math.abs(location.lat - lat) < epsilon && Math.abs(location.lng - lng) < epsilon);
-    }
-
-    public String getFormattedDistance(){
-        if(location.distance < 2.0d){
-            return location.distance + " mile";
-        }else{
-            return location.distance + " miles";
-        }
     }
 }

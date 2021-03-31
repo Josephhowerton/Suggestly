@@ -10,10 +10,11 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import com.mortonsworld.suggestly.R;
-import com.mortonsworld.suggestly.databinding.FragmentLibraryBinding;
-import com.mortonsworld.suggestly.adapter.LibraryStateAdapter;
+
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.mortonsworld.suggestly.R;
+import com.mortonsworld.suggestly.adapter.LibraryStateAdapter;
+import com.mortonsworld.suggestly.databinding.FragmentLibraryBinding;
 
 public class LibraryFragment extends Fragment {
 
@@ -44,6 +45,5 @@ public class LibraryFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        LibraryViewModel notificationsViewModel = new ViewModelProvider(this).get(LibraryViewModel.class);
     }
 }

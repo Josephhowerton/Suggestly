@@ -9,11 +9,10 @@ import androidx.paging.PagedList;
 
 import com.mortonsworld.suggestly.Repository;
 import com.mortonsworld.suggestly.model.Suggestion;
-import com.mortonsworld.suggestly.model.foursquare.Category;
 import com.mortonsworld.suggestly.model.foursquare.Venue;
-import com.mortonsworld.suggestly.model.foursquare.VenueAndCategory;
 import com.mortonsworld.suggestly.model.nyt.Book;
-import com.mortonsworld.suggestly.utility.Config;
+import com.mortonsworld.suggestly.model.relations.CategoryTuple;
+import com.mortonsworld.suggestly.model.relations.VenueAndCategory;
 
 import java.util.List;
 
@@ -31,23 +30,39 @@ public class DetailsViewModel extends AndroidViewModel {
                 .build();
     }
 
+    public List<VenueAndCategory> getSavedVenues() {
+        return repository.readSavedVenues();
+    }
+
+    public List<VenueAndCategory> getFavoriteVenues() {
+        return repository.readFavoriteVenues();
+    }
+
+    public List<Book> getSavedBooks() {
+        return repository.readSavedBooks();
+    }
+
+    public List<Book> getFavoriteBooks() {
+        return repository.readFavoriteBooks();
+    }
+
     public LiveData<Venue> readVenueDetails(String id){
         return repository.readVenuesDetails(id);
     }
 
-    public LiveData<Boolean> getFoursquareVenuesDetails(Venue venue){
-        return repository.getFoursquareVenuesDetails(venue);
+    public void getFoursquareVenuesDetails(Venue venue){
+        repository.getFoursquareVenuesDetails(venue);
     }
 
-    public LiveData<Boolean> getFoursquareVenuesSimilar(Venue venue){
-        return repository.getFoursquareVenuesSimilar(venue);
+    public void getFoursquareVenuesSimilar(Venue venue){
+        repository.getFoursquareVenuesSimilar(venue);
     }
 
     public LiveData<List<VenueAndCategory>> readFoursquareVenuesSimilar(Venue venue){
         return repository.readSimilarVenuesLiveData(venue.getId());
     }
 
-    public LiveData<PagedList<Category>> readRelatedCategories(String categoryId){
+    public LiveData<PagedList<CategoryTuple>> readRelatedCategories(String categoryId){
         return new LivePagedListBuilder<> (repository.readRelatedCategoriesDataFactory(categoryId), config).build();
     }
 
@@ -59,5 +74,20 @@ public class DetailsViewModel extends AndroidViewModel {
         return repository.readNewYorkTimesBestsellingListLimitThree(isbn13, listName);
     }
 
+    public long updateVenueFavoriteInUser(Venue savedVenue, Boolean isFavorite){
+        return repository.saveFavoriteVenue(savedVenue, isFavorite);
+    }
+
+    public long updateBookFavoriteInUser(Book book, Boolean isFavorite){
+        return repository.saveFavoriteBook(book, isFavorite);
+    }
+
+    public long updateVenueSavedInUser(Venue savedVenue, Boolean isSaved){
+        return repository.saveBookmarkedVenue(savedVenue, isSaved);
+    }
+
+    public long updateBookSavedInUser(Book book, Boolean isSaved){
+        return repository.saveBookmarkedBook(book, isSaved);
+    }
 
 }

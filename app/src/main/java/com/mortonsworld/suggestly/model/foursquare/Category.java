@@ -6,6 +6,7 @@ import androidx.room.Embedded;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
+
 import com.google.gson.annotations.SerializedName;
 import com.mortonsworld.suggestly.model.Suggestion;
 import com.mortonsworld.suggestly.utility.SuggestionType;
@@ -89,7 +90,7 @@ public class Category extends Suggestion {
         return "";
     }
 
-    public String getIconUrl(String size){
+    public String getIconUrl(int size){
         if(icon != null){
             return icon.prefix + size + icon.suffix;
         }
