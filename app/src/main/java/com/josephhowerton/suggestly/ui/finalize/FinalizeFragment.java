@@ -50,7 +50,6 @@ public class FinalizeFragment extends Fragment implements TextureView.SurfaceTex
     private boolean isACTIVECompleted = false;
     private boolean isSOCIALCompleted = false;
     private boolean override = false;
-    private int counter = 0;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -66,11 +65,6 @@ public class FinalizeFragment extends Fragment implements TextureView.SurfaceTex
         crossFadeInAnimation();
         fetchSuggestionsNearLocation();
         return binding.getRoot();
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
     }
 
     @Override
@@ -95,22 +89,13 @@ public class FinalizeFragment extends Fragment implements TextureView.SurfaceTex
                 getFoursquareVenuesNearUser_EVENTS(user);
                 getFoursquareVenuesNearUser_ACTIVE(user);
                 getFoursquareVenuesNearUser_SOCIAL(user);
+                crossFadeOutAnimation();
             }
         });
     }
 
     public void startTimer(){
-        Handler main = new Handler(Looper.getMainLooper());
-        HandlerThread thread = new HandlerThread("Timer");
-        thread.start();
-        Handler handler = new Handler(Looper.myLooper(), callback -> {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            return false;
-        });
+
     }
 
     public void storeLastFetchedLocation(double lat, double lng){
@@ -120,7 +105,6 @@ public class FinalizeFragment extends Fragment implements TextureView.SurfaceTex
     public void getFoursquareVenuesNearUser_RECOMMENDED(User user){
         mViewModel.getRecommendedFoursquareVenuesNearUser(user.getLat(), user.getLng()).observe(requireActivity(), aBoolean -> {
             isRECOMMENDEDCompleted = true;
-            counter++;
             navigate();
         });
     }
@@ -128,7 +112,6 @@ public class FinalizeFragment extends Fragment implements TextureView.SurfaceTex
     public void getFoursquareVenuesNearUser_FOOD(User user){
         mViewModel.getFoursquareVenuesNearUser_FOOD(user.getLat(), user.getLng()).observe(requireActivity(), aBoolean -> {
             isFOODCompleted = true;
-            counter++;
             navigate();
         });
     }
@@ -136,7 +119,6 @@ public class FinalizeFragment extends Fragment implements TextureView.SurfaceTex
     public void getFoursquareVenuesNearUser_BREWERY(User user){
         mViewModel.getGeneralFoursquareVenuesNearUser_BREWERY(user.getLat(), user.getLng()).observe(requireActivity(), aBoolean -> {
             isBREWERYCompleted = true;
-            counter++;
             navigate();
         });
     }
@@ -144,7 +126,6 @@ public class FinalizeFragment extends Fragment implements TextureView.SurfaceTex
     public void getFoursquareVenuesNearUser_FAMILY_FUN(User user){
         mViewModel.getGeneralFoursquareVenuesNearUserById_FAMILY_FUN(user.getLat(), user.getLng()).observe(requireActivity(), aBoolean -> {
             isFAMILYFUNCompleted = true;
-            counter++;
             navigate();
         });
     }
@@ -152,7 +133,6 @@ public class FinalizeFragment extends Fragment implements TextureView.SurfaceTex
     public void getFoursquareVenuesNearUser_EVENTS(User user){
         mViewModel.getGeneralFoursquareVenuesNearUserById_EVENTS(user.getLat(), user.getLng()).observe(requireActivity(), aBoolean -> {
             isEVENTSCompleted = true;
-            counter++;
             navigate();
         });
     }
@@ -160,7 +140,6 @@ public class FinalizeFragment extends Fragment implements TextureView.SurfaceTex
     public void getFoursquareVenuesNearUser_ACTIVE(User user){
         mViewModel.getGeneralFoursquareVenuesNearUserById_ACTIVE(user.getLat(), user.getLng()).observe(requireActivity(), aBoolean -> {
             isACTIVECompleted = true;
-            counter++;
             navigate();
         });
     }
@@ -172,11 +151,9 @@ public class FinalizeFragment extends Fragment implements TextureView.SurfaceTex
         });
     }
 
+    @SuppressWarnings("StatementWithEmptyBody")
     public void navigate(){
         if(isRECOMMENDEDCompleted && isFOODCompleted && isBREWERYCompleted && isFAMILYFUNCompleted && isEVENTSCompleted && isACTIVECompleted && isSOCIALCompleted){
-            if(!override){
-                crossFadeOutAnimation();
-            }
         }
     }
 

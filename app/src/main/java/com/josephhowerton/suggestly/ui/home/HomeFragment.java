@@ -313,6 +313,7 @@ public class HomeFragment extends Fragment implements MoreCallback, DetailsCallb
     private void initializeRecommendedVenues(){
         homeViewModel.recommendedVenuePagedList.observe(getViewLifecycleOwner(), data ->{
             if(data != null){
+                binding.recommendedProgressBar.setVisibility(View.GONE);
                 recommendedAdapter.submitList(data);
             }else{
                 alertDatabaseError();
@@ -323,6 +324,7 @@ public class HomeFragment extends Fragment implements MoreCallback, DetailsCallb
     private void initializeFoodVenues(){
         homeViewModel.foodVenuePagedList.observe(getViewLifecycleOwner(), data -> {
                 if (data != null) {
+                    binding.foodProgressBar.setVisibility(View.GONE);
                     foodAdapter.submitList(data);
                 }else{
                     alertDatabaseError();
@@ -334,6 +336,7 @@ public class HomeFragment extends Fragment implements MoreCallback, DetailsCallb
     private void initializeFictionBooks(){
         homeViewModel.fictionBooksPagedList.observe(getViewLifecycleOwner(), data -> {
             if (data != null) {
+                binding.fictionProgressBar.setVisibility(View.GONE);
                 fictionAdapter.submitList(data);
             }else{
                 alertDatabaseError();
@@ -345,6 +348,7 @@ public class HomeFragment extends Fragment implements MoreCallback, DetailsCallb
     private void initializeBreweryVenues(){
         homeViewModel.breweryVenuePagedList.observe(getViewLifecycleOwner(), data -> {
             if (data != null) {
+                binding.breweryProgressBar.setVisibility(View.GONE);
                 breweryAdapter.submitList(data);
             }else{
                 alertDatabaseError();
@@ -355,6 +359,7 @@ public class HomeFragment extends Fragment implements MoreCallback, DetailsCallb
     private void initializeFamilyFunVenues(){
         homeViewModel.familyVenuePagedList.observe(getViewLifecycleOwner(), data -> {
             if (data != null) {
+                binding.familyFunProgressBar.setVisibility(View.GONE);
                 familyAdapter.submitList(data);
             }else{
                 alertDatabaseError();
@@ -365,6 +370,7 @@ public class HomeFragment extends Fragment implements MoreCallback, DetailsCallb
     private void initializeNonFictionBooks(){
         homeViewModel.nonFictionBooksPagedList.observe(getViewLifecycleOwner(), data -> {
             if (data != null) {
+                binding.nonFictionProgressBar.setVisibility(View.GONE);
                 nonFictionAdapter.submitList(data);
             }else{
                 alertDatabaseError();
@@ -375,6 +381,7 @@ public class HomeFragment extends Fragment implements MoreCallback, DetailsCallb
     private void initializeActiveVenues(){
         homeViewModel.activeVenuePagedList.observe(getViewLifecycleOwner(), data -> {
             if (data != null) {
+                binding.activeProgressBar.setVisibility(View.GONE);
                 activeAdapter.submitList(data);
             }else{
                 alertDatabaseError();
@@ -385,6 +392,7 @@ public class HomeFragment extends Fragment implements MoreCallback, DetailsCallb
     private void initializeSocialVenues(){
         homeViewModel.socialVenuePagedList.observe(getViewLifecycleOwner(), data -> {
             if (data != null) {
+                binding.socialProgressBar.setVisibility(View.GONE);
                 socialAdapter.submitList(data);
             }else{
                 alertDatabaseError();
@@ -395,6 +403,7 @@ public class HomeFragment extends Fragment implements MoreCallback, DetailsCallb
     private void initializeEntertainmentVenues(){
         homeViewModel.entertainmentVenuePagedList.observe(getViewLifecycleOwner(), data -> {
             if (data != null) {
+                binding.entertainmentProgressBar.setVisibility(View.GONE);
                 entertainmentAdapter.submitList(data);
             }else{
                 alertDatabaseError();
