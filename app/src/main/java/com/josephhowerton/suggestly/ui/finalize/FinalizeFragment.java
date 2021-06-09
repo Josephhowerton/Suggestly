@@ -15,6 +15,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Surface;
 import android.view.TextureView;
@@ -45,6 +49,8 @@ public class FinalizeFragment extends Fragment implements TextureView.SurfaceTex
     private boolean isEVENTSCompleted = false;
     private boolean isACTIVECompleted = false;
     private boolean isSOCIALCompleted = false;
+    private boolean override = false;
+    private int counter = 0;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -58,13 +64,25 @@ public class FinalizeFragment extends Fragment implements TextureView.SurfaceTex
 
         binding.backgroundVideo.setSurfaceTextureListener(this);
         crossFadeInAnimation();
-
+        fetchSuggestionsNearLocation();
         return binding.getRoot();
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if(!NetworkHandler.isNetworkConnectionActive(requireActivity())){
+            NetworkHandler.notifyBadConnectionAndTerminate(requireActivity());
+        }
+    }
+
+    public void fetchSuggestionsNearLocation(){
+        startTimer();
         mViewModel = new ViewModelProvider(this).get(FinalizeViewModel.class);
         mViewModel.getUserLocationLiveData().observe(getViewLifecycleOwner(), user -> {
             if(DistanceCalculator.hasValidLocation(user.getLat(), user.getLng())){
@@ -81,22 +99,28 @@ public class FinalizeFragment extends Fragment implements TextureView.SurfaceTex
         });
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        if(!NetworkHandler.isNetworkConnectionActive(requireActivity())){
-            NetworkHandler.notifyBadConnectionAndTerminate(requireActivity());
-        }
+    public void startTimer(){
+        Handler main = new Handler(Looper.getMainLooper());
+        HandlerThread thread = new HandlerThread("Timer");
+        thread.start();
+        Handler handler = new Handler(Looper.myLooper(), callback -> {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return false;
+        });
     }
 
     public void storeLastFetchedLocation(double lat, double lng){
         mViewModel.storeLastFetchedLocation(lat, lng);
     }
 
-
     public void getFoursquareVenuesNearUser_RECOMMENDED(User user){
         mViewModel.getRecommendedFoursquareVenuesNearUser(user.getLat(), user.getLng()).observe(requireActivity(), aBoolean -> {
             isRECOMMENDEDCompleted = true;
+            counter++;
             navigate();
         });
     }
@@ -104,6 +128,7 @@ public class FinalizeFragment extends Fragment implements TextureView.SurfaceTex
     public void getFoursquareVenuesNearUser_FOOD(User user){
         mViewModel.getFoursquareVenuesNearUser_FOOD(user.getLat(), user.getLng()).observe(requireActivity(), aBoolean -> {
             isFOODCompleted = true;
+            counter++;
             navigate();
         });
     }
@@ -111,6 +136,7 @@ public class FinalizeFragment extends Fragment implements TextureView.SurfaceTex
     public void getFoursquareVenuesNearUser_BREWERY(User user){
         mViewModel.getGeneralFoursquareVenuesNearUser_BREWERY(user.getLat(), user.getLng()).observe(requireActivity(), aBoolean -> {
             isBREWERYCompleted = true;
+            counter++;
             navigate();
         });
     }
@@ -118,6 +144,7 @@ public class FinalizeFragment extends Fragment implements TextureView.SurfaceTex
     public void getFoursquareVenuesNearUser_FAMILY_FUN(User user){
         mViewModel.getGeneralFoursquareVenuesNearUserById_FAMILY_FUN(user.getLat(), user.getLng()).observe(requireActivity(), aBoolean -> {
             isFAMILYFUNCompleted = true;
+            counter++;
             navigate();
         });
     }
@@ -125,6 +152,7 @@ public class FinalizeFragment extends Fragment implements TextureView.SurfaceTex
     public void getFoursquareVenuesNearUser_EVENTS(User user){
         mViewModel.getGeneralFoursquareVenuesNearUserById_EVENTS(user.getLat(), user.getLng()).observe(requireActivity(), aBoolean -> {
             isEVENTSCompleted = true;
+            counter++;
             navigate();
         });
     }
@@ -132,6 +160,7 @@ public class FinalizeFragment extends Fragment implements TextureView.SurfaceTex
     public void getFoursquareVenuesNearUser_ACTIVE(User user){
         mViewModel.getGeneralFoursquareVenuesNearUserById_ACTIVE(user.getLat(), user.getLng()).observe(requireActivity(), aBoolean -> {
             isACTIVECompleted = true;
+            counter++;
             navigate();
         });
     }
@@ -145,19 +174,14 @@ public class FinalizeFragment extends Fragment implements TextureView.SurfaceTex
 
     public void navigate(){
         if(isRECOMMENDEDCompleted && isFOODCompleted && isBREWERYCompleted && isFAMILYFUNCompleted && isEVENTSCompleted && isACTIVECompleted && isSOCIALCompleted){
-            crossFadeOutAnimation();
+            if(!override){
+                crossFadeOutAnimation();
+            }
         }
     }
 
     public void navigateToPush(){
         Navigation.findNavController(requireActivity(), R.id.nav_host_fragment).navigate(R.id.navigation_push);
-    }
-
-    public void goToMainActivity(){
-        Intent intent = new Intent(requireActivity(), MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        requireActivity().startActivity(intent);
-        requireActivity().finish();
     }
 
     @Override
@@ -173,13 +197,13 @@ public class FinalizeFragment extends Fragment implements TextureView.SurfaceTex
     @Override
     public void onSurfaceTextureAvailable(@NonNull SurfaceTexture surfaceTexture, int i, int i1) {
         try {
-
             Uri uri = Uri.parse("android.resource://"+requireActivity().getPackageName()+"/"+R.raw.finalize_video);
             Surface surface = new Surface(surfaceTexture);
             mediaPlayer = new MediaPlayer();
             mediaPlayer.setSurface(surface);
             mediaPlayer.setDataSource(requireContext(), uri);
             mediaPlayer.setOnPreparedListener(this);
+            mediaPlayer.setLooping(true);
             mediaPlayer.prepare();
         } catch (IOException e) {
             binding.backgroundVideo.setVisibility(View.GONE);

@@ -83,5 +83,4 @@ dependencies {
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.19'
     implementation 'com.google.firebase:firebase-auth:20.0.3'
     implementation 'com.firebaseui:firebase-ui-auth:6.2.1'
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
 }
