@@ -7,31 +7,31 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.mortonsworld.suggestly.ui.home.HomeFragment"
+        android:name="com.josephhowerton.suggestly.ui.home.HomeFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/navigation_search"
-        android:name="com.mortonsworld.suggestly.ui.explore.ExploreFragment"
+        android:name="com.josephhowerton.suggestly.ui.explore.ExploreFragment"
         android:label="@string/title_search"
         tools:layout="@layout/fragment_explore" />
 
     <fragment
         android:id="@+id/navigation_library"
-        android:name="com.mortonsworld.suggestly.ui.library.LibraryFragment"
+        android:name="com.josephhowerton.suggestly.ui.library.LibraryFragment"
         android:label="@string/title_library"
         tools:layout="@layout/fragment_library" />
 
     <fragment
         android:id="@+id/navigation_more"
-        android:name="com.mortonsworld.suggestly.ui.more.MoreFragment"
+        android:name="com.josephhowerton.suggestly.ui.more.MoreFragment"
         android:label="MoreFragment"
         tools:layout="@layout/fragment_more"/>
 
     <fragment
         android:id="@+id/navigation_details"
-        android:name="com.mortonsworld.suggestly.ui.details.DetailsFragment"
+        android:name="com.josephhowerton.suggestly.ui.details.DetailsFragment"
         android:label="details_fragment"
         tools:layout="@layout/layout_details_venue" />
 </navigation>

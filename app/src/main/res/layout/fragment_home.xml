@@ -5,20 +5,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".ui.home.HomeFragment">
     <data>
-        <import type="com.mortonsworld.suggestly.utility.Config"/>
-        <import type="com.mortonsworld.suggestly.utility.SuggestionType"/>
+        <import type="com.josephhowerton.suggestly.utility.Config"/>
+        <import type="com.josephhowerton.suggestly.utility.SuggestionType"/>
 
         <variable
             name="suggestion"
-            type="com.mortonsworld.suggestly.model.Suggestion" />
+            type="com.josephhowerton.suggestly.model.Suggestion" />
 
         <variable
             name="more"
-            type="com.mortonsworld.suggestly.callbacks.MoreCallback" />
+            type="com.josephhowerton.suggestly.callbacks.MoreCallback" />
 
         <variable
             name="details"
-            type="com.mortonsworld.suggestly.callbacks.DetailsCallback" />
+            type="com.josephhowerton.suggestly.callbacks.DetailsCallback" />
     </data>
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/home_fragment"

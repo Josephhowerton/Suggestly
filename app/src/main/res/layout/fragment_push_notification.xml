@@ -123,6 +123,10 @@
             android:orientation="horizontal"
             app:layout_constraintGuide_percent="0.4" />
 
+        <include
+            android:id="@+id/loading_layout"
+            android:visibility="gone"
+            layout="@layout/layout_loading"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

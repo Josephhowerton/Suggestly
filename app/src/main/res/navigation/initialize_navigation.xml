@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/navigation_explanation"
-        android:name="com.mortonsworld.suggestly.ui.welcome.WelcomeFragment"
+        android:name="com.josephhowerton.suggestly.ui.welcome.WelcomeFragment"
         android:label="Welcome"
         tools:layout="@layout/fragment_welcome" >
         <action
@@ -17,7 +17,7 @@
 
     <fragment
         android:id="@+id/navigation_location_services"
-        android:name="com.mortonsworld.suggestly.ui.location.LocationServicesFragment"
+        android:name="com.josephhowerton.suggestly.ui.location.LocationServicesFragment"
         android:label="Location Services"
         tools:layout="@layout/fragment_location_services" >
         <action
@@ -30,7 +30,7 @@
 
     <fragment
         android:id="@+id/navigation_manual_location"
-        android:name="com.mortonsworld.suggestly.ui.location.ManualLocationFragment"
+        android:name="com.josephhowerton.suggestly.ui.location.ManualLocationFragment"
         android:label="Manual Location"
         tools:layout="@layout/fragment_manual_location" >
         <action
@@ -40,7 +40,7 @@
 
     <fragment
         android:id="@+id/navigation_finalize"
-        android:name="com.mortonsworld.suggestly.ui.finalize.FinalizeFragment"
+        android:name="com.josephhowerton.suggestly.ui.finalize.FinalizeFragment"
         android:label="Finalize"
         tools:layout="@layout/fragment_finalize" >
         <action
@@ -50,7 +50,7 @@
 
     <fragment
         android:id="@+id/navigation_push"
-        android:name="com.mortonsworld.suggestly.ui.push.PushNotificationFragment"
+        android:name="com.josephhowerton.suggestly.ui.push.PushNotificationFragment"
         android:label="Push Notifications"
         tools:layout="@layout/fragment_push_notification" />
 

@@ -35,6 +35,13 @@
         <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
     </style>
 
+    <style name="Theme.Suggest.AuthTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowFullscreen">true</item>
+        <item name="colorPrimary">@color/navy_blue_lighter</item>
+        <item name="colorPrimaryVariant">@color/navy_blue</item>
+        <item name="colorOnPrimary">@color/white</item>
+    </style>
+
     <style name="Theme.Suggest.SplashTheme" parent="Theme.Suggest.NoActionBar">
         <item name="android:windowBackground">@drawable/splash_screen</item>
         <item name="android:windowFullscreen">true</item>

@@ -28,7 +28,7 @@ Suggestly is a recommendation app used to connect people with things to do. The 
 
 
 ## Highlighted Challenge
-Two challenges that presented the most difficulty were creating a reactive backend where streams of data pass through dedicated pipelines triggering subsequent behavior. The second challenge was traversing categorical data received from an API response, building transitive closure between related nodes, and inserting into a table. Data is only relevant if it wired back together and presented to the end user. The first function is a recursive function which builds and inserts each node into the transitive closure table, and the second function is an abstract function which brings the data back together.
+```Two challenges that presented the most difficulty were creating a reactive backend where streams of data pass through dedicated pipelines triggering subsequent behavior. The second challenge was traversing categorical data received from an API response, building transitive closure between related nodes, and inserting into a table. Data is only relevant if it wired back together and presented to the end user. The first function is a recursive function which builds and inserts each node into the transitive closure table, and the second function is an abstract function which brings the data back together.
 ```java
   public void buildCategoryClosureTable(List<Category> tree, Category target, int depth){
         tree.add(target);
@@ -49,5 +49,5 @@ Two challenges that presented the most difficulty were creating a reactive backe
 
   @Transaction
   @Query("select * from venue v JOIN category c ON(v.venue_category_id = c.category_id) where venue_category_id IN (select child from categoryclosure where parent =:categoryId) ")
-  public abstract DataSource.Factory<Integer, VenueAndCategory> readVenueByCategoryId(String categoryId);
+  public abstract DataSource.Factory<Integer, VenueAndCategory> readVenueByCategoryId(String categoryId);```
 ```

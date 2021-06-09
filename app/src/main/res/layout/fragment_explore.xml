@@ -5,10 +5,10 @@
     tools:context=".ui.explore.ExploreFragment">
 
     <data>
-        <import type="com.mortonsworld.suggestly.utility.Config"/>
+        <import type="com.josephhowerton.suggestly.utility.Config"/>
         <variable
             name="categoryCallback"
-            type="com.mortonsworld.suggestly.callbacks.CategoryCallback" />
+            type="com.josephhowerton.suggestly.callbacks.CategoryCallback" />
 
     </data>
     <androidx.coordinatorlayout.widget.CoordinatorLayout

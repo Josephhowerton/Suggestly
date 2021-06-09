@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    package="com.mortonsworld.suggestly">
+    package="com.josephhowerton.suggestly">
 
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -20,7 +20,7 @@
         android:theme="@style/Theme.Suggest.NoActionBar"
         android:screenOrientation="portrait">
         <activity
-            android:name="com.mortonsworld.suggestly.ui.settings.SettingsActivity"
+            android:name=".ui.settings.SettingsActivity"
             android:label="@string/title_activity_settings"
             android:theme="@style/Theme.Suggest.ActionBar"
             android:screenOrientation="portrait">
@@ -30,7 +30,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.mortonsworld.suggestly.ui.splash.SplashActivity"
+            android:name=".ui.splash.SplashActivity"
             android:theme="@style/Theme.Suggest.SplashTheme"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -39,16 +39,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.mortonsworld.suggestly.ui.init.InitializeActivity"
+            android:name=".ui.init.InitializeActivity"
             android:theme="@style/Theme.Suggest.NoActionBar"
             android:screenOrientation="portrait"/>
         <activity
-            android:name="com.mortonsworld.suggestly.ui.main.MainActivity"
+            android:name=".ui.main.MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"/>
 
         <receiver
-            android:name="com.mortonsworld.suggestly.notification.SuggestlyNotificationReceiver"
+            android:name=".notification.SuggestlyNotificationReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
