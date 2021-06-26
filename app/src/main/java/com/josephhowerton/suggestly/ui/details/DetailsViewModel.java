@@ -7,12 +7,12 @@ import androidx.lifecycle.LiveData;
 import androidx.paging.LivePagedListBuilder;
 import androidx.paging.PagedList;
 
-import com.josephhowerton.suggestly.Repository;
-import com.josephhowerton.suggestly.model.Suggestion;
-import com.josephhowerton.suggestly.model.foursquare.Venue;
-import com.josephhowerton.suggestly.model.nyt.Book;
-import com.josephhowerton.suggestly.model.relations.CategoryTuple;
-import com.josephhowerton.suggestly.model.relations.VenueAndCategory;
+import com.josephhowerton.suggestly.app.Repository;
+import com.josephhowerton.suggestly.app.model.Suggestion;
+import com.josephhowerton.suggestly.app.model.foursquare.Venue;
+import com.josephhowerton.suggestly.app.model.nyt.Book;
+import com.josephhowerton.suggestly.app.model.relations.CategoryTuple;
+import com.josephhowerton.suggestly.app.model.relations.VenueAndCategory;
 
 import java.util.List;
 

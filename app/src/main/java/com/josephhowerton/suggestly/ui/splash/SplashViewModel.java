@@ -5,9 +5,9 @@ import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import com.josephhowerton.suggestly.Repository;
-import com.josephhowerton.suggestly.model.user.LocationTuple;
-import com.josephhowerton.suggestly.model.user.User;
+import com.josephhowerton.suggestly.app.Repository;
+import com.josephhowerton.suggestly.app.model.user.LocationTuple;
+import com.josephhowerton.suggestly.app.model.user.User;
 import com.firebase.ui.auth.IdpResponse;
 
 public class SplashViewModel extends AndroidViewModel {
@@ -16,10 +16,6 @@ public class SplashViewModel extends AndroidViewModel {
     public SplashViewModel(Application application){
         super(application);
         repository = Repository.getInstance(application);
-    }
-
-    public LiveData<Boolean> isNewYorkTimesTableFresh(){
-        return repository.isNewYorkTimesBooksTableFresh();
     }
 
     public void fetchNewYorkTimesBestsellingByListName(String list){

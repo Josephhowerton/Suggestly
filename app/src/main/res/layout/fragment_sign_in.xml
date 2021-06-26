@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="viewModel"
+            type="com.josephhowerton.suggestly.ui.auth.signin.SignInViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.init.InitializeActivity">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_start_vertical_greeting"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent=".075"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_end_vertical_greeting"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent=".925"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_edit_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent=".55"/>
+
+        <ImageView
+            android:id="@+id/image_view_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
+            android:src="@drawable/ic_baseline_close_24"
+            android:onClick="@{viewModel::onNavigateBack}"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <TextView
+            android:id="@+id/text_view_greeting"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/title_sign_in_greeting"
+            android:textColor="@color/black"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="20dp"
+            app:layout_constraintBottom_toTopOf="@id/text_view_message"
+            app:layout_constraintEnd_toStartOf="@+id/guideline_end_vertical_greeting"
+            app:layout_constraintStart_toStartOf="@+id/guideline_start_vertical_greeting"/>
+
+        <TextView
+            android:id="@+id/text_view_message"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:text="@string/title_sign_in_message"
+            app:layout_constraintBottom_toTopOf="@id/guideline_edit_text"
+            app:layout_constraintEnd_toEndOf="@id/guideline_end_vertical_greeting"
+            app:layout_constraintStart_toStartOf="@+id/guideline_start_vertical_greeting" />
+
+        <EditText
+            android:id="@+id/edit_text_email"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape_edit_text"
+            android:hint="@string/prompt_email_address"
+            android:inputType="textEmailAddress"
+            android:padding="12dp"
+            android:selectAllOnFocus="true"
+            android:layout_marginTop="20dp"
+            android:text="@={viewModel.email}"
+            app:layout_constraintBottom_toTopOf="@id/edit_text_password"
+            app:layout_constraintEnd_toStartOf="@+id/guideline_end_vertical_greeting"
+            app:layout_constraintStart_toStartOf="@+id/guideline_start_vertical_greeting"
+            app:layout_constraintTop_toBottomOf="@id/guideline_edit_text" />
+
+        <EditText
+            android:id="@+id/edit_text_password"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:padding="12dp"
+            android:imeOptions="actionDone"
+            android:selectAllOnFocus="true"
+            android:inputType="textPassword"
+            android:text="@={viewModel.password}"
+            android:hint="@string/prompt_password"
+            android:background="@drawable/shape_edit_text"
+            android:imeActionLabel="@string/action_sign_in_short"
+            app:layout_constraintEnd_toStartOf="@+id/guideline_end_vertical_greeting"
+            app:layout_constraintStart_toStartOf="@+id/guideline_start_vertical_greeting"
+            app:layout_constraintTop_toBottomOf="@+id/edit_text_email" />
+
+        <TextView
+            android:id="@+id/text_view_reset_password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="@color/vibrant_pink"
+            android:onClick="@{viewModel::onPasswordReset}"
+            android:text="@string/prompt_reset_password"
+            app:layout_constraintBottom_toTopOf="@+id/btn_login"
+            app:layout_constraintTop_toBottomOf="@+id/edit_text_password"
+            app:layout_constraintEnd_toStartOf="@+id/guideline_end_vertical_greeting"
+            app:layout_constraintStart_toStartOf="@+id/guideline_start_vertical_greeting" />
+
+        <ImageButton
+            android:id="@+id/btn_login"
+            style="@style/Theme.TravelingSalesman.ButtonSolid"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="0dp"
+            android:enabled="false"
+            android:onClick="@{viewModel::onSignInClick}"
+            android:src="@drawable/ic_baseline_login_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guideline_end_vertical_greeting"
+            app:layout_constraintStart_toStartOf="@+id/guideline_start_vertical_greeting"
+            app:layout_constraintTop_toBottomOf="@+id/text_view_reset_password" />
+
+        <ProgressBar
+            android:id="@+id/loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="64dp"
+            android:visibility="@{viewModel.isLoading}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/guideline_edit_text"
+            app:layout_constraintVertical_bias="0.3" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

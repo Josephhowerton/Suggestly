@@ -18,9 +18,9 @@ import com.josephhowerton.suggestly.adapter.SavedAdapter;
 import com.josephhowerton.suggestly.callbacks.SaveCallback;
 import com.josephhowerton.suggestly.callbacks.SuggestionCallback;
 import com.josephhowerton.suggestly.databinding.FragmentSavedListBinding;
-import com.josephhowerton.suggestly.model.Suggestion;
-import com.josephhowerton.suggestly.model.foursquare.Venue;
-import com.josephhowerton.suggestly.model.nyt.Book;
+import com.josephhowerton.suggestly.app.model.Suggestion;
+import com.josephhowerton.suggestly.app.model.foursquare.Venue;
+import com.josephhowerton.suggestly.app.model.nyt.Book;
 import com.josephhowerton.suggestly.utility.Config;
 
 import java.util.ArrayList;

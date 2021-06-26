@@ -5,8 +5,8 @@ import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import com.josephhowerton.suggestly.Repository;
-import com.josephhowerton.suggestly.model.user.User;
+import com.josephhowerton.suggestly.app.Repository;
+import com.josephhowerton.suggestly.app.model.user.User;
 import com.josephhowerton.suggestly.utility.Config;
 import com.google.firebase.auth.FirebaseAuth;
 

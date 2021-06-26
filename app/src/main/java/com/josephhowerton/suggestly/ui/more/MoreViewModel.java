@@ -5,11 +5,11 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.josephhowerton.suggestly.Repository;
-import com.josephhowerton.suggestly.model.Suggestion;
-import com.josephhowerton.suggestly.model.foursquare.Venue;
-import com.josephhowerton.suggestly.model.nyt.Book;
-import com.josephhowerton.suggestly.model.user.LocationTuple;
+import com.josephhowerton.suggestly.app.Repository;
+import com.josephhowerton.suggestly.app.model.Suggestion;
+import com.josephhowerton.suggestly.app.model.foursquare.Venue;
+import com.josephhowerton.suggestly.app.model.nyt.Book;
+import com.josephhowerton.suggestly.app.model.user.LocationTuple;
 
 import java.util.ArrayList;
 import java.util.List;

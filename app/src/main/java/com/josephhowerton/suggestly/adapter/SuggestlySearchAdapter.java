@@ -13,7 +13,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.josephhowerton.suggestly.R;
 import com.josephhowerton.suggestly.databinding.RowItemMoreBinding;
-import com.josephhowerton.suggestly.model.relations.SearchTuple;
+import com.josephhowerton.suggestly.app.model.relations.SearchTuple;
 
 public class SuggestlySearchAdapter extends PagedListAdapter<SearchTuple, SuggestlySearchAdapter.SuggestlyViewHolder> {
 

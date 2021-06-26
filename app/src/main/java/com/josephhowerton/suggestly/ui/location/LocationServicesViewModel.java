@@ -6,7 +6,7 @@ import android.content.Context;
 
 import androidx.lifecycle.AndroidViewModel;
 
-import com.josephhowerton.suggestly.Repository;
+import com.josephhowerton.suggestly.app.Repository;
 import com.josephhowerton.suggestly.utility.PermissionManager;
 
 public class LocationServicesViewModel extends AndroidViewModel {

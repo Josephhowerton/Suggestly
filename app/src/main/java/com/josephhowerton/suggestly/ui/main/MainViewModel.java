@@ -4,7 +4,7 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
-import com.josephhowerton.suggestly.Repository;
+import com.josephhowerton.suggestly.app.Repository;
 
 
 public class MainViewModel extends AndroidViewModel{

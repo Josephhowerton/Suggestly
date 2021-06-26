@@ -2,7 +2,7 @@ package com.josephhowerton.suggestly.ui.push;
 
 import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;
-import com.josephhowerton.suggestly.Repository;
+import com.josephhowerton.suggestly.app.Repository;
 
 public class PushNotificationViewModel extends AndroidViewModel {
 

@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.josephhowerton.suggestly.R;
 import com.josephhowerton.suggestly.databinding.CardViewCategoryBinding;
-import com.josephhowerton.suggestly.model.nyt.BuyLink;
+import com.josephhowerton.suggestly.app.model.nyt.BuyLink;
 
 import java.util.List;
 

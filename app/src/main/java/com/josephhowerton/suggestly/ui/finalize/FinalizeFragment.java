@@ -4,7 +4,6 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.content.Intent;
 import android.graphics.SurfaceTexture;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -15,10 +14,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
-import android.os.Handler;
-import android.os.HandlerThread;
-import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Surface;
 import android.view.TextureView;
@@ -30,8 +25,7 @@ import android.view.animation.Animation;
 
 import com.josephhowerton.suggestly.R;
 import com.josephhowerton.suggestly.databinding.FragmentFinalizeBinding;
-import com.josephhowerton.suggestly.model.user.User;
-import com.josephhowerton.suggestly.ui.main.MainActivity;
+import com.josephhowerton.suggestly.app.model.user.User;
 import com.josephhowerton.suggestly.utility.DistanceCalculator;
 import com.josephhowerton.suggestly.utility.NetworkHandler;
 

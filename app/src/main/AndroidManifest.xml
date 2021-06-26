@@ -48,7 +48,7 @@
             android:screenOrientation="portrait"/>
 
         <receiver
-            android:name=".notification.SuggestlyNotificationReceiver"
+            android:name=".app.notification.SuggestlyNotificationReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

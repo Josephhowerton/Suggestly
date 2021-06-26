@@ -17,9 +17,9 @@ import com.josephhowerton.suggestly.callbacks.DetailsCallback;
 import com.josephhowerton.suggestly.callbacks.FavoriteCallback;
 import com.josephhowerton.suggestly.callbacks.SaveCallback;
 import com.josephhowerton.suggestly.databinding.RowItemMoreBinding;
-import com.josephhowerton.suggestly.model.Suggestion;
-import com.josephhowerton.suggestly.model.nyt.Book;
-import com.josephhowerton.suggestly.model.relations.VenueAndCategory;
+import com.josephhowerton.suggestly.app.model.Suggestion;
+import com.josephhowerton.suggestly.app.model.nyt.Book;
+import com.josephhowerton.suggestly.app.model.relations.VenueAndCategory;
 
 import org.jetbrains.annotations.NotNull;
 

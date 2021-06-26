@@ -18,7 +18,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.josephhowerton.suggestly.R;
 import com.josephhowerton.suggestly.callbacks.SaveCallback;
 import com.josephhowerton.suggestly.databinding.CardViewHomeBinding;
-import com.josephhowerton.suggestly.model.nyt.Book;
+import com.josephhowerton.suggestly.app.model.nyt.Book;
 
 import org.jetbrains.annotations.NotNull;
 

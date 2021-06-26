@@ -10,7 +10,7 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.josephhowerton.suggestly.R;
-import com.josephhowerton.suggestly.model.user.User;
+import com.josephhowerton.suggestly.app.model.user.User;
 import com.josephhowerton.suggestly.ui.init.InitializeActivity;
 import com.josephhowerton.suggestly.ui.main.MainActivity;
 import com.josephhowerton.suggestly.utility.Config;
@@ -19,16 +19,13 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.josephhowerton.suggestly.utility.NetworkHandler;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class SplashActivity extends AppCompatActivity{
-    private static final String TAG = SplashActivity.class.getName();
     private final int RC_SIGN_IN = 0;
     private SplashViewModel viewModel;
-    private Boolean flag = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,18 +33,6 @@ public class SplashActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(this).get(SplashViewModel.class);
         checkIfLocationServicesIsEnabled();
-        viewModel.isNewYorkTimesTableFresh().observe(this, isFresh -> {
-            if (!isFresh) {
-                if (NetworkHandler.isNetworkConnectionActive(this)) {
-                    viewModel.fetchNewYorkTimesBestsellingByListName(Config.HARD_COVER_NON_FICTION);
-                    viewModel.fetchNewYorkTimesBestsellingByListName(Config.HARD_COVER_FICTION);
-
-                } else {
-                    NetworkHandler.notifyBadConnectionAndTerminate(this);
-                }
-            }
-        });
-
         authenticate();
     }
 

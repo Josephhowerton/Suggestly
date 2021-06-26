@@ -19,7 +19,7 @@ import com.josephhowerton.suggestly.R;
 import com.josephhowerton.suggestly.adapter.SuggestlySearchAdapter;
 import com.josephhowerton.suggestly.databinding.FragmentExploreBinding;
 import com.josephhowerton.suggestly.callbacks.CategoryCallback;
-import com.josephhowerton.suggestly.model.relations.SearchTuple;
+import com.josephhowerton.suggestly.app.model.relations.SearchTuple;
 import com.josephhowerton.suggestly.utility.Config;
 import com.josephhowerton.suggestly.utility.NetworkHandler;
 import com.josephhowerton.suggestly.utility.SuggestionType;

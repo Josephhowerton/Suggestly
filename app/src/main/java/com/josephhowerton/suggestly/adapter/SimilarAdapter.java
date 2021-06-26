@@ -12,10 +12,10 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.josephhowerton.suggestly.R;
 import com.josephhowerton.suggestly.databinding.CardViewSimilarBinding;
-import com.josephhowerton.suggestly.model.Suggestion;
-import com.josephhowerton.suggestly.model.foursquare.Location;
-import com.josephhowerton.suggestly.model.nyt.Book;
-import com.josephhowerton.suggestly.model.relations.VenueAndCategory;
+import com.josephhowerton.suggestly.app.model.Suggestion;
+import com.josephhowerton.suggestly.app.model.foursquare.Location;
+import com.josephhowerton.suggestly.app.model.nyt.Book;
+import com.josephhowerton.suggestly.app.model.relations.VenueAndCategory;
 import com.josephhowerton.suggestly.utility.DistanceCalculator;
 
 import java.util.List;

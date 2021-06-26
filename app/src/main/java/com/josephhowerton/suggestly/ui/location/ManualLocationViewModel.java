@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import com.josephhowerton.suggestly.Repository;
+import com.josephhowerton.suggestly.app.Repository;
 import com.google.android.libraries.places.api.model.AutocompletePrediction;
 
 import java.util.List;

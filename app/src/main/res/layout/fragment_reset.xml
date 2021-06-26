@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".ui.init.InitializeActivity">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.josephhowerton.suggestly.ui.auth.reset.ResetViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_start_vertical_greeting"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent=".075" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_end_vertical_greeting"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent=".925" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_edit_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent=".65" />
+
+        <ImageView
+            android:id="@+id/image_view_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
+            android:onClick="@{viewModel::onNavigateBack}"
+            android:padding="20dp"
+            android:src="@drawable/ic_baseline_close_24"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/text_view_greeting"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/title_rest_password"
+            android:textColor="@color/black"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/guideline_edit_text"
+            app:layout_constraintEnd_toStartOf="@+id/guideline_end_vertical_greeting"
+            app:layout_constraintStart_toStartOf="@+id/guideline_start_vertical_greeting" />
+
+        <EditText
+            android:id="@+id/edit_text_email"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:layout_marginTop="20dp"
+            android:selectAllOnFocus="true"
+            android:text="@={viewModel.email}"
+            android:inputType="textEmailAddress"
+            android:hint="@string/prompt_email_address"
+            android:background="@drawable/shape_edit_text"
+            app:layout_constraintEnd_toStartOf="@+id/guideline_end_vertical_greeting"
+            app:layout_constraintStart_toStartOf="@+id/guideline_start_vertical_greeting"
+            app:layout_constraintTop_toBottomOf="@id/guideline_edit_text" />
+
+        <ImageButton
+            android:id="@+id/btn_reset_password"
+            style="@style/Theme.TravelingSalesman.ButtonSolid"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="0dp"
+            android:enabled="false"
+            android:onClick="@{viewModel::onResetClick}"
+            android:src="@drawable/ic_baseline_mail_24"
+            android:visibility="@{viewModel.btnVisible}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guideline_end_vertical_greeting"
+            app:layout_constraintStart_toStartOf="@+id/guideline_start_vertical_greeting"
+            app:layout_constraintTop_toBottomOf="@+id/edit_text_email"
+            bind:tint="@color/white" />
+
+        <ProgressBar
+            android:id="@+id/loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="64dp"
+            android:visibility="@{viewModel.isLoading}"
+            app:layout_constraintVertical_bias="0.3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            bind:layout_constraintTop_toTopOf="@+id/guideline_edit_text" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

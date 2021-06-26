@@ -1,23 +1,16 @@
 package com.josephhowerton.suggestly.ui.settings;
-
 import android.Manifest;
 import android.app.Application;
-import android.content.res.Resources;
-import android.os.Build;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.josephhowerton.suggestly.BuildConfig;
-import com.josephhowerton.suggestly.R;
-import com.josephhowerton.suggestly.Repository;
+import com.josephhowerton.suggestly.app.Repository;
 import com.josephhowerton.suggestly.utility.PermissionManager;
 import com.google.android.libraries.places.api.model.AutocompletePrediction;
 import com.google.firebase.auth.FirebaseAuth;

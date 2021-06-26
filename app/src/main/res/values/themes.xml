@@ -327,4 +327,20 @@
         <item name="shapeAppearanceOverlay">@style/ButtonShape</item>
         <item name="android:textAppearance">@style/TextAppearance.AppCompat.Body1</item>
     </style>
+
+    <style name="Theme.TravelingSalesman.AuthButtons" parent="Widget.AppCompat.Button">
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginEnd">30dp</item>
+        <item name="android:layout_marginStart">30dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">55dp</item>
+    </style>
+
+    <style name="Theme.TravelingSalesman.ButtonStroke" parent="Theme.TravelingSalesman.AuthButtons">
+        <item name="android:background">@drawable/selector_btn_stroke</item>
+    </style>
+    <style name="Theme.TravelingSalesman.ButtonSolid" parent="Theme.TravelingSalesman.AuthButtons">
+        <item name="android:background">@drawable/selector_btn_solid</item>
+    </style>
+
 </resources>

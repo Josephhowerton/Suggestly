@@ -17,12 +17,12 @@ import com.josephhowerton.suggestly.R;
 import com.josephhowerton.suggestly.callbacks.FavoriteCallback;
 import com.josephhowerton.suggestly.callbacks.SuggestionCallback;
 import com.josephhowerton.suggestly.databinding.CardViewFavoriteBinding;
-import com.josephhowerton.suggestly.model.Suggestion;
-import com.josephhowerton.suggestly.model.foursquare.Category;
-import com.josephhowerton.suggestly.model.foursquare.Location;
-import com.josephhowerton.suggestly.model.foursquare.Venue;
-import com.josephhowerton.suggestly.model.nyt.Book;
-import com.josephhowerton.suggestly.model.relations.VenueAndCategory;
+import com.josephhowerton.suggestly.app.model.Suggestion;
+import com.josephhowerton.suggestly.app.model.foursquare.Category;
+import com.josephhowerton.suggestly.app.model.foursquare.Location;
+import com.josephhowerton.suggestly.app.model.foursquare.Venue;
+import com.josephhowerton.suggestly.app.model.nyt.Book;
+import com.josephhowerton.suggestly.app.model.relations.VenueAndCategory;
 import com.josephhowerton.suggestly.utility.DistanceCalculator;
 
 import org.jetbrains.annotations.NotNull;

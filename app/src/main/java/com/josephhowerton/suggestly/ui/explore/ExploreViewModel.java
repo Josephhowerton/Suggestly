@@ -7,9 +7,9 @@ import androidx.lifecycle.LiveData;
 import androidx.paging.LivePagedListBuilder;
 import androidx.paging.PagedList;
 
-import com.josephhowerton.suggestly.Repository;
-import com.josephhowerton.suggestly.model.relations.SearchTuple;
-import com.josephhowerton.suggestly.model.user.LocationTuple;
+import com.josephhowerton.suggestly.app.Repository;
+import com.josephhowerton.suggestly.app.model.relations.SearchTuple;
+import com.josephhowerton.suggestly.app.model.user.LocationTuple;
 
 public class ExploreViewModel extends AndroidViewModel {
     private final Repository repository;
