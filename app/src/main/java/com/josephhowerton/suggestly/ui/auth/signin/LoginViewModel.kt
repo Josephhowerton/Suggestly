@@ -7,11 +7,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.josephhowerton.suggestly.R
 import com.josephhowerton.suggestly.app.Repository
-import com.josephhowerton.suggestly.app.network.auth.AuthResult
+import com.josephhowerton.suggestly.app.network.auth.AuthResponse
 import com.josephhowerton.suggestly.app.network.auth.LoggedInUser
 import com.josephhowerton.suggestly.app.network.interfaces.AuthCompleteListener
 
-class SignInViewModel(private val repository: Repository) : ViewModel() {
+class LoginViewModel(private val repository: Repository) : ViewModel() {
 
     private val _loginForm = MutableLiveData<LoginFormState>()
     val loginFormState: LiveData<LoginFormState> = _loginForm
@@ -31,19 +31,22 @@ class SignInViewModel(private val repository: Repository) : ViewModel() {
 
     var destination:Int? = null
 
+    val isFoursquareTableEmpty: LiveData<Boolean> = repository.isVenueTableFresh
+
     init{
+        destination = null
         _loginForm.value = LoginFormState(isDataValid = false)
         _isLoading.value = View.GONE
     }
 
     fun onNavigateBack(view: View){
         _animate.value = true
-        destination = R.id.sign_in_to_greeting
+        destination = R.id.navigation_auth
     }
 
     fun onPasswordReset(view: View){
         _animate.value = true
-        destination = R.id.action_signInFragment_to_resetFragment
+        destination = R.id.navigation_reset
     }
 
     fun onSignInClick(view: View){
@@ -52,20 +55,19 @@ class SignInViewModel(private val repository: Repository) : ViewModel() {
     }
 
     fun loginWithEmail() {
-        // can be launched in a separate asynchronous job
         repository.loginWithEmail(email, password, object : AuthCompleteListener {
-            override fun onSuccess(result: AuthResult<LoggedInUser>) {
-                if (result is AuthResult.Success) {
+            override fun onSuccess(response: AuthResponse<LoggedInUser>) {
+                if (response is AuthResponse.Success) {
                     animate
-                    _loginResult.value = LoginResult(success = LoggedInUserView(displayName = result.data.displayName))
+                    _loginResult.value = LoginResult(success = LoggedInUserView(displayName = response.data.displayName))
                 }
                 _animate.value = true
 
             }
 
-            override fun onFailed(result: AuthResult<LoggedInUser>) {
-                if(result is AuthResult.Error){
-                    _loginResult.value = LoginResult(message = result.exception.message)
+            override fun onFailed(response: AuthResponse<LoggedInUser>) {
+                if(response is AuthResponse.Error){
+                    _loginResult.value = LoginResult(message = response.exception.message)
                 }
                 else {
                     _loginResult.value = LoginResult(error = R.string.login_failed)

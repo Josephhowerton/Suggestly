@@ -679,6 +679,33 @@ public class Repository{
         return mutableLiveData;
     }
 
+    public LiveData<Boolean> isVenueTableFresh(){
+        MutableLiveData<Boolean> mutableLiveData = new MutableLiveData<>();
+        foursquareSource.isVenueTableFresh(new Observer<Boolean>() {
+            Disposable disposable;
+            @Override
+            public void onSubscribe(@NonNull Disposable d) {
+                disposable = d;
+            }
+
+            @Override
+            public void onNext(@NonNull Boolean aBoolean) {
+                mutableLiveData.postValue(aBoolean);
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onComplete() {
+                disposable.dispose();
+            }
+        });
+        return mutableLiveData;
+    }
+
     public LiveData<Boolean> getGeneralFoursquareVenuesNearUserById(double lat, double lng, String categoryId){
         MutableLiveData<Boolean> mutableLiveData = new MutableLiveData<>();
         foursquareSource.getGeneralFoursquareVenuesNearUserById(lat, lng, categoryId, new Observer<List<Venue>>() {
@@ -747,7 +774,7 @@ public class Repository{
     }
 
     @NotNull
-    public LiveData<Boolean> getFoursquareVenuesDetails(Venue venue){
+    public void getFoursquareVenuesDetails(Venue venue){
         MutableLiveData<Boolean> mutableLiveData = new MutableLiveData<>();
         foursquareSource.getFoursquareVenuesDetails(venue.venueId, new Observer<Venue>() {
             Disposable disposable;
@@ -776,11 +803,10 @@ public class Repository{
             }
         });
 
-        return mutableLiveData;
     }
 
     @NotNull
-    public LiveData<Boolean> getFoursquareVenuesSimilar(Venue venue){
+    public void getFoursquareVenuesSimilar(Venue venue){
         MutableLiveData<Boolean> mutableLiveData = new MutableLiveData<>();
         foursquareSource.getSimilarFoursquareVenuesNearby(venue.venueId, new Observer<List<Venue>>() {
             Disposable disposable;
@@ -812,7 +838,6 @@ public class Repository{
             }
         });
 
-        return mutableLiveData;
     }
 
     public void createVenue(Venue venue){

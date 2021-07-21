@@ -24,7 +24,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public class SplashActivity extends AppCompatActivity{
-    private final int RC_SIGN_IN = 0;
     private SplashViewModel viewModel;
 
     @Override
@@ -32,7 +31,6 @@ public class SplashActivity extends AppCompatActivity{
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(this).get(SplashViewModel.class);
-        checkIfLocationServicesIsEnabled();
         authenticate();
     }
 
@@ -48,20 +46,11 @@ public class SplashActivity extends AppCompatActivity{
     }
 
     public void goToAuthActivity() {
-        List<AuthUI.IdpConfig> providers = Arrays.asList(
-                new AuthUI.IdpConfig.EmailBuilder().build(),
-                new AuthUI.IdpConfig.GoogleBuilder().build()
-        );
-
-        Intent intent = AuthUI.getInstance()
-                .createSignInIntentBuilder()
-                .setAvailableProviders(providers)
-                .setTheme(R.style.Theme_Suggest_AuthTheme)
-                .setLogo(R.drawable.suggest_logo)
-                .setIsSmartLockEnabled(false)
-                .build();
-
-        startActivityForResult(intent, RC_SIGN_IN);
+        Intent intent = new Intent(this, InitializeActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(Config.INITIALIZE, Config.AUTHENTICATE_FLAG);
+        startActivity(intent);
+        finish();
     }
 
     public void goToMainActivity() {
@@ -139,6 +128,8 @@ public class SplashActivity extends AppCompatActivity{
         } else {
             disableLocationServices();
         }
+
+        goToMainActivity();
     }
 
     /*
@@ -174,7 +165,6 @@ public class SplashActivity extends AppCompatActivity{
         viewModel.isFoursquareTableFresh(lat, lng).observe(this, isFresh -> {
             if (isFresh) {
                 updateDistance(lat, lng);
-                goToMainActivity();
             } else {
                 goToInitializeActivityRefreshSuggestions();
             }
@@ -187,19 +177,6 @@ public class SplashActivity extends AppCompatActivity{
 
     public void updateDistance(Double lat, Double lng) {
         viewModel.updateDistance(lat, lng);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == RC_SIGN_IN) {
-            IdpResponse response = IdpResponse.fromResultIntent(data);
-            if (resultCode == RESULT_OK) {
-                authenticateUser(response);
-            } else {
-                goToAuthActivity();
-            }
-        }
+        checkIfLocationServicesIsEnabled();
     }
 }

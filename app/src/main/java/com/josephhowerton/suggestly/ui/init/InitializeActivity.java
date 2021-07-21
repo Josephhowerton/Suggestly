@@ -28,7 +28,7 @@ public class InitializeActivity extends AppCompatActivity implements NavControll
 
         intent = getIntent();
         if(intent != null){
-            int whereTo = intent.getIntExtra(Config.INITIALIZE, 0);
+            int whereTo = intent.getIntExtra(Config.INITIALIZE, 3);
             navigate(whereTo);
         }
     }
@@ -53,6 +53,8 @@ public class InitializeActivity extends AppCompatActivity implements NavControll
                 break;
             case Config.REFRESH_FLAG:
                 Navigation.findNavController(this, R.id.nav_host_fragment).navigate(R.id.navigation_finalize);
+            case Config.AUTHENTICATE_FLAG:
+                Navigation.findNavController(this, R.id.nav_host_fragment).navigate(R.id.navigation_auth);
         }
     }
 }

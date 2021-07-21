@@ -10,7 +10,7 @@
 
         <variable
             name="suggestion"
-            type="com.josephhowerton.suggestly.model.Suggestion" />
+            type="com.josephhowerton.suggestly.app.model.Suggestion" />
 
         <variable
             name="more"
@@ -92,15 +92,6 @@
                     app:layout_constraintStart_toStartOf="@id/startGuideline"
                     app:layout_constraintTop_toBottomOf="@id/title_selectedBy"
                     android:onClick="@{() -> details.onSuggestionDetailsListener(suggestion)}"/>
-
-                <ImageView
-                    android:id="@+id/logo"
-                    android:layout_width="75dp"
-                    android:layout_height="75dp"
-                    android:layout_marginEnd="15dp"
-                    android:src="@drawable/suggestly_with_logo"
-                    app:layout_constraintEnd_toEndOf="@id/endGuideline"
-                    app:layout_constraintTop_toTopOf="@id/image_topSuggestion"/>
 
                 <TextView
                     android:id="@+id/title_main_title"

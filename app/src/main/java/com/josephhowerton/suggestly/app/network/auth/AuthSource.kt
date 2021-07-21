@@ -18,7 +18,7 @@ class AuthSource{
                     if (task.isSuccessful) {
                         val user = firebaseAuth.currentUser
                         listener.onSuccess(
-                                AuthResult.Success(
+                                AuthResponse.Success(
                                         LoggedInUser(
                                                 user!!.uid,
                                                 user.email!!
@@ -36,12 +36,12 @@ class AuthSource{
                         else if(task.exception is FirebaseAuthUserCollisionException){
                             message =  "Credentials already in use"
                         }
-                        listener.onFailed(AuthResult.Error(IOException(message)))
+                        listener.onFailed(AuthResponse.Error(IOException(message)))
                     }
                 }
         }
         catch (e: Exception){
-            listener.onFailed(AuthResult.Error(IOException(e)))
+            listener.onFailed(AuthResponse.Error(IOException(e)))
         }
     }
 
@@ -53,7 +53,7 @@ class AuthSource{
                         val user = firebaseAuth.currentUser
                         Log.println(Log.ASSERT, "loginWithEmail", "isSuccessful")
                         listener.onSuccess(
-                                AuthResult.Success(
+                                AuthResponse.Success(
                                         LoggedInUser(
                                                 user!!.uid,
                                                 user.email!!
@@ -68,12 +68,12 @@ class AuthSource{
                         else if(task.exception is FirebaseAuthInvalidCredentialsException ){
                             message = "Invalid password"
                         }
-                        listener.onFailed(AuthResult.Error(IOException(message)))
+                        listener.onFailed(AuthResponse.Error(IOException(message)))
                     }
                 }
         }
         catch (e: Exception){
-            listener.onFailed(AuthResult.Error(IOException(e)))
+            listener.onFailed(AuthResponse.Error(IOException(e)))
         }
     }
 
@@ -87,7 +87,7 @@ class AuthSource{
                         val user = firebaseAuth.currentUser
                         val isNewUser = task.result!!.additionalUserInfo!!.isNewUser
                         listener.onSuccess(
-                                AuthResult.Success(
+                                AuthResponse.Success(
                                         LoggedInUser(
                                                 user!!.uid,
                                                 user.email!!,
@@ -103,12 +103,12 @@ class AuthSource{
                         else if(task.exception is FirebaseAuthInvalidCredentialsException ){
                             message = "Invalid password"
                         }
-                        listener.onFailed(AuthResult.Error(IOException(message)))
+                        listener.onFailed(AuthResponse.Error(IOException(message)))
                     }
                 }
         }
         catch (e: Exception){
-            listener.onFailed(AuthResult.Error(IOException(e)))
+            listener.onFailed(AuthResponse.Error(IOException(e)))
         }
     }
 
@@ -118,20 +118,20 @@ class AuthSource{
                 if(task.isSuccessful){
                     Log.println(Log.ASSERT, "Password Reset", "Email sent")
                     listener.onSuccess(
-                            AuthResult.Success(
+                            AuthResponse.Success(
                                     ResetEmail(true)
                             )
                     )
                 }
                 else if (task.exception != null) {
                     val message = "Error sending reset link."
-                    listener.onFailed(AuthResult.Error(IOException(message)))
+                    listener.onFailed(AuthResponse.Error(IOException(message)))
 
                 }
             }
         }
         catch (e: Exception){
-            listener.onFailed(AuthResult.Error(IOException("Error sending reset link.")))
+            listener.onFailed(AuthResponse.Error(IOException("Error sending reset link.")))
         }
     }
 

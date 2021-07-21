@@ -1,9 +1,9 @@
 package com.josephhowerton.suggestly.app.network.auth
 
-sealed class AuthResult<out T : Any> {
+sealed class AuthResponse<out T : Any> {
 
-    data class Success<out T : Any>(val data: T) : AuthResult<T>()
-    data class Error(val exception: Exception) : AuthResult<Nothing>()
+    data class Success<out T : Any>(val data: T) : AuthResponse<T>()
+    data class Error(val exception: Exception) : AuthResponse<Nothing>()
 
     override fun toString(): String {
         return when (this) {

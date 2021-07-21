@@ -115,6 +115,21 @@ public class FoursquareSource {
                 .subscribe(observer);
     }
 
+    public void isVenueTableFresh(Observer<Boolean> observer){
+        Observable<Boolean> observable = Observable.create(source -> {
+            Boolean isFresh = foursquareDao.isFresh();
+            if(isFresh){
+                source.onNext(isFresh);
+            }else{
+                source.onNext(isFresh);
+            }
+            source.onComplete();
+        });
+
+        observable.subscribeOn(Schedulers.io())
+                .subscribe(observer);
+    }
+
     public void getGeneralFoursquareVenuesNearUserById(@NonNull Double latitude, @NonNull Double longitude, @NonNull String id, @NonNull Observer<List<Venue>> placeObserver){
         HashMap<String, String> searchParameters = FoursquareManager.buildCategoryQueryMap(latitude, longitude, id);
         foursquareService.getFoursquareVenuesNearby(searchParameters)

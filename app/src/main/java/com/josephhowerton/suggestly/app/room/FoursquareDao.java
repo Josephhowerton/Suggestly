@@ -33,6 +33,9 @@ public abstract class FoursquareDao {
     @Query("SELECT * from Venue")
     public abstract List<Venue> readVenues();
 
+    @Query("SELECT * FROM venue ORDER BY RANDOM() LIMIT 1")
+    public abstract Venue readRandomVenue();
+
     @Query("SELECT * FROM venue WHERE is_venue_recommended = 1 ORDER BY RANDOM() LIMIT 1")
     public abstract Venue readRandomRecommendedVenue();
 
@@ -140,5 +143,10 @@ public abstract class FoursquareDao {
         double distance = DistanceCalculator.distanceMile(lat, venue.getLocation().lat, lng, venue.getLocation().lng);
 
         return distance <= 15.0d;
+    }
+
+    @Transaction
+    public Boolean isFresh() {
+        return isEmpty(readRandomVenue());
     }
 }

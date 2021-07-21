@@ -10,18 +10,18 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.api.ApiException
 import com.josephhowerton.suggestly.R
 import com.josephhowerton.suggestly.app.Repository
-import com.josephhowerton.suggestly.app.network.auth.AuthResult
+import com.josephhowerton.suggestly.app.network.auth.AuthResponse
 import com.josephhowerton.suggestly.app.network.auth.LoggedInUser
 import com.josephhowerton.suggestly.app.network.interfaces.AuthCompleteListener
 import com.josephhowerton.suggestly.ui.auth.signin.LoggedInUserView
 
-class RegisterViewModel(private val repository: Repository) : ViewModel(){
+class RegisterViewModel(private val repository: Repository) : ViewModel() {
 
     private val _registerForm = MutableLiveData<RegisterFormState>()
     val registerFormState: LiveData<RegisterFormState> = _registerForm
 
-    private val _registerResult = MutableLiveData<RegisterResult>()
-    val registerResult: LiveData<RegisterResult> = _registerResult
+    private val _registerResult = MutableLiveData<com.josephhowerton.suggestly.ui.auth.register.AuthResult>()
+    val registerResult: LiveData<com.josephhowerton.suggestly.ui.auth.register.AuthResult> = _registerResult
 
     private val _signUpWithGoogle = MutableLiveData<Boolean>()
     val signUpWithGoogle: LiveData<Boolean>
@@ -69,7 +69,7 @@ class RegisterViewModel(private val repository: Repository) : ViewModel(){
             repository.loginWithGoogle(account.idToken!!, authCompleteListener)
 
         } catch (e: ApiException) {
-            _registerResult.value = RegisterResult(error = R.string.login_failed)
+            _registerResult.value = AuthResult(error = R.string.login_failed)
             _isLoading.value = View.GONE
         }
     }
@@ -103,21 +103,21 @@ class RegisterViewModel(private val repository: Repository) : ViewModel(){
     }
 
     private val authCompleteListener = object: AuthCompleteListener {
-        override fun onSuccess(result: AuthResult<LoggedInUser>) {
-            if (result is AuthResult.Success) {
-                _registerResult.value = RegisterResult(success = LoggedInUserView(displayName = result.data.displayName))
+        override fun onSuccess(response: AuthResponse<LoggedInUser>) {
+            if (response is AuthResponse.Success) {
+                _registerResult.value = AuthResult(success = LoggedInUserView(displayName = response.data.displayName))
             }
             _animate.value = true
             _isLoading.value = View.GONE
             destination = R.id.action_navigation_register_to_navigation_auth
         }
 
-        override fun onFailed(result: AuthResult<LoggedInUser>) {
-            if (result is AuthResult.Error) {
-                _registerResult.value = RegisterResult(message = result.exception.message)
+        override fun onFailed(response: AuthResponse<LoggedInUser>) {
+            if (response is AuthResponse.Error) {
+                _registerResult.value = AuthResult(message = response.exception.message)
             }
             else {
-                _registerResult.value = RegisterResult(error = R.string.login_failed)
+                _registerResult.value = AuthResult(error = R.string.login_failed)
             }
             _isLoading.value = View.GONE
         }

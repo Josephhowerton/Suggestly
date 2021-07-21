@@ -62,10 +62,13 @@ public class Config {
     public static final int INITIALIZE_USER = 0;
     public static final int LOCATION_FLAG = 1;
     public static final int REFRESH_FLAG = 2;
+    public static final int AUTHENTICATE_FLAG = 3;
 
 
     public static final String NOTIFICATION_CHANNEL = "SUGGESTLY_NOTIFICATION_CHANNEL";
     public static final String NOTIFICATION_CHANNEL_NAME = "SUGGEST";
     public static final String NOTIFICATION_CHANNEL_DESCRIPTION = "This is Suggest Notification";
     public static final int NOTIFICATION_CHANNEL_ID = 100;
+
+    public static final int RC_SIGN_IN = 100;
 }

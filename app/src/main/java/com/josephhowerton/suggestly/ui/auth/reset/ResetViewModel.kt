@@ -7,7 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.josephhowerton.suggestly.R
 import com.josephhowerton.suggestly.app.Repository
-import com.josephhowerton.suggestly.app.network.auth.AuthResult
+import com.josephhowerton.suggestly.app.network.auth.AuthResponse
 import com.josephhowerton.suggestly.app.network.interfaces.ResetCompleteListener
 import com.josephhowerton.suggestly.ui.auth.signin.LoginFormState
 
@@ -29,17 +29,14 @@ class ResetViewModel(private val repository: Repository) : ViewModel() {
     private val _btnVisible = MutableLiveData<Int>()
     val btnVisible: LiveData<Int> get() = _btnVisible
 
-    private val _successLayoutVisible = MutableLiveData<Int>()
-    val successLayoutVisible: LiveData<Int> get() = _successLayoutVisible
-
     var destination:Int? = null
+
 
     var email:String = ""
 
     init {
         _isLoading.value = View.GONE
         _btnVisible.value = View.VISIBLE
-        _successLayoutVisible.value = View.GONE
         _resetFormState.value = LoginFormState(isDataValid = false)
     }
 
@@ -51,18 +48,17 @@ class ResetViewModel(private val repository: Repository) : ViewModel() {
     fun onResetClick(view: View){
         _isLoading.value = View.VISIBLE
         repository.sendPasswordResetEmail(email, object : ResetCompleteListener {
-            override fun onSuccess(result: AuthResult<ResetEmail>) {
-                if (result is AuthResult.Success) {
-                    _resetEmailResult.value = ResetEmail(success = result.data.success)
-                    _successLayoutVisible.value = View.VISIBLE
+            override fun onSuccess(response: AuthResponse<ResetEmail>) {
+                if (response is AuthResponse.Success) {
+                    _resetEmailResult.value = ResetEmail(success = response.data.success)
                     _btnVisible.value = View.GONE
                 }
                 _isLoading.value = View.GONE
             }
 
-            override fun onFailed(result: AuthResult<ResetEmail>) {
-                if (result is AuthResult.Error) {
-                    _resetEmailResult.value = ResetEmail(message = result.exception.message)
+            override fun onFailed(response: AuthResponse<ResetEmail>) {
+                if (response is AuthResponse.Error) {
+                    _resetEmailResult.value = ResetEmail(message = response.exception.message)
                 } else {
                     _resetEmailResult.value = ResetEmail(error = R.string.reset_password_failed)
                 }

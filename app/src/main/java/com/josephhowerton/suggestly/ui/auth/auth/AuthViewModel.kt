@@ -1,6 +1,7 @@
-package com.josephhowerton.suggestly.ui.auth.greeting
+package com.josephhowerton.suggestly.ui.auth.auth
 
 import android.content.Intent
+import android.util.Log
 import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -9,15 +10,17 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.api.ApiException
 import com.josephhowerton.suggestly.R
 import com.josephhowerton.suggestly.app.Repository
-import com.josephhowerton.suggestly.app.network.auth.AuthResult
+import com.josephhowerton.suggestly.app.network.auth.AuthResponse
 import com.josephhowerton.suggestly.app.network.auth.LoggedInUser
 import com.josephhowerton.suggestly.app.network.interfaces.AuthCompleteListener
-import com.josephhowerton.suggestly.ui.auth.register.RegisterResult
+import com.josephhowerton.suggestly.ui.auth.register.AuthResult
 import com.josephhowerton.suggestly.ui.auth.signin.LoggedInUserView
 
 class AuthViewModel(private val repository: Repository) : ViewModel() {
-    private val _registerResult = MutableLiveData<RegisterResult>()
-    val registerResult: LiveData<RegisterResult> = _registerResult
+
+    private val _registerResult = MutableLiveData<com.josephhowerton.suggestly.ui.auth.register.AuthResult>()
+    val registerResult: LiveData<com.josephhowerton.suggestly.ui.auth.register.AuthResult>
+        get() = _registerResult
 
     private val _signInWithEmail = MutableLiveData<Boolean>()
     val signInWithEmail: LiveData<Boolean>
@@ -42,14 +45,16 @@ class AuthViewModel(private val repository: Repository) : ViewModel() {
     private val _isLoading = MutableLiveData<Int>()
     val isLoading: LiveData<Int> get() = _isLoading
 
-    var destination: Int
+    val isFoursquareTableFresh: LiveData<Boolean> = repository.isVenueTableFresh
+
+    var destination: Int?
     var isNewUser:Boolean = false
 
     var email:String = ""
     var password:String = ""
 
     init{
-        destination = -1
+        destination = null
         _signUp.value = false
         _navigate.value = null
         _isLoading.value = View.GONE
@@ -64,8 +69,8 @@ class AuthViewModel(private val repository: Repository) : ViewModel() {
     fun signInWithEmail(shouldGo: Boolean){
         if(shouldGo){
             _animate.value = shouldGo
+            destination = R.id.action_navigation_auth_to_sign_in
             _signInWithEmail.value = false
-            destination = R.id.navigation_sign_in
         }
     }
 
@@ -80,40 +85,40 @@ class AuthViewModel(private val repository: Repository) : ViewModel() {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
             val account = task.getResult(ApiException::class.java)!!
             repository.loginWithGoogle(account.idToken!!, object : AuthCompleteListener {
-                override fun onSuccess(result: AuthResult<LoggedInUser>) {
+                override fun onSuccess(response: AuthResponse<LoggedInUser>) {
                     _isLoading.value = View.GONE
                     destination = R.id.action_navigation_auth_to_navigation_explanation
-                    if (result is AuthResult.Success) {
-                        _registerResult.value = RegisterResult(success = LoggedInUserView(displayName = result.data.displayName))
-                        isNewUser = result.data.isNewUser!!
+                    if (response is AuthResponse.Success) {
+                        _registerResult.value = AuthResult(success = LoggedInUserView(displayName = response.data.displayName))
+                        isNewUser = response.data.isNewUser!!
                     }
                     _animate.value = true
-
                 }
 
-                override fun onFailed(result: AuthResult<LoggedInUser>) {
+                override fun onFailed(response: AuthResponse<LoggedInUser>) {
                     _isLoading.value = View.GONE
-                    if (result is AuthResult.Error) {
-                        _registerResult.value = RegisterResult(message = result.exception.message)
+                    if (response is AuthResponse.Error) {
+                        _registerResult.value = com.josephhowerton.suggestly.ui.auth.register.AuthResult(message = response.exception.message)
                     }
                     else {
-                        _registerResult.value = RegisterResult(error = R.string.login_failed)
+                        _registerResult.value = com.josephhowerton.suggestly.ui.auth.register.AuthResult(error = R.string.login_failed)
                     }
                 }
             })
 
         } catch (e: ApiException) {
             _isLoading.value = View.GONE
-            _registerResult.value = RegisterResult(error = R.string.login_failed)
+            _registerResult.value = com.josephhowerton.suggestly.ui.auth.register.AuthResult(error = R.string.login_failed)
         }
     }
 
     fun onSignUpClicked(view: View){
         _signUp.value = true
     }
-
+    private val TAG = "TAG"
     fun signUp(shouldGo: Boolean){
         if(shouldGo){
+            Log.println(Log.ASSERT, TAG, "CLick");
             _signUp.value = false
             _animate.value = shouldGo
             destination = R.id.action_navigation_auth_to_navigation_register
@@ -123,4 +128,5 @@ class AuthViewModel(private val repository: Repository) : ViewModel() {
     fun navigate(){
         _navigate.value = destination
     }
+
 }

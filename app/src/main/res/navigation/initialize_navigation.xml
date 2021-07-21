@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_explanation">
+    app:startDestination="@id/navigation_auth">
 
     <fragment
         android:id="@+id/navigation_explanation"
@@ -57,11 +57,11 @@
 
     <fragment
         android:id="@+id/navigation_auth"
-        android:name="com.josephhowerton.suggestly.ui.auth.greeting.AuthFragment"
+        android:name="com.josephhowerton.suggestly.ui.auth.auth.AuthFragment"
         android:label="Welcome"
         tools:layout="@layout/fragment_auth" >
         <action
-            android:id="@+id/action_authFragment_to_signInFragment"
+            android:id="@+id/action_navigation_auth_to_sign_in"
             app:destination="@id/navigation_sign_in" />
         <action
             android:id="@+id/action_navigation_auth_to_navigation_register"
@@ -74,7 +74,7 @@
 
     <fragment
         android:id="@+id/navigation_sign_in"
-        android:name="com.josephhowerton.suggestly.ui.auth.signin.SignInFragment"
+        android:name="com.josephhowerton.suggestly.ui.auth.signin.LoginFragment"
         android:label="fragment_sign_in"
         tools:layout="@layout/fragment_sign_in" >
         <action
@@ -84,7 +84,7 @@
             android:id="@+id/action_signInFragment_to_navigation_explanation"
             app:destination="@id/navigation_explanation" />
         <action
-            android:id="@+id/sign_in_to_greeting"
+            android:id="@+id/action_navigation_sign_in_to_navigation_auth"
             app:destination="@id/navigation_auth" />
     </fragment>
 
@@ -94,7 +94,7 @@
         android:label="fragment_sign_in"
         tools:layout="@layout/fragment_register" >
         <action
-            android:id="@+id/action_signInFragment_to_navigation_explanation"
+            android:id="@+id/navigation_register_to_navigation_explanation"
             app:destination="@id/navigation_explanation" />
         <action
             android:id="@+id/action_navigation_register_to_navigation_auth"

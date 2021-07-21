@@ -5,7 +5,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.josephhowerton.suggestly.ui.auth.signin.SignInViewModel" />
+            type="com.josephhowerton.suggestly.ui.auth.signin.LoginViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
