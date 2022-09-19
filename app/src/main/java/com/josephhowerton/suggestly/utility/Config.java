@@ -14,8 +14,6 @@ public class Config {
     public static final String SUGGESTLY_PP_URL = "https://www.suggestlyapp.com/privacy-policy";
     public static final String SUGGESTLY_TOS_URL = "https://www.suggestlyapp.com/terms-of-service";
 
-    public static final String FOURSQUARE_CLIENT_ID = "0TG2IQKFRRFWX1XHKUI1VHSWICWJ0XYCF0Q3HE2XPOTTRAFP";
-    public static final String FOURSQUARE_CLIENT_SECRET = "GT1XL3V0OG5LHXULJTSAUX4KF5QKRF1VNCXFRYNZDL523JPU";
     public static final String RADIUS_DEFAULT_VALUE = "100000";
     public static final String FOURSQUARE_VERSION = "20201001";
 
@@ -41,9 +39,8 @@ public class Config {
     public static final String INDIAN = "4bf58dd8d48988d10f941735";
 
     public static final String NEW_YORK_TIMES_BASE_URL = "https://api.nytimes.com";
-    public static final String CLIENT_KEY_VALUE = "Cbc3PSEmNIGAVVTnXJthbRFJGPDoNFkv";
+
     public static final String GEO_CODING_BASE_URL = "https://maps.googleapis.com";
-    public static final String GOOGLE_API_KEY = "AIzaSyCk0qCfFw6l8pT-Iohcy0--HqIN5Jb0VCs";
 
     public static final String USER_SHARED_PREFERENCE_NAME = "DEFAULT";
     public static final String USER_SHARED_PREFERENCE_PUSH_NOTIFICATIONS = "CURRENT_USER_PUSH_NOTIFICATIONS";

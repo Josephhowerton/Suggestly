@@ -32,6 +32,8 @@ public class WelcomeFragment extends Fragment implements View.OnClickListener ,
     private final String MESSAGE = "In order to continue, please check network connection and try again.";
     private FragmentWelcomeBinding binding;
     private MediaPlayer mediaPlayer;
+    private Surface surface;
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -78,7 +80,7 @@ public class WelcomeFragment extends Fragment implements View.OnClickListener ,
         try {
 
             Uri uri = Uri.parse("android.resource://"+requireActivity().getPackageName()+"/"+R.raw.getting_started_video);
-            Surface surface = new Surface(surfaceTexture);
+            surface = new Surface(surfaceTexture);
             mediaPlayer = new MediaPlayer();
             mediaPlayer.setSurface(surface);
             mediaPlayer.setDataSource(requireContext(), uri);
@@ -128,9 +130,7 @@ public class WelcomeFragment extends Fragment implements View.OnClickListener ,
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                if(binding.backgroundVideo != null){
-                    binding.backgroundVideo.setSurfaceTextureListener(null);
-                }
+                surface.release();
                 Navigation.findNavController(requireActivity(), R.id.nav_host_fragment).navigate(R.id.navigation_location_services);
             }
 

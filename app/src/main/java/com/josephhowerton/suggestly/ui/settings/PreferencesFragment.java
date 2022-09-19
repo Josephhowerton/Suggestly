@@ -158,9 +158,8 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements Pre
 
     private void goToSplashActivity(){
         Intent intent = new Intent(requireActivity(), SplashActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
-        requireActivity().finish();
     }
 
     public void goToSettings(){

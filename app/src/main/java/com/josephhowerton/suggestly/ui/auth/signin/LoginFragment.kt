@@ -3,11 +3,9 @@ package com.josephhowerton.suggestly.ui.auth.signin
 import android.animation.Animator
 import android.animation.ObjectAnimator
 import android.content.Intent
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,9 +13,14 @@ import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.ktx.Firebase
 import com.josephhowerton.suggestly.R
+import com.josephhowerton.suggestly.app.model.user.User
 import com.josephhowerton.suggestly.databinding.FragmentSignInBinding
 import com.josephhowerton.suggestly.ui.auth.auth.AuthViewModelFactory
 import com.josephhowerton.suggestly.ui.main.MainActivity
@@ -42,22 +45,26 @@ class LoginFragment : Fragment(), Animator.AnimatorListener   {
         initTextWatcher()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.destroy()
+    }
 
     private fun init(){
         viewModel = ViewModelProvider(this, AuthViewModelFactory(requireActivity().application)).get(LoginViewModel::class.java)
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        viewModel.animate.observe(viewLifecycleOwner, {
+        viewModel.animate.observe(viewLifecycleOwner){
             animate()
-        })
+        }
     }
 
     private fun foursquareTableLiveData() {
-        viewModel.isFoursquareTableEmpty.observe(viewLifecycleOwner, {
+        viewModel.isFoursquareTableEmpty.observe(viewLifecycleOwner){
             if(it) R.id.navigation_location_services.navigate()
             else navigate()
-        })
+        }
     }
 
     private fun animate(){
@@ -136,7 +143,7 @@ class LoginFragment : Fragment(), Animator.AnimatorListener   {
                         showLoginFailed(it)
                     }
                     loginResult.success?.let {
-                        updateUiWithUser(it)
+                        checkIfUserInRoom()
                     }
                 })
     }
@@ -164,10 +171,22 @@ class LoginFragment : Fragment(), Animator.AnimatorListener   {
         }
     }
 
-    private fun updateUiWithUser(model: LoggedInUserView) {
-        val welcome = "${getString(R.string.welcome)} ${model.displayName}"
-        val appContext = context?.applicationContext ?: return
-        Toast.makeText(appContext, welcome, Toast.LENGTH_LONG).show()
+    private fun checkIfUserInRoom() {
+        viewModel.checkIfUserInRoom(FirebaseAuth.getInstance().currentUser!!.uid).observe(viewLifecycleOwner) { target: Boolean ->
+                if (target) {
+                    viewModel.animate()
+                } else {
+                    createUser(User(FirebaseAuth.getInstance().currentUser))
+                }
+            }
+    }
+
+    private fun createUser(user: User) {
+        viewModel.createUser(user).observe(viewLifecycleOwner) { target: Boolean ->
+            if (target){
+                viewModel.animate()
+            }
+        }
     }
 
     private fun showLoginFailed(@StringRes errorString: Int) {

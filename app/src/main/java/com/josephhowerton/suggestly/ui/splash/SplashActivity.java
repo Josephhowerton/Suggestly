@@ -1,27 +1,22 @@
 package com.josephhowerton.suggestly.ui.splash;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.lifecycle.ViewModelProvider;
+
+import com.firebase.ui.auth.IdpResponse;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.josephhowerton.suggestly.R;
 import com.josephhowerton.suggestly.app.model.user.User;
 import com.josephhowerton.suggestly.ui.init.InitializeActivity;
 import com.josephhowerton.suggestly.ui.main.MainActivity;
 import com.josephhowerton.suggestly.utility.Config;
 import com.josephhowerton.suggestly.utility.DistanceCalculator;
-import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.IdpResponse;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class SplashActivity extends AppCompatActivity{
     private SplashViewModel viewModel;
@@ -82,16 +77,6 @@ public class SplashActivity extends AppCompatActivity{
         intent.putExtra(Config.INITIALIZE, Config.LOCATION_FLAG);
         startActivity(intent);
         finish();
-    }
-
-    public void authenticateUser(IdpResponse response) {
-        viewModel.authenticateUser(response).observe(this, target -> {
-            if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-                User user = new User(FirebaseAuth.getInstance().getCurrentUser());
-                if (target) checkIfUserInRoom(user);
-                else createUser(user);
-            }
-        });
     }
 
     public void checkIfUserInRoom(User user) {

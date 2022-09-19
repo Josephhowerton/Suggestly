@@ -22,7 +22,7 @@ import com.josephhowerton.suggestly.app.model.user.User;
 @TypeConverters({Converter.class})
 public abstract class RoomDB extends RoomDatabase {
     public final static String DATABASE_NAME = "RoomDB";
-    public static RoomDB INSTANCE;
+    public static volatile RoomDB INSTANCE;
 
     public static RoomDB getInstance(Context context){
         if(INSTANCE == null){

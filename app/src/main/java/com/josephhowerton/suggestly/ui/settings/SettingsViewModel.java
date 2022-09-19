@@ -87,7 +87,7 @@ public class SettingsViewModel extends AndroidViewModel {
         firebaseAuth.signOut();
 
         GoogleSignInOptions options = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(BuildConfig.google_client_id)
+                .requestIdToken(BuildConfig.FIREBASE_GOOGLE_CLIENT_ID)
                 .requestEmail()
                 .build();
 

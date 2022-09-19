@@ -98,17 +98,17 @@ class AuthViewModel(private val repository: Repository) : ViewModel() {
                 override fun onFailed(response: AuthResponse<LoggedInUser>) {
                     _isLoading.value = View.GONE
                     if (response is AuthResponse.Error) {
-                        _registerResult.value = com.josephhowerton.suggestly.ui.auth.register.AuthResult(message = response.exception.message)
+                        _registerResult.value = AuthResult(message = response.exception.message)
                     }
                     else {
-                        _registerResult.value = com.josephhowerton.suggestly.ui.auth.register.AuthResult(error = R.string.login_failed)
+                        _registerResult.value = AuthResult(error = R.string.login_failed)
                     }
                 }
             })
 
         } catch (e: ApiException) {
             _isLoading.value = View.GONE
-            _registerResult.value = com.josephhowerton.suggestly.ui.auth.register.AuthResult(error = R.string.login_failed)
+            _registerResult.value = AuthResult(error = R.string.login_failed)
         }
     }
 

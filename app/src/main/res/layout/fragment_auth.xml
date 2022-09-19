@@ -103,25 +103,26 @@
             android:onClick="@{viewModel::onSignUpClicked}"
             app:layout_constraintEnd_toStartOf="@+id/guideline_end_vertical"
             app:layout_constraintStart_toStartOf="@id/guideline_start_vertical"
-            app:layout_constraintTop_toBottomOf="@+id/btn_google_auth" />
+            app:layout_constraintTop_toBottomOf="@+id/btn_email_auth" />
 
         <ImageButton
             android:id="@+id/btn_email_auth"
-            android:src="@drawable/ic_baseline_mail_24"
             style="@style/Theme.TravelingSalesman.ButtonStroke"
             android:onClick="@{viewModel::onSignInWithEmailClicked}"
-            app:layout_constraintTop_toBottomOf="@id/guideline_top_button"
+            android:src="@drawable/ic_baseline_mail_24"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/guideline_end_vertical"
-            app:layout_constraintStart_toStartOf="@id/guideline_start_vertical"/>
+            app:layout_constraintStart_toStartOf="@id/guideline_start_vertical"
+            app:layout_constraintTop_toBottomOf="@id/guideline_top_button" />
 
-        <ImageButton
-            android:id="@+id/btn_google_auth"
-            android:src="@drawable/ic_google_logo"
-            style="@style/Theme.TravelingSalesman.ButtonSolid"
-            android:onClick="@{viewModel::onSignInWithGoogleClicked}"
-            app:layout_constraintTop_toBottomOf="@id/btn_email_auth"
-            app:layout_constraintEnd_toEndOf="@id/guideline_end_vertical"
-            app:layout_constraintStart_toStartOf="@id/guideline_start_vertical"/>
+<!--        <ImageButton-->
+<!--            android:id="@+id/btn_google_auth"-->
+<!--            android:src="@drawable/ic_google_logo"-->
+<!--            style="@style/Theme.TravelingSalesman.ButtonSolid"-->
+<!--            android:onClick="@{viewModel::onSignInWithGoogleClicked}"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/btn_email_auth"-->
+<!--            app:layout_constraintEnd_toEndOf="@id/guideline_end_vertical"-->
+<!--            app:layout_constraintStart_toStartOf="@id/guideline_start_vertical"/>-->
 
         <ProgressBar
             android:id="@+id/loading"

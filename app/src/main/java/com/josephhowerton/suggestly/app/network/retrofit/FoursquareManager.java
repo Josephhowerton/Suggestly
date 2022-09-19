@@ -2,6 +2,7 @@ package com.josephhowerton.suggestly.app.network.retrofit;
 
 import androidx.annotation.NonNull;
 
+import com.josephhowerton.suggestly.BuildConfig;
 import com.josephhowerton.suggestly.utility.Config;
 
 import java.util.HashMap;
@@ -20,8 +21,8 @@ public class FoursquareManager {
     public static HashMap<String, String> buildSearchWithCoordinatesQueryMap(){
         HashMap<String, String> searchMap = new HashMap<>();
 
-        searchMap.put(CLIENT_ID_FIELD, Config.FOURSQUARE_CLIENT_ID);
-        searchMap.put(CLIENT_SECRET_FIELD, Config.FOURSQUARE_CLIENT_SECRET);
+        searchMap.put(CLIENT_ID_FIELD, BuildConfig.FOURSQUARE_CLIENT_ID);
+        searchMap.put(CLIENT_SECRET_FIELD, BuildConfig.FOURSQUARE_CLIENT_SECRET);
         searchMap.put(VERSIONING_PARAM, Config.FOURSQUARE_VERSION);
 
         return searchMap;
@@ -31,8 +32,8 @@ public class FoursquareManager {
         HashMap<String, String> searchMap = new HashMap<>();
 
         String coordinates = lat + "," + lon;
-        searchMap.put(CLIENT_ID_FIELD, Config.FOURSQUARE_CLIENT_ID);
-        searchMap.put(CLIENT_SECRET_FIELD, Config.FOURSQUARE_CLIENT_SECRET);
+        searchMap.put(CLIENT_ID_FIELD, BuildConfig.FOURSQUARE_CLIENT_ID);
+        searchMap.put(CLIENT_SECRET_FIELD, BuildConfig.FOURSQUARE_CLIENT_SECRET);
         searchMap.put(VERSIONING_PARAM, Config.FOURSQUARE_VERSION);
         searchMap.put(LOCATION_PARAM, coordinates);
         searchMap.put(RADIUS_PARAM, Config.RADIUS_DEFAULT_VALUE);
@@ -44,8 +45,8 @@ public class FoursquareManager {
         HashMap<String, String> searchMap = new HashMap<>();
 
         String coordinates = lat + "," + lon;
-        searchMap.put(CLIENT_ID_FIELD, Config.FOURSQUARE_CLIENT_ID);
-        searchMap.put(CLIENT_SECRET_FIELD, Config.FOURSQUARE_CLIENT_SECRET);
+        searchMap.put(CLIENT_ID_FIELD, BuildConfig.FOURSQUARE_CLIENT_ID);
+        searchMap.put(CLIENT_SECRET_FIELD, BuildConfig.FOURSQUARE_CLIENT_SECRET);
         searchMap.put(VERSIONING_PARAM, Config.FOURSQUARE_VERSION);
         searchMap.put(LOCATION_PARAM, coordinates);
         searchMap.put(RADIUS_PARAM, Config.RADIUS_DEFAULT_VALUE);
@@ -58,8 +59,8 @@ public class FoursquareManager {
         HashMap<String, String> searchMap = new HashMap<>();
 
         String coordinates = lat + "," + lon;
-        searchMap.put(CLIENT_ID_FIELD, Config.FOURSQUARE_CLIENT_ID);
-        searchMap.put(CLIENT_SECRET_FIELD, Config.FOURSQUARE_CLIENT_SECRET);
+        searchMap.put(CLIENT_ID_FIELD, BuildConfig.FOURSQUARE_CLIENT_ID);
+        searchMap.put(CLIENT_SECRET_FIELD, BuildConfig.FOURSQUARE_CLIENT_SECRET);
         searchMap.put(VERSIONING_PARAM, Config.FOURSQUARE_VERSION);
         searchMap.put(LOCATION_PARAM, coordinates);
         searchMap.put(RADIUS_PARAM, Config.RADIUS_DEFAULT_VALUE);

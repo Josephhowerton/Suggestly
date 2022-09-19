@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     package="com.josephhowerton.suggestly">
 
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -23,7 +22,8 @@
             android:name=".ui.settings.SettingsActivity"
             android:label="@string/title_activity_settings"
             android:theme="@style/Theme.Suggest.ActionBar"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.SENDTO" />
                 <data android:scheme="mailto"/>
@@ -32,7 +32,8 @@
         <activity
             android:name=".ui.splash.SplashActivity"
             android:theme="@style/Theme.Suggest.SplashTheme"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -41,6 +42,7 @@
         <activity
             android:name=".ui.init.InitializeActivity"
             android:theme="@style/Theme.Suggest.NoActionBar"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".ui.main.MainActivity"

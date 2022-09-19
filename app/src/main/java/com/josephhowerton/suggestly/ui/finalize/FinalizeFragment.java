@@ -36,6 +36,7 @@ public class FinalizeFragment extends Fragment implements TextureView.SurfaceTex
     private MediaPlayer mediaPlayer;
     private FragmentFinalizeBinding binding;
     private FinalizeViewModel mViewModel;
+    private Surface surface;
     private boolean isRECOMMENDEDCompleted = false;
     private boolean isFOODCompleted = false;
     private boolean isBREWERYCompleted = false;
@@ -43,7 +44,6 @@ public class FinalizeFragment extends Fragment implements TextureView.SurfaceTex
     private boolean isEVENTSCompleted = false;
     private boolean isACTIVECompleted = false;
     private boolean isSOCIALCompleted = false;
-    private boolean override = false;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -72,17 +72,17 @@ public class FinalizeFragment extends Fragment implements TextureView.SurfaceTex
     public void fetchSuggestionsNearLocation(){
         startTimer();
         mViewModel = new ViewModelProvider(this).get(FinalizeViewModel.class);
-        mViewModel.getUserLocationLiveData().observe(getViewLifecycleOwner(), user -> {
-            if(DistanceCalculator.hasValidLocation(user.getLat(), user.getLng())){
+        mViewModel.getUserLocationLiveData().observe(getViewLifecycleOwner(), location -> {
+            if(DistanceCalculator.hasValidLocation(location.lat, location.lng)){
                 binding.loadingLayout.message.setText(R.string.title_finding_suggestions);
-                storeLastFetchedLocation(user.getLat(), user.getLng());
-                getFoursquareVenuesNearUser_RECOMMENDED(user);
-                getFoursquareVenuesNearUser_FOOD(user);
-                getFoursquareVenuesNearUser_BREWERY(user);
-                getFoursquareVenuesNearUser_FAMILY_FUN(user);
-                getFoursquareVenuesNearUser_EVENTS(user);
-                getFoursquareVenuesNearUser_ACTIVE(user);
-                getFoursquareVenuesNearUser_SOCIAL(user);
+                storeLastFetchedLocation(location.lat, location.lng);
+                getFoursquareVenuesNearUser_RECOMMENDED(location.lat, location.lng);
+                getFoursquareVenuesNearUser_FOOD(location.lat, location.lng);
+                getFoursquareVenuesNearUser_BREWERY(location.lat, location.lng);
+                getFoursquareVenuesNearUser_FAMILY_FUN(location.lat, location.lng);
+                getFoursquareVenuesNearUser_EVENTS(location.lat, location.lng);
+                getFoursquareVenuesNearUser_ACTIVE(location.lat, location.lng);
+                getFoursquareVenuesNearUser_SOCIAL(location.lat, location.lng);
                 crossFadeOutAnimation();
             }
         });
@@ -96,52 +96,45 @@ public class FinalizeFragment extends Fragment implements TextureView.SurfaceTex
         mViewModel.storeLastFetchedLocation(lat, lng);
     }
 
-    public void getFoursquareVenuesNearUser_RECOMMENDED(User user){
-        mViewModel.getRecommendedFoursquareVenuesNearUser(user.getLat(), user.getLng()).observe(requireActivity(), aBoolean -> {
+    public void getFoursquareVenuesNearUser_RECOMMENDED(double lat, double lng){
+        mViewModel.getRecommendedFoursquareVenuesNearUser(lat, lng).observe(requireActivity(), aBoolean -> {
             isRECOMMENDEDCompleted = true;
-            navigate();
         });
     }
 
-    public void getFoursquareVenuesNearUser_FOOD(User user){
-        mViewModel.getFoursquareVenuesNearUser_FOOD(user.getLat(), user.getLng()).observe(requireActivity(), aBoolean -> {
+    public void getFoursquareVenuesNearUser_FOOD(double lat, double lng){
+        mViewModel.getFoursquareVenuesNearUser_FOOD(lat, lng).observe(requireActivity(), aBoolean -> {
             isFOODCompleted = true;
-            navigate();
         });
     }
 
-    public void getFoursquareVenuesNearUser_BREWERY(User user){
-        mViewModel.getGeneralFoursquareVenuesNearUser_BREWERY(user.getLat(), user.getLng()).observe(requireActivity(), aBoolean -> {
+    public void getFoursquareVenuesNearUser_BREWERY(double lat, double lng){
+        mViewModel.getGeneralFoursquareVenuesNearUser_BREWERY(lat, lng).observe(requireActivity(), aBoolean -> {
             isBREWERYCompleted = true;
-            navigate();
         });
     }
 
-    public void getFoursquareVenuesNearUser_FAMILY_FUN(User user){
-        mViewModel.getGeneralFoursquareVenuesNearUserById_FAMILY_FUN(user.getLat(), user.getLng()).observe(requireActivity(), aBoolean -> {
+    public void getFoursquareVenuesNearUser_FAMILY_FUN(double lat, double lng){
+        mViewModel.getGeneralFoursquareVenuesNearUserById_FAMILY_FUN(lat, lng).observe(requireActivity(), aBoolean -> {
             isFAMILYFUNCompleted = true;
-            navigate();
         });
     }
 
-    public void getFoursquareVenuesNearUser_EVENTS(User user){
-        mViewModel.getGeneralFoursquareVenuesNearUserById_EVENTS(user.getLat(), user.getLng()).observe(requireActivity(), aBoolean -> {
+    public void getFoursquareVenuesNearUser_EVENTS(double lat, double lng){
+        mViewModel.getGeneralFoursquareVenuesNearUserById_EVENTS(lat, lng).observe(requireActivity(), aBoolean -> {
             isEVENTSCompleted = true;
-            navigate();
         });
     }
 
-    public void getFoursquareVenuesNearUser_ACTIVE(User user){
-        mViewModel.getGeneralFoursquareVenuesNearUserById_ACTIVE(user.getLat(), user.getLng()).observe(requireActivity(), aBoolean -> {
+    public void getFoursquareVenuesNearUser_ACTIVE(double lat, double lng){
+        mViewModel.getGeneralFoursquareVenuesNearUserById_ACTIVE(lat, lng).observe(requireActivity(), aBoolean -> {
             isACTIVECompleted = true;
-            navigate();
         });
     }
 
-    public void getFoursquareVenuesNearUser_SOCIAL(User user){
-        mViewModel.getGeneralFoursquareVenuesNearUserById_SOCIAL(user.getLat(), user.getLng()).observe(requireActivity(), aBoolean -> {
+    public void getFoursquareVenuesNearUser_SOCIAL(double lat, double lng){
+        mViewModel.getGeneralFoursquareVenuesNearUserById_SOCIAL(lat, lng).observe(requireActivity(), aBoolean -> {
             isSOCIALCompleted = true;
-            navigate();
         });
     }
 
@@ -169,7 +162,7 @@ public class FinalizeFragment extends Fragment implements TextureView.SurfaceTex
     public void onSurfaceTextureAvailable(@NonNull SurfaceTexture surfaceTexture, int i, int i1) {
         try {
             Uri uri = Uri.parse("android.resource://"+requireActivity().getPackageName()+"/"+R.raw.finalize_video);
-            Surface surface = new Surface(surfaceTexture);
+            surface = new Surface(surfaceTexture);
             mediaPlayer = new MediaPlayer();
             mediaPlayer.setSurface(surface);
             mediaPlayer.setDataSource(requireContext(), uri);
@@ -221,6 +214,7 @@ public class FinalizeFragment extends Fragment implements TextureView.SurfaceTex
 
             @Override
             public void onAnimationEnd(Animation animation) {
+                surface.release();
                 binding.backgroundVideo.setSurfaceTextureListener(null);
                 navigateToPush();
             }

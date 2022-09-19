@@ -13,7 +13,7 @@ android:fromDegrees="0" android:toDegrees="1080">
     <gradient android:type="sweep"
         android:useLevel="false"
         android:startColor="@color/fui_transparent"
-        android:centerColor="@color/colorAccent"
+        android:centerColor="@color/vibrant_pink"
         android:endColor="@color/navy_blue"
         android:angle="0"/>
 </shape>

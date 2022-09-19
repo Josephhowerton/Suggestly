@@ -5,6 +5,7 @@ import java.util.HashMap;
 import android.app.Application;
 import androidx.annotation.NonNull;
 
+import com.josephhowerton.suggestly.BuildConfig;
 import com.josephhowerton.suggestly.app.model.google.GeocodeResponse;
 import com.josephhowerton.suggestly.app.network.retrofit.GoogleManager;
 import com.josephhowerton.suggestly.app.network.retrofit.GoogleService;
@@ -31,7 +32,7 @@ public class GoogleSource implements OnSuccessListener<FindAutocompletePredictio
 
     public GoogleSource(Application application){
         predictionsBehaviorSubject = BehaviorSubject.create();
-        Places.initialize(application, Config.GOOGLE_API_KEY);
+        Places.initialize(application, BuildConfig.GOOGLE_API_KEY);
         placesClient = Places.createClient(application);
         googleService = ServiceFactory.getGeoCodeClient(Config.GEO_CODING_BASE_URL, GoogleService.class);
     }

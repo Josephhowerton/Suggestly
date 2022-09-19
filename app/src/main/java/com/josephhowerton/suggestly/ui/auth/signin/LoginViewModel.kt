@@ -7,9 +7,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.josephhowerton.suggestly.R
 import com.josephhowerton.suggestly.app.Repository
+import com.josephhowerton.suggestly.app.model.user.User
 import com.josephhowerton.suggestly.app.network.auth.AuthResponse
 import com.josephhowerton.suggestly.app.network.auth.LoggedInUser
 import com.josephhowerton.suggestly.app.network.interfaces.AuthCompleteListener
+import io.reactivex.rxjava3.disposables.Disposable
 
 class LoginViewModel(private val repository: Repository) : ViewModel() {
 
@@ -32,6 +34,8 @@ class LoginViewModel(private val repository: Repository) : ViewModel() {
     var destination:Int? = null
 
     val isFoursquareTableEmpty: LiveData<Boolean> = repository.isVenueTableFresh
+
+    var disposable: Disposable? = null
 
     init{
         destination = null
@@ -58,11 +62,11 @@ class LoginViewModel(private val repository: Repository) : ViewModel() {
         repository.loginWithEmail(email, password, object : AuthCompleteListener {
             override fun onSuccess(response: AuthResponse<LoggedInUser>) {
                 if (response is AuthResponse.Success) {
-                    animate
                     _loginResult.value = LoginResult(success = LoggedInUserView(displayName = response.data.displayName))
                 }
-                _animate.value = true
-
+                else{
+                    _loginResult.value = LoginResult(error = R.string.login_failed)
+                }
             }
 
             override fun onFailed(response: AuthResponse<LoggedInUser>) {
@@ -75,6 +79,18 @@ class LoginViewModel(private val repository: Repository) : ViewModel() {
                 _isLoading.value = View.GONE
             }
         })
+    }
+
+    fun checkIfUserInRoom(id: String): LiveData<Boolean> {
+        return repository.checkIfUserInRoom(id)
+    }
+
+    fun animate(){
+        _animate.value = true
+    }
+
+    fun createUser(user: User?): LiveData<Boolean> {
+        return repository.createUser(user)
     }
 
     fun loginDataChanged() {
@@ -99,6 +115,10 @@ class LoginViewModel(private val repository: Repository) : ViewModel() {
     // A placeholder password validation check
     private fun isPasswordValid(): Boolean {
         return password.length > 5
+    }
+
+    fun destroy(){
+        disposable?.dispose()
     }
 
 }

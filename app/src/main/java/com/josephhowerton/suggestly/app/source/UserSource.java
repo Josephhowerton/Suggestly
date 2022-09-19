@@ -3,6 +3,7 @@ package com.josephhowerton.suggestly.app.source;
 import android.app.Application;
 
 import androidx.room.Insert;
+import androidx.room.Query;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.josephhowerton.suggestly.app.model.Suggestion;
@@ -20,6 +21,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Observer;
 import io.reactivex.rxjava3.schedulers.Schedulers;
@@ -66,13 +69,18 @@ public class UserSource {
                 .subscribe(observer);
     }
 
-    public void readUser(String id, Observer<User> observer){
-        userDao.readUser(id).subscribeOn(Schedulers.io())
-                .subscribe(observer);
+    public Observable<User> readUser(String id){
+        return userDao.readUser(id);
+    }
+
+    public Maybe<User> readUserMaybe(String id){
+        return userDao.readUserMaybe(id);
     }
 
     public void readUserLocation(String id, Observer<LocationTuple> observer){
-        userDao.readUserLocationObservable(id).subscribeOn(Schedulers.io())
+        userDao.readUserLocationObservable(id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(observer);
     }
 

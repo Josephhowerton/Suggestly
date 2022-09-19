@@ -4,7 +4,9 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.Location;
+import android.util.Log;
 
+import androidx.annotation.VisibleForTesting;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.paging.DataSource;
@@ -45,8 +47,12 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.annotations.NonNull;
+import io.reactivex.rxjava3.core.Maybe;
+import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Observer;
+import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.Disposable;
 
 public class Repository{
@@ -101,6 +107,8 @@ public class Repository{
             @Override
             public void onNext(@NonNull Location location) {
                 if(FirebaseAuth.getInstance().getCurrentUser()!= null){
+                    String message = FirebaseAuth.getInstance().getCurrentUser().getUid() + " " + location.getLatitude() + " " + location.getLongitude();
+                    Log.println(Log.ASSERT, "Repository", message);
                     updateUserLocation(FirebaseAuth.getInstance().getCurrentUser().getUid(), location.getLatitude(), location.getLongitude());
                 }
 
@@ -214,11 +222,15 @@ public class Repository{
     Location
 *********************************************************************************************** */
 
-    public void enableLocationServices() {
-        enableLocationServicesSharedPreference();
-        locationSource.requestLocationUpdates();
+    @VisibleForTesting
+    public Single<Boolean> enableLocationServices() {
+        return locationSource.requestLocationUpdates()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .doOnSuccess(consumer -> enableLocationServicesSharedPreference());
     }
 
+    @VisibleForTesting
     public void disableLocationServices() {
         disableLocationServicesSharedPreference();
         locationSource.unsubscribeToLocationUpdates();
@@ -384,31 +396,12 @@ public class Repository{
         return mutableLiveData;
     }
 
-    public LiveData<User> readUser(String id){
-        MutableLiveData<User> mutableLiveData = new MutableLiveData<>();
-        userSource.readUser(id, new Observer<User>() {
-            Disposable disposable;
-            @Override
-            public void onSubscribe(@NonNull Disposable d) {
-                disposable = d;
-            }
+    public Observable<User> readUser(String id){
+        return userSource.readUser(id);
+    }
 
-            @Override
-            public void onNext(@NonNull User user) {
-                mutableLiveData.postValue(user);
-            }
-
-            @Override
-            public void onError(@NonNull Throwable e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onComplete() {
-                disposable.dispose();
-            }
-        });
-        return mutableLiveData;
+    public Maybe<User> readUserMaybe(String id){
+        return userSource.readUserMaybe(id);
     }
 
     public LiveData<LocationTuple> readUserLocationLiveData(String id){
@@ -422,7 +415,7 @@ public class Repository{
 
             @Override
             public void onNext(@NonNull LocationTuple locationTuple) {
-                mutableLiveData.postValue(locationTuple);
+                mutableLiveData.setValue(locationTuple);
             }
 
             @Override

@@ -16,6 +16,7 @@ import com.josephhowerton.suggestly.app.model.user.User;
 
 import java.util.List;
 
+import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Observable;
 
 @Dao
@@ -33,6 +34,9 @@ public abstract class UserDao {
 
     @Query("SELECT * FROM user WHERE id=:id")
     public abstract Observable<User> readUser(String id);
+
+    @Query("SELECT * FROM user WHERE id=:id")
+    public abstract Maybe<User> readUserMaybe(String id);
 
     @Query("SELECT * FROM user WHERE id=:id")
     public abstract User readCurrentUser(String id);

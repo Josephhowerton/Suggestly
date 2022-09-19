@@ -105,71 +105,71 @@ xmlns:tools="http://schemas.android.com/tools">
     <ImageButton
         android:id="@+id/btn_email_auth"
         style="@style/Theme.TravelingSalesman.ButtonStroke"
-        android:src="@drawable/ic_baseline_mail_24"
         android:onClick="@{viewModel::onSignUpWithEmail}"
-        app:layout_constraintBottom_toTopOf="@id/text_view_or"
-        app:layout_constraintTop_toTopOf="@+id/guideline_middle_text"
+        android:src="@drawable/ic_baseline_mail_24"
+        app:layout_constraintBottom_toTopOf="@+id/guideline_bottom_text"
         app:layout_constraintEnd_toStartOf="@+id/guideline_end_vertical_greeting"
-        app:layout_constraintStart_toStartOf="@id/guideline_start_vertical_greeting"/>
+        app:layout_constraintStart_toStartOf="@id/guideline_start_vertical_greeting"
+        app:layout_constraintTop_toTopOf="@+id/guideline_middle_text" />
 
-    <View
-        android:id="@+id/view_start"
-        android:layout_width="0dp"
-        android:layout_height="2dp"
-        android:layout_marginStart="40dp"
-        android:layout_marginEnd="20dp"
-        android:background="@color/vibrant_pink"
-        app:layout_constraintTop_toTopOf="@+id/text_view_or"
-        app:layout_constraintEnd_toStartOf="@+id/text_view_or"
-        app:layout_constraintBottom_toBottomOf="@+id/text_view_or"
-        app:layout_constraintStart_toStartOf="@+id/guideline_start_vertical_greeting" />
+<!--    <View-->
+<!--        android:id="@+id/view_start"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="2dp"-->
+<!--        android:layout_marginStart="40dp"-->
+<!--        android:layout_marginEnd="20dp"-->
+<!--        android:background="@color/vibrant_pink"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/text_view_or"-->
+<!--        app:layout_constraintEnd_toStartOf="@+id/text_view_or"-->
+<!--        app:layout_constraintBottom_toBottomOf="@+id/text_view_or"-->
+<!--        app:layout_constraintStart_toStartOf="@+id/guideline_start_vertical_greeting" />-->
 
-    <TextView
-        android:id="@+id/text_view_or"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/text_or"
-        android:textColor="@color/vibrant_pink"
-        android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@+id/btn_email_auth"
-        app:layout_constraintBottom_toTopOf="@+id/btn_google_auth"
-        app:layout_constraintEnd_toStartOf="@+id/guideline_end_vertical_greeting"
-        app:layout_constraintStart_toStartOf="@+id/guideline_start_vertical_greeting" />
+<!--    <TextView-->
+<!--        android:id="@+id/text_view_or"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text=""-->
+<!--        android:textColor="@color/vibrant_pink"-->
+<!--        android:textSize="16sp"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/btn_email_auth"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/btn_google_auth"-->
+<!--        app:layout_constraintEnd_toStartOf="@+id/guideline_end_vertical_greeting"-->
+<!--        app:layout_constraintStart_toStartOf="@+id/guideline_start_vertical_greeting" />-->
 
-    <View
-        android:id="@+id/view_end"
-        android:layout_width="0dp"
-        android:layout_height="2dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="40dp"
-        android:background="@color/vibrant_pink"
-        app:layout_constraintTop_toTopOf="@+id/text_view_or"
-        app:layout_constraintStart_toEndOf="@+id/text_view_or"
-        app:layout_constraintBottom_toBottomOf="@+id/text_view_or"
-        app:layout_constraintEnd_toStartOf="@+id/guideline_end_vertical_greeting" />
+<!--    <View-->
+<!--        android:id="@+id/view_end"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="2dp"-->
+<!--        android:layout_marginStart="20dp"-->
+<!--        android:layout_marginEnd="40dp"-->
+<!--        android:background="@color/vibrant_pink"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/text_view_or"-->
+<!--        app:layout_constraintStart_toEndOf="@+id/text_view_or"-->
+<!--        app:layout_constraintBottom_toBottomOf="@+id/text_view_or"-->
+<!--        app:layout_constraintEnd_toStartOf="@+id/guideline_end_vertical_greeting" />-->
 
-    <ImageButton
-        android:id="@+id/btn_google_auth"
-        android:src="@drawable/ic_google_logo"
-        android:onClick="@{viewModel::onSignUpWithGoogle}"
-        style="@style/Theme.TravelingSalesman.ButtonSolid"
-        app:layout_constraintTop_toBottomOf="@+id/text_view_or"
-        app:layout_constraintBottom_toTopOf="@+id/text_view_sign_in"
-        app:layout_constraintEnd_toEndOf="@id/guideline_end_vertical_greeting"
-        app:layout_constraintStart_toStartOf="@+id/guideline_start_vertical_greeting"/>
+<!--    <ImageButton-->
+<!--        android:id="@+id/btn_google_auth"-->
+<!--        android:src="@drawable/ic_google_logo"-->
+<!--        android:onClick="@{viewModel::onSignUpWithGoogle}"-->
+<!--        style="@style/Theme.TravelingSalesman.ButtonSolid"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/text_view_or"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/text_view_sign_in"-->
+<!--        app:layout_constraintEnd_toEndOf="@id/guideline_end_vertical_greeting"-->
+<!--        app:layout_constraintStart_toStartOf="@+id/guideline_start_vertical_greeting"/>-->
 
     <TextView
         android:id="@+id/text_view_sign_in"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:textColor="@color/vibrant_pink"
         android:onClick="@{viewModel::onNavigateBack}"
         android:text="@string/prompt_sign_in"
+        android:textColor="@color/vibrant_pink"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_google_auth"
         app:layout_constraintEnd_toStartOf="@+id/guideline_end_vertical_greeting"
-        app:layout_constraintStart_toStartOf="@+id/guideline_start_vertical_greeting" />
+        app:layout_constraintStart_toStartOf="@+id/guideline_start_vertical_greeting"
+        app:layout_constraintTop_toBottomOf="@+id/btn_email_auth" />
 
     <ProgressBar
         android:id="@+id/loading"

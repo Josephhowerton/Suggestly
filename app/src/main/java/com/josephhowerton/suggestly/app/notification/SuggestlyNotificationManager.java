@@ -5,6 +5,8 @@ import android.app.Application;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
+
 import com.josephhowerton.suggestly.utility.Config;
 
 import java.util.Calendar;
@@ -18,7 +20,13 @@ public class SuggestlyNotificationManager{
         calendar.set(Calendar.HOUR_OF_DAY, 12);
         alarmManager = (AlarmManager) application.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(application, SuggestlyNotificationReceiver.class);
-        pendingIntent = PendingIntent.getBroadcast(application, Config.NOTIFICATION_CHANNEL_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            pendingIntent = PendingIntent.getBroadcast(application, Config.NOTIFICATION_CHANNEL_ID, intent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
+        }
+        else{
+            pendingIntent = PendingIntent.getBroadcast(application, Config.NOTIFICATION_CHANNEL_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        }
+
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
     }
 

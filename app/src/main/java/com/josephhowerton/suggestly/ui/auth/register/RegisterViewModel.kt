@@ -20,8 +20,8 @@ class RegisterViewModel(private val repository: Repository) : ViewModel() {
     private val _registerForm = MutableLiveData<RegisterFormState>()
     val registerFormState: LiveData<RegisterFormState> = _registerForm
 
-    private val _registerResult = MutableLiveData<com.josephhowerton.suggestly.ui.auth.register.AuthResult>()
-    val registerResult: LiveData<com.josephhowerton.suggestly.ui.auth.register.AuthResult> = _registerResult
+    private val _registerResult = MutableLiveData<AuthResult>()
+    val registerResult: LiveData<AuthResult> = _registerResult
 
     private val _signUpWithGoogle = MutableLiveData<Boolean>()
     val signUpWithGoogle: LiveData<Boolean>
@@ -109,7 +109,7 @@ class RegisterViewModel(private val repository: Repository) : ViewModel() {
             }
             _animate.value = true
             _isLoading.value = View.GONE
-            destination = R.id.action_navigation_register_to_navigation_auth
+            destination = R.id.navigation_register_to_navigation_explanation
         }
 
         override fun onFailed(response: AuthResponse<LoggedInUser>) {

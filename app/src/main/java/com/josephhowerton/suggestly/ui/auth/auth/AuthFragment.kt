@@ -11,8 +11,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
 import androidx.databinding.DataBindingUtil
@@ -20,12 +18,10 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.josephhowerton.suggestly.BuildConfig
 import com.josephhowerton.suggestly.R
 import com.josephhowerton.suggestly.databinding.FragmentAuthBinding
 import com.josephhowerton.suggestly.ui.auth.signin.LoggedInUserView
 import com.josephhowerton.suggestly.ui.main.MainActivity
-import java.util.*
 
 class AuthFragment : Fragment(), Animator.AnimatorListener  {
 
@@ -61,40 +57,41 @@ class AuthFragment : Fragment(), Animator.AnimatorListener  {
         animateLiveData()
         navigateLiveData()
 
-        resultLauncher
+
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(BuildConfig.google_client_id)
                 .requestEmail()
                 .build()
 
-        googleSignInClient = GoogleSignIn.getClient(requireActivity().application, gso)
+        googleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
 
     }
 
     private fun animateLiveData() {
-        viewModel.animate.observe(viewLifecycleOwner, {
+        viewModel.animate.observe(viewLifecycleOwner){
             animate()
-        })
+        }
 
     }
 
     private fun navigateLiveData() {
-        viewModel.navigate.observe(viewLifecycleOwner, {
+        viewModel.navigate.observe(viewLifecycleOwner){
             viewModel.destination.navigate()
-        })
+        }
     }
 
     private fun signInEmailLiveData() {
-        viewModel.signInWithEmail.observe(viewLifecycleOwner, {
+        viewModel.signInWithEmail.observe(viewLifecycleOwner){
             viewModel.signInWithEmail(it)
-        })
+        }
     }
 
     private fun signInGoogleLiveData() {
-        viewModel.signInWithGoogle.observe(viewLifecycleOwner, {
-            if(it) signInWithGoogle()
-        })
+        viewModel.signInWithGoogle.observe(viewLifecycleOwner) {
+            if (it) {
+                signInWithGoogle()
+            }
+        }
     }
 
     private fun signInWithGoogle(){
@@ -103,20 +100,20 @@ class AuthFragment : Fragment(), Animator.AnimatorListener  {
     }
 
     private fun foursquareTableLiveData() {
-        viewModel.isFoursquareTableFresh.observe(viewLifecycleOwner, {
+        viewModel.isFoursquareTableFresh.observe(viewLifecycleOwner){
             if(it || viewModel.isNewUser) R.id.action_navigation_auth_to_navigation_explanation.navigate()
             else navigate()
-        })
+        }
     }
 
     private fun registerLiveData() {
-        viewModel.signUp.observe(viewLifecycleOwner, {
+        viewModel.signUp.observe(viewLifecycleOwner){
             viewModel.signUp(it)
-        })
+        }
     }
 
     private fun registerResultLiveData(){
-        viewModel.registerResult.observe(viewLifecycleOwner, Observer@ { loginResult ->
+        viewModel.registerResult.observe(viewLifecycleOwner)Observer@ { loginResult ->
             loginResult ?: return@Observer
 
             loginResult.error?.let {
@@ -130,7 +127,7 @@ class AuthFragment : Fragment(), Animator.AnimatorListener  {
             loginResult.success?.let {
                 showLoginSuccess(it)
             }
-        })
+        }
     }
 
     private fun animate(){
@@ -140,12 +137,12 @@ class AuthFragment : Fragment(), Animator.AnimatorListener  {
                     start()
                 }
 
-        ObjectAnimator.ofFloat(binding.btnGoogleAuth, "translationX", -20000f)
-                .apply {
-                    duration = 500
-                    startDelay = 250
-                    start()
-                }
+//        ObjectAnimator.ofFloat(binding.btnGoogleAuth, "translationX", -20000f)
+//                .apply {
+//                    duration = 500
+//                    startDelay = 250
+//                    start()
+//                }
 
         ObjectAnimator.ofFloat(binding.textViewMessage, "alpha", 0f)
                 .apply {

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.SurfaceTexture;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.LayoutInflater;
@@ -20,6 +21,7 @@ import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -41,7 +43,7 @@ public class LocationServicesFragment extends Fragment implements View.OnClickLi
     private LocationServicesViewModel mViewModel;
     private boolean navigatedToSettings = false;
 
-
+    private Surface surface;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -92,10 +94,19 @@ public class LocationServicesFragment extends Fragment implements View.OnClickLi
         }
     }
 
+    @VisibleForTesting
     private void enableLocationServices(){
         mViewModel.enableLocationServices();
+        mViewModel.observeLocationData().observe(this, isEnabled -> {
+            if(isEnabled){
+                navigateToFinalizeFragment();
+            }else{
+                navigateToManualLocationFragment();
+            }
+        });
     }
 
+    @VisibleForTesting
     private void disableLocationServices(){
         mViewModel.disableLocationServices();
     }
@@ -181,7 +192,6 @@ public class LocationServicesFragment extends Fragment implements View.OnClickLi
                 @Override
                 public void onLocationPermissionGranted() {
                     enableLocationServices();
-                    navigateToFinalizeFragment();
                 }
 
                 @Override
@@ -215,7 +225,7 @@ public class LocationServicesFragment extends Fragment implements View.OnClickLi
         try {
 
             Uri uri = Uri.parse("android.resource://"+requireActivity().getPackageName()+"/"+R.raw.location_updates_background_video);
-            Surface surface = new Surface(surfaceTexture);
+            surface = new Surface(surfaceTexture);
             mediaPlayer = new MediaPlayer();
             mediaPlayer.setSurface(surface);
             mediaPlayer.setDataSource(requireContext(), uri);
@@ -233,7 +243,10 @@ public class LocationServicesFragment extends Fragment implements View.OnClickLi
 
     @Override
     public boolean onSurfaceTextureDestroyed(@NonNull SurfaceTexture surfaceTexture) {
-        return false;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            return surfaceTexture.isReleased();
+        }
+        return true;
     }
 
     @Override
@@ -266,9 +279,8 @@ public class LocationServicesFragment extends Fragment implements View.OnClickLi
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                if(binding.backgroundVideo != null){
-                    binding.backgroundVideo.setSurfaceTextureListener(null);
-                }
+                surface.release();
+                binding.backgroundVideo.setSurfaceTextureListener(null);
                 Navigation.findNavController(requireActivity(), R.id.nav_host_fragment).navigate(R.id.navigation_finalize);
             }
 

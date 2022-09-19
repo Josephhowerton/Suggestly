@@ -28,7 +28,6 @@ import com.josephhowerton.suggestly.R
 import com.josephhowerton.suggestly.databinding.FragmentRegisterBinding
 import com.josephhowerton.suggestly.ui.auth.auth.AuthViewModelFactory
 import com.josephhowerton.suggestly.ui.auth.signin.LoggedInUserView
-import com.josephhowerton.suggestly.utility.Config
 
 class RegisterFragment : Fragment(), Animator.AnimatorListener  {
     private lateinit var binding:FragmentRegisterBinding
@@ -48,9 +47,9 @@ class RegisterFragment : Fragment(), Animator.AnimatorListener  {
         init()
         initTextWatcher()
 
-        viewModel.signUpWithGoogle.observe(viewLifecycleOwner, {
+        viewModel.signUpWithGoogle.observe(viewLifecycleOwner){
             if(it) signUpWithGoogle()
-        })
+        }
 
         viewModel.registerFormState.observe(viewLifecycleOwner,
                 Observer {registerFormState ->
@@ -89,13 +88,6 @@ class RegisterFragment : Fragment(), Animator.AnimatorListener  {
                 })
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-        if (requestCode == Config.RC_SIGN_IN) {
-            viewModel.signUpWithGoogle(data)
-        }
-    }
-
     private fun init(){
         viewModel = ViewModelProvider(this, AuthViewModelFactory(requireActivity().application)).get(RegisterViewModel::class.java)
         binding.viewModel = viewModel
@@ -106,15 +98,15 @@ class RegisterFragment : Fragment(), Animator.AnimatorListener  {
         }
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(BuildConfig.google_client_id)
+                .requestIdToken(BuildConfig.FIREBASE_GOOGLE_CLIENT_ID)
                 .requestEmail()
                 .build()
 
         googleSignInClient = GoogleSignIn.getClient(requireActivity().application, gso)
 
-        viewModel.animate.observe(viewLifecycleOwner, {
+        viewModel.animate.observe(viewLifecycleOwner){
             animate()
-        })
+        }
     }
 
     private fun signUpWithGoogle(){
@@ -156,33 +148,33 @@ class RegisterFragment : Fragment(), Animator.AnimatorListener  {
                     start()
                 }
 
-        ObjectAnimator.ofFloat(binding.btnGoogleAuth, "translationX", -20000f)
-                .apply {
-                    duration = 550
-                    startDelay = 250
-                    start()
-                }
-
-        ObjectAnimator.ofFloat(binding.textViewOr, "alpha", 0f)
-                .apply {
-                    duration = 550
-                    startDelay = 250
-                    start()
-                }
-
-        ObjectAnimator.ofFloat(binding.viewEnd, "alpha", 0f)
-                .apply {
-                    duration = 550
-                    startDelay = 250
-                    start()
-                }
-
-        ObjectAnimator.ofFloat(binding.viewStart, "alpha", 0f)
-                .apply {
-                    duration = 550
-                    startDelay = 250
-                    start()
-                }
+//        ObjectAnimator.ofFloat(binding.btnGoogleAuth, "translationX", -20000f)
+//                .apply {
+//                    duration = 550
+//                    startDelay = 250
+//                    start()
+//                }
+//
+//        ObjectAnimator.ofFloat(binding.textViewOr, "alpha", 0f)
+//                .apply {
+//                    duration = 550
+//                    startDelay = 250
+//                    start()
+//                }
+//
+//        ObjectAnimator.ofFloat(binding.viewEnd, "alpha", 0f)
+//                .apply {
+//                    duration = 550
+//                    startDelay = 250
+//                    start()
+//                }
+//
+//        ObjectAnimator.ofFloat(binding.viewStart, "alpha", 0f)
+//                .apply {
+//                    duration = 550
+//                    startDelay = 250
+//                    start()
+//                }
 
         ObjectAnimator.ofFloat(binding.textViewSignIn, "alpha", 0f)
                 .apply {

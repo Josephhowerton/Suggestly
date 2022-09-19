@@ -18,15 +18,9 @@ import java.util.List;
 public class LibraryViewModel extends AndroidViewModel {
     private final Repository repository;
 
-    public LiveData<User> userLiveData;
-
     public LibraryViewModel(Application application) {
         super(application);
         repository = Repository.getInstance(application);
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if(user != null){
-            userLiveData = repository.readUser(user.getUid());
-        }
     }
 
     public LiveData<List<Suggestion>> readSavedSuggestions(){
