@@ -1,6 +1,7 @@
 package com.app.suggestly.ui.auth.register
 
 import android.content.Intent
+import android.util.Log
 import android.util.Patterns
 import android.view.View
 import androidx.lifecycle.LiveData
@@ -10,10 +11,13 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.api.ApiException
 import com.app.suggestly.R
 import com.app.suggestly.app.Repository
+import com.app.suggestly.app.model.user.User
 import com.app.suggestly.app.network.auth.AuthResponse
 import com.app.suggestly.app.network.auth.LoggedInUser
 import com.app.suggestly.app.network.interfaces.AuthCompleteListener
+import com.app.suggestly.app.network.interfaces.RegisterCompleteListener
 import com.app.suggestly.ui.auth.signin.LoggedInUserView
+import com.google.firebase.auth.FirebaseUser
 
 class RegisterViewModel(private val repository: Repository) : ViewModel() {
 
@@ -66,7 +70,7 @@ class RegisterViewModel(private val repository: Repository) : ViewModel() {
             _isLoading.value = View.VISIBLE
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
             val account = task.getResult(ApiException::class.java)!!
-            repository.loginWithGoogle(account.idToken!!, authCompleteListener)
+//            repository.loginWithGoogle(account.idToken!!, authCompleteListener)
 
         } catch (e: ApiException) {
             _registerResult.value = AuthResult(error = R.string.login_failed)
@@ -102,10 +106,17 @@ class RegisterViewModel(private val repository: Repository) : ViewModel() {
         return password.length > 5
     }
 
-    private val authCompleteListener = object: AuthCompleteListener {
-        override fun onSuccess(response: AuthResponse<LoggedInUser>) {
+    private val authCompleteListener = object: RegisterCompleteListener {
+        override fun onFirebaseSuccess(response: AuthResponse<FirebaseUser>) {
             if (response is AuthResponse.Success) {
-                _registerResult.value = AuthResult(success = LoggedInUserView(displayName = response.data.displayName))
+                Log.println(Log.ASSERT, "authCompleteListener", "onFirebaseSuccess")
+                repository.createUserOnSignUp(User(response.data), this)
+            }
+        }
+
+        override fun onSuccess(response: AuthResponse<Boolean>) {
+            if (response is AuthResponse.Success) {
+                _registerResult.value = AuthResult(success = LoggedInUserView(displayName = "Welcome"))
             }
             _animate.value = true
             _isLoading.value = View.GONE

@@ -3,6 +3,7 @@ package com.app.suggestly.app.network.auth
 import android.util.Log
 import com.google.firebase.auth.*
 import com.app.suggestly.app.network.interfaces.AuthCompleteListener
+import com.app.suggestly.app.network.interfaces.RegisterCompleteListener
 import com.app.suggestly.app.network.interfaces.ResetCompleteListener
 import com.app.suggestly.ui.auth.reset.ResetEmail
 import java.io.IOException
@@ -11,20 +12,15 @@ class AuthSource{
     private val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
 
 
-    fun registerWithEmail(email: String, password: String, listener: AuthCompleteListener){
+    fun registerWithEmail(email: String, password: String, listener: RegisterCompleteListener){
         try{
             firebaseAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener{ task ->
-                    if (task.isSuccessful) {
-                        val user = firebaseAuth.currentUser
-                        listener.onSuccess(
-                                AuthResponse.Success(
-                                        LoggedInUser(
-                                                user!!.uid,
-                                                user.email!!
-                                        )
-                                )
-                        )
+                    val user = firebaseAuth.currentUser
+                    if (task.isSuccessful && user != null) {
+
+                        listener.onFirebaseSuccess(AuthResponse.Success(user))
+
                     } else if (task.exception != null) {
                         var message = "Error logging in"
                         if(task.exception is FirebaseAuthWeakPasswordException){

@@ -2,6 +2,7 @@ package com.app.suggestly.app.source;
 
 import android.app.Application;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Insert;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -16,14 +17,19 @@ import com.app.suggestly.app.room.UserDao;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import io.reactivex.CompletableObserver;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Observer;
+import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.core.SingleObserver;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class UserSource {
@@ -53,18 +59,11 @@ public class UserSource {
     }
 
     @Insert
-    public void createUser(User user, Observer<Boolean> observer){
-        Observable<Boolean> observable = Observable.create(source -> {
-            long result = userDao.createUser(user);
-            if(result >= 0){
-                source.onNext(true);
-            }else{
-                source.onNext(false);
-            }
-            source.onComplete();
-        });
-
-        observable.subscribeOn(Schedulers.io())
+    public void createUser(User user, SingleObserver<Boolean> observer){
+        Single.fromCallable(() -> userDao.createUser(user))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(index -> (index >= 0))
                 .subscribe(observer);
     }
 
@@ -76,25 +75,15 @@ public class UserSource {
         return userDao.readUserMaybe(id);
     }
 
-    public void readUserLocation(String id, Observer<LocationTuple> observer){
-        userDao.readUserLocationObservable(id)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(observer);
+    public LiveData<LocationTuple> readUserLocation(String id){
+        return userDao.readUserLocationObservable(id);
     }
 
-    public void updateUserLocation(String id, double lat, double lng, Observer<Boolean> observer){
-        Observable<Boolean> observable = Observable.create(source -> {
-            int result = userDao.updateUserLocation(id, lat, lng);
-            if(result >= 0){
-                source.onNext(true);
-            }else{
-                source.onNext(false);
-            }
-            source.onComplete();
-        });
-
-        observable.subscribeOn(Schedulers.io())
+    public void updateUserLocation(String id, double lat, double lng, SingleObserver<Boolean> observer){
+        Single.fromCallable(() -> userDao.updateUserLocation(id, lat, lng))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(index -> (index >= 0))
                 .subscribe(observer);
     }
 

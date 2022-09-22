@@ -12,19 +12,49 @@ import com.app.suggestly.app.model.user.User;
 import com.app.suggestly.utility.Config;
 import com.google.firebase.auth.FirebaseAuth;
 
+import io.reactivex.rxjava3.annotations.NonNull;
+import io.reactivex.rxjava3.core.Observer;
+import io.reactivex.rxjava3.disposables.Disposable;
+
 public class FinalizeViewModel extends AndroidViewModel {
     private final Repository repository;
     private final MutableLiveData<User> _userLocationLiveData;
+
+    private final MutableLiveData<LocationTuple> _locationTuple;
 
     public FinalizeViewModel(Application application) {
         super(application);
         repository = Repository.getInstance(application);
         _userLocationLiveData = new MutableLiveData<User>();
+        _locationTuple = new MutableLiveData<LocationTuple>();
+//        fetchUserLocationLiveData();
     }
 
-    public Boolean hasAskForPushNotificationsPreviously() {
-        return repository.checkHasAskedForPushNotificationsPreviously();
-    }
+//    private void fetchUserLocationLiveData() {
+//        repository.readUserLocationLiveData(FirebaseAuth.getInstance().getCurrentUser().getUid())
+//                .subscribe(new Observer<LocationTuple>() {
+//                    Disposable disposable;
+//                    @Override
+//                    public void onSubscribe(@NonNull Disposable d) {
+//                        disposable = d;
+//                    }
+//
+//                    @Override
+//                    public void onNext(@NonNull LocationTuple locationTuple) {
+//                        _locationTuple.setValue(locationTuple);
+//                    }
+//
+//                    @Override
+//                    public void onError(@NonNull Throwable e) {
+//                        e.printStackTrace();
+//                    }
+//
+//                    @Override
+//                    public void onComplete() {
+//                        disposable.dispose();
+//                    }
+//                });
+//    }
 
     public LiveData<LocationTuple> getUserLocationLiveData() {
         return repository.readUserLocationLiveData(FirebaseAuth.getInstance().getCurrentUser().getUid());

@@ -1,5 +1,6 @@
 package com.app.suggestly.app.room;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -42,7 +43,7 @@ public abstract class UserDao {
     public abstract User readCurrentUser(String id);
 
     @Query("SELECT lat,lng FROM user WHERE id=:id")
-    public abstract Observable<LocationTuple> readUserLocationObservable(String id);
+    public abstract LiveData<LocationTuple> readUserLocationObservable(String id);
 
     @Query("UPDATE user SET lat =:lat, lng =:lng WHERE id=:id")
     public abstract int updateUserLocation(String id, double lat, double lng);

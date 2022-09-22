@@ -7,6 +7,10 @@
         <entry key="app/src/main/res/drawable/selector_tab_color.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/selector_tab_color_night.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/shape_edit_text.xml" value="0.155" />
+        <entry key="app/src/main/res/layout/activity_settings.xml" value="0.2611111111111111" />
+        <entry key="app/src/main/res/layout/activity_splash.xml" value="0.353125" />
+        <entry key="app/src/main/res/layout/card_view_category.xml" value="0.353125" />
+        <entry key="app/src/main/res/layout/card_view_favorite.xml" value="0.353125" />
         <entry key="app/src/main/res/layout/fragment_auth.xml" value="0.22" />
         <entry key="app/src/main/res/layout/fragment_register.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_sign_in.xml" value="0.25" />

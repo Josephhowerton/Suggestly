@@ -11,6 +11,9 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.paging.DataSource;
 
+import com.app.suggestly.app.network.auth.AuthResponse;
+import com.app.suggestly.app.network.auth.LoggedInUser;
+import com.app.suggestly.app.network.interfaces.RegisterCompleteListener;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.android.libraries.places.api.model.AutocompletePrediction;
 import com.google.firebase.FirebaseApp;
@@ -44,6 +47,7 @@ import com.app.suggestly.utility.DistanceCalculator;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,6 +57,7 @@ import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Observer;
 import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.core.SingleObserver;
 import io.reactivex.rxjava3.disposables.Disposable;
 
 public class Repository{
@@ -323,7 +328,7 @@ public class Repository{
         authSource.loginWithGoogle(token, listener);
     }
 
-    public void registerWithEmail(String name, String email, String password, AuthCompleteListener listener){
+    public void registerWithEmail(String name, String email, String password, RegisterCompleteListener listener){
         authSource.registerWithEmail(email, password, listener);
     }
 
@@ -371,7 +376,7 @@ public class Repository{
 
     public LiveData<Boolean> createUser(User user){
         MutableLiveData<Boolean> mutableLiveData = new MutableLiveData<>();
-        userSource.createUser(user, new Observer<Boolean>() {
+        userSource.createUser(user, new SingleObserver<Boolean>() {
             Disposable disposable;
             @Override
             public void onSubscribe(@NonNull Disposable d) {
@@ -379,21 +384,36 @@ public class Repository{
             }
 
             @Override
-            public void onNext(@NonNull Boolean aBoolean) {
-                mutableLiveData.postValue(aBoolean);
+            public void onSuccess(@NonNull Boolean aBoolean) {
+                mutableLiveData.setValue(aBoolean);
             }
 
             @Override
             public void onError(@NonNull Throwable e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onComplete() {
-                disposable.dispose();
+                mutableLiveData.setValue(false);
             }
         });
         return mutableLiveData;
+    }
+
+    public void createUserOnSignUp(User user, RegisterCompleteListener registerCompleteListener){
+        userSource.createUser(user, new SingleObserver<Boolean>() {
+            Disposable disposable;
+            @Override
+            public void onSubscribe(@NonNull Disposable d) {
+                disposable = d;
+            }
+
+            @Override
+            public void onSuccess(@NonNull Boolean aBoolean) {
+                registerCompleteListener.onSuccess(new AuthResponse.Success<Boolean>(true));
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+                registerCompleteListener.onFailed(new AuthResponse.Error(new IOException(e.getMessage())));
+            }
+        });
     }
 
     public Observable<User> readUser(String id){
@@ -405,35 +425,12 @@ public class Repository{
     }
 
     public LiveData<LocationTuple> readUserLocationLiveData(String id){
-        MutableLiveData<LocationTuple> mutableLiveData = new MutableLiveData<>();
-        userSource.readUserLocation(id, new Observer<LocationTuple>() {
-            Disposable disposable;
-            @Override
-            public void onSubscribe(@NonNull Disposable d) {
-                disposable = d;
-            }
-
-            @Override
-            public void onNext(@NonNull LocationTuple locationTuple) {
-                mutableLiveData.setValue(locationTuple);
-            }
-
-            @Override
-            public void onError(@NonNull Throwable e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onComplete() {
-                disposable.dispose();
-            }
-        });
-        return mutableLiveData;
+        return userSource.readUserLocation(id);
     }
 
     public LiveData<Boolean> updateUserLocation(String id, double lat, double lng){
         MutableLiveData<Boolean> mutableLiveData = new MutableLiveData<>();
-        userSource.updateUserLocation(id, lat, lng, new Observer<Boolean>() {
+        userSource.updateUserLocation(id, lat, lng, new SingleObserver<Boolean>() {
             Disposable disposable;
             @Override
             public void onSubscribe(@NonNull Disposable d) {
@@ -441,18 +438,19 @@ public class Repository{
             }
 
             @Override
-            public void onNext(@NonNull Boolean aBoolean) {
-                mutableLiveData.postValue(aBoolean);
+            public void onSuccess(@NonNull Boolean aBoolean) {
+                mutableLiveData.setValue(aBoolean);
+                if(disposable != null){
+                    disposable.dispose();
+                }
             }
 
             @Override
             public void onError(@NonNull Throwable e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onComplete() {
-                disposable.dispose();
+                mutableLiveData.setValue(false);
+                if(disposable != null){
+                    disposable.dispose();
+                }
             }
         });
         return mutableLiveData;

@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Surface;
 import android.view.TextureView;
@@ -36,6 +37,7 @@ public class FinalizeFragment extends Fragment implements TextureView.SurfaceTex
     private FragmentFinalizeBinding binding;
     private FinalizeViewModel mViewModel;
     private Surface surface;
+    private SurfaceTexture surfaceTexture;
     private boolean isRECOMMENDEDCompleted = false;
     private boolean isFOODCompleted = false;
     private boolean isBREWERYCompleted = false;
@@ -72,17 +74,20 @@ public class FinalizeFragment extends Fragment implements TextureView.SurfaceTex
         startTimer();
         mViewModel = new ViewModelProvider(this).get(FinalizeViewModel.class);
         mViewModel.getUserLocationLiveData().observe(getViewLifecycleOwner(), location -> {
-            if(DistanceCalculator.hasValidLocation(location.lat, location.lng)){
-                binding.loadingLayout.message.setText(R.string.title_finding_suggestions);
-                storeLastFetchedLocation(location.lat, location.lng);
-                getFoursquareVenuesNearUser_RECOMMENDED(location.lat, location.lng);
-                getFoursquareVenuesNearUser_FOOD(location.lat, location.lng);
-                getFoursquareVenuesNearUser_BREWERY(location.lat, location.lng);
-                getFoursquareVenuesNearUser_FAMILY_FUN(location.lat, location.lng);
-                getFoursquareVenuesNearUser_EVENTS(location.lat, location.lng);
-                getFoursquareVenuesNearUser_ACTIVE(location.lat, location.lng);
-                getFoursquareVenuesNearUser_SOCIAL(location.lat, location.lng);
-                crossFadeOutAnimation();
+            if(location != null){
+                if(DistanceCalculator.hasValidLocation(location.lat, location.lng)){
+                    Log.println(Log.ASSERT, "Suggestions", location.lat + " " + location.lng);
+                    binding.loadingLayout.message.setText(R.string.title_finding_suggestions);
+                    storeLastFetchedLocation(location.lat, location.lng);
+                    getFoursquareVenuesNearUser_RECOMMENDED(location.lat, location.lng);
+                    getFoursquareVenuesNearUser_FOOD(location.lat, location.lng);
+                    getFoursquareVenuesNearUser_BREWERY(location.lat, location.lng);
+                    getFoursquareVenuesNearUser_FAMILY_FUN(location.lat, location.lng);
+                    getFoursquareVenuesNearUser_EVENTS(location.lat, location.lng);
+                    getFoursquareVenuesNearUser_ACTIVE(location.lat, location.lng);
+                    getFoursquareVenuesNearUser_SOCIAL(location.lat, location.lng);
+                    crossFadeOutAnimation();
+                }
             }
         });
     }

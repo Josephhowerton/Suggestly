@@ -4,6 +4,7 @@ import android.app.Application;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.paging.LivePagedListBuilder;
 import androidx.paging.PagedList;
 
@@ -16,6 +17,10 @@ import com.app.suggestly.app.model.user.LocationTuple;
 import com.app.suggestly.utility.Config;
 
 import java.util.List;
+
+import io.reactivex.rxjava3.annotations.NonNull;
+import io.reactivex.rxjava3.core.Observer;
+import io.reactivex.rxjava3.disposables.Disposable;
 
 public class HomeViewModel extends AndroidViewModel {
     private final Repository repository;
@@ -31,6 +36,8 @@ public class HomeViewModel extends AndroidViewModel {
     public LiveData<PagedList<VenueAndCategory>> activeVenuePagedList;
     public LiveData<PagedList<VenueAndCategory>> socialVenuePagedList;
     public LiveData<PagedList<VenueAndCategory>> entertainmentVenuePagedList;
+
+    private final MutableLiveData<LocationTuple> _locationTuple;
 
     public HomeViewModel(Application application) {
         super(application);
@@ -52,7 +59,8 @@ public class HomeViewModel extends AndroidViewModel {
         activeVenuePagedList = new LivePagedListBuilder<>(repository.readVenuesUsingCategoryDataFactoryHomeFragment(Config.ACTIVE), config).build();
         socialVenuePagedList = new LivePagedListBuilder<>(repository.readVenuesUsingCategoryDataFactoryHomeFragment(Config.SOCIAL), config).build();
         entertainmentVenuePagedList = new LivePagedListBuilder<>(repository.readVenuesUsingCategoryDataFactoryHomeFragment(Config.EVENTS), config).build();
-
+        _locationTuple = new MutableLiveData<>();
+//        fetchUserLocation();
     }
 
     public List<VenueAndCategory> getSavedVenues() {
@@ -63,11 +71,36 @@ public class HomeViewModel extends AndroidViewModel {
         return repository.readSavedBooks();
     }
 
-    public LiveData<LocationTuple> getUserLocation(){
-        if(FirebaseAuth.getInstance().getCurrentUser() == null){
-            return null;
-        }
+//    private void fetchUserLocation(){
+//        if(FirebaseAuth.getInstance().getCurrentUser() == null){
+//            return;
+//        }
+//        repository.readUserLocationLiveData(FirebaseAuth.getInstance().getCurrentUser().getUid())
+//                .subscribe(new Observer<LocationTuple>() {
+//                    Disposable disposable;
+//                    @Override
+//                    public void onSubscribe(@NonNull Disposable d) {
+//                        disposable = d;
+//                    }
+//
+//                    @Override
+//                    public void onNext(@NonNull LocationTuple locationTuple) {
+//                        _locationTuple.setValue(locationTuple);
+//                    }
+//
+//                    @Override
+//                    public void onError(@NonNull Throwable e) {
+//                        e.printStackTrace();
+//                    }
+//
+//                    @Override
+//                    public void onComplete() {
+//                        disposable.dispose();
+//                    }
+//                });
+//    }
 
+    public LiveData<LocationTuple> getUserLocation(){
         return repository.readUserLocationLiveData(FirebaseAuth.getInstance().getCurrentUser().getUid());
     }
 
