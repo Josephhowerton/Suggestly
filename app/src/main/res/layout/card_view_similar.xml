@@ -6,7 +6,7 @@
     <data>
         <variable
             name="venue"
-            type="com.josephhowerton.suggestly.app.model.foursquare.Venue" />
+            type="com.app.suggestly.app.model.foursquare.Venue" />
     </data>
     <androidx.cardview.widget.CardView
         android:id="@+id/card_view"

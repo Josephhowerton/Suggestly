@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/navigation_explanation"
-        android:name="com.josephhowerton.suggestly.ui.welcome.WelcomeFragment"
+        android:name="com.app.suggestly.ui.welcome.WelcomeFragment"
         android:label="Welcome"
         tools:layout="@layout/fragment_welcome" >
         <action
@@ -17,7 +17,7 @@
 
     <fragment
         android:id="@+id/navigation_location_services"
-        android:name="com.josephhowerton.suggestly.ui.location.LocationServicesFragment"
+        android:name="com.app.suggestly.ui.location.LocationServicesFragment"
         android:label="Location Services"
         tools:layout="@layout/fragment_location_services" >
         <action
@@ -30,7 +30,7 @@
 
     <fragment
         android:id="@+id/navigation_manual_location"
-        android:name="com.josephhowerton.suggestly.ui.location.ManualLocationFragment"
+        android:name="com.app.suggestly.ui.location.ManualLocationFragment"
         android:label="Manual Location"
         tools:layout="@layout/fragment_manual_location" >
         <action
@@ -40,7 +40,7 @@
 
     <fragment
         android:id="@+id/navigation_finalize"
-        android:name="com.josephhowerton.suggestly.ui.finalize.FinalizeFragment"
+        android:name="com.app.suggestly.ui.finalize.FinalizeFragment"
         android:label="Finalize"
         tools:layout="@layout/fragment_finalize" >
         <action
@@ -50,14 +50,14 @@
 
     <fragment
         android:id="@+id/navigation_push"
-        android:name="com.josephhowerton.suggestly.ui.push.PushNotificationFragment"
+        android:name="com.app.suggestly.ui.push.PushNotificationFragment"
         android:label="Push Notifications"
         tools:layout="@layout/fragment_push_notification" />
 
 
     <fragment
         android:id="@+id/navigation_auth"
-        android:name="com.josephhowerton.suggestly.ui.auth.auth.AuthFragment"
+        android:name="com.app.suggestly.ui.auth.auth.AuthFragment"
         android:label="Welcome"
         tools:layout="@layout/fragment_auth" >
         <action
@@ -74,7 +74,7 @@
 
     <fragment
         android:id="@+id/navigation_sign_in"
-        android:name="com.josephhowerton.suggestly.ui.auth.signin.LoginFragment"
+        android:name="com.app.suggestly.ui.auth.signin.LoginFragment"
         android:label="fragment_sign_in"
         tools:layout="@layout/fragment_sign_in" >
         <action
@@ -90,7 +90,7 @@
 
     <fragment
         android:id="@+id/navigation_register"
-        android:name="com.josephhowerton.suggestly.ui.auth.register.RegisterFragment"
+        android:name="com.app.suggestly.ui.auth.register.RegisterFragment"
         android:label="fragment_sign_in"
         tools:layout="@layout/fragment_register" >
         <action
@@ -104,7 +104,7 @@
 
     <fragment
         android:id="@+id/navigation_reset"
-        android:name="com.josephhowerton.suggestly.ui.auth.reset.ResetFragment"
+        android:name="com.app.suggestly.ui.auth.reset.ResetFragment"
         android:label="fragment_reset"
         tools:layout="@layout/fragment_reset" >
         <action

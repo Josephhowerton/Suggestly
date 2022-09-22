@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.josephhowerton.suggestly.ui.auth.auth.AuthViewModel"/>
+            type="com.app.suggestly.ui.auth.auth.AuthViewModel"/>
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

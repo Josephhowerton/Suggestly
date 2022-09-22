@@ -8,7 +8,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.josephhowerton.suggestly.ui.auth.reset.ResetViewModel" />
+            type="com.app.suggestly.ui.auth.reset.ResetViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

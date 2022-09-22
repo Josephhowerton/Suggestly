@@ -17,7 +17,7 @@
         <Preference
             app:key="CURRENT_USER_MANUAL_LOCATION"
             app:title="Enter Current Location"
-            android:fragment="com.josephhowerton.suggestly.ui.settings.ManualLocationFragment"/>
+            android:fragment="com.app.suggestly.ui.settings.ManualLocationFragment"/>
 
     </PreferenceCategory>
 
@@ -32,7 +32,7 @@
         <Preference
             app:key="FEEDBACK"
             app:title="Feedback"
-            android:fragment="com.josephhowerton.suggestly.ui.settings.FeedbackFragment"/>
+            android:fragment="com.app.suggestly.ui.settings.FeedbackFragment"/>
     </PreferenceCategory>
 
     <PreferenceCategory
