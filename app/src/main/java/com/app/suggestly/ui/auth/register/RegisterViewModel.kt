@@ -9,12 +9,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.api.ApiException
-import com.app.suggestly.R
 import com.app.suggestly.app.Repository
 import com.app.suggestly.app.model.user.User
 import com.app.suggestly.app.network.auth.AuthResponse
 import com.app.suggestly.app.network.auth.LoggedInUser
-import com.app.suggestly.app.network.interfaces.AuthCompleteListener
 import com.app.suggestly.app.network.interfaces.RegisterCompleteListener
 import com.app.suggestly.ui.auth.signin.LoggedInUserView
 import com.google.firebase.auth.FirebaseUser
